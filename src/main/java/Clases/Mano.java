@@ -1,3 +1,5 @@
+package Clases;
+
 public class Mano implements Cloneable{
 	public static final int MAXMANOCARDS = 5;
 	

@@ -1,3 +1,5 @@
+package Clases;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -260,8 +262,8 @@ public class Maquina {
 		
 		
 	}
-	
-	Estado estrategiaRandom(List<Estado> LE){
+
+	public Estado estrategiaRandom(List<Estado> LE){
 		if(LE.size()==0)
 			return null;
 		Random rm=new Random();
@@ -269,11 +271,16 @@ public class Maquina {
 		
 		return LE.get(n);
 	}
-	
-	Estado estrategiaPrimeroElMejor(List<Estado> LE,int mejor){//Mejor 1: Mayor , -1: Menor
+
+	public static class MEJOR {
+		public final static int MENOR = -1;
+		public final static int MAYOR = 1;
+	}
+
+	public Estado estrategiaPrimeroElMejor(List<Estado> LE,int mejor){//Mejor 1: Mayor , -1: Menor
 		if(LE.size()==0)
 			return null;
-		int idmejor=0,i=0;//mejorve: Mejor valor de Estado
+		int idmejor=0,i=0;//mejorve: Mejor valor de Clases.Estado
 		double mejorve = 0;
 		while(i<LE.size()){
 			if(i==0){
@@ -290,8 +297,8 @@ public class Maquina {
 		}
 		return LE.get(idmejor);
 	}
-	
-	Estado estrategiaMinMax(List<Estado> LE){
+
+	public Estado estrategiaMinMax(List<Estado> LE){
 		if(LE.size()==0)
 			return null;
 		Regla R=new Regla();
