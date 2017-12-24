@@ -1,3 +1,5 @@
+package Clases;
+
 public class VectorCartas implements Cloneable{
 	
 	private Carta carta[];

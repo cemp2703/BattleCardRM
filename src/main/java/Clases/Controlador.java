@@ -1,3 +1,5 @@
+package Clases;
+
 import java.util.Random;
 
 
@@ -9,19 +11,17 @@ public class Controlador {
 	boolean cartaselegidas[][];
 	public Controlador(){
 		cartaselegidas=new boolean[MAXNUMEROELEMENTOCARTAS][MAXVALORCARTA];
-		
-		
 	}
 	
 	public void repartirCartas(Jugador jug){
 		Random rm;
 		int n,m,maximoendeck,cartasrepartidas;
 		
-		maximoendeck=(jug.Deck.MAXDECK- Mano.MAXMANOCARDS - Barrera.MAXBARRERACARDS);
+		maximoendeck=(jug.Deck.MAXDECK - Mano.MAXMANOCARDS - Barrera.MAXBARRERACARDS);
 		
 		for(int i=0;i<cartaselegidas.length;i++){
 			for(int j=0;j<cartaselegidas[i].length;j++){
-				cartaselegidas[i][j]=false;
+				cartaselegidas[i][j] = false;
 			}
 		}
 		
@@ -39,13 +39,13 @@ public class Controlador {
 				cartasrepartidas++;
 				
 				if(jug.Barrera.Cartas.obtenerNumerodeCartas()<Barrera.MAXBARRERACARDS){
-					jug.Barrera.Cartas.agregarCartaEnEspacioVacio(new Carta(n,m,Carta.USO_BARRERA));
+					jug.Barrera.Cartas.agregarCartaEnEspacioVacio(new Carta(n,m+1,Carta.USO.BARRERA));
 				}
 				else if(jug.Mano.Cartas.obtenerNumerodeCartas()<Mano.MAXMANOCARDS){
-					jug.Mano.Cartas.agregarCartaEnEspacioVacio(new Carta(n,m,Carta.USO_MANO));
+					jug.Mano.Cartas.agregarCartaEnEspacioVacio(new Carta(n,m+1,Carta.USO.MANO));
 				}
 				else if(jug.Deck.obtenerNumeroElementos()< maximoendeck ){
-					jug.Deck.agregarUnaCarta(new Carta(n,m,Carta.USO_DECK));
+					jug.Deck.agregarUnaCarta(new Carta(n,m+1,Carta.USO.DECK));
 				}
 				
 			}

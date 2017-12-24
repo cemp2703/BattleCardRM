@@ -1,3 +1,5 @@
+package Clases;
+
 public class Jugador implements Cloneable{
 	private String Nombre;
 	private int NTurnos;
@@ -33,7 +35,7 @@ public class Jugador implements Cloneable{
 		NTurnos=0;
 	}
 	
-	void contarTurno(){
+	public void contarTurno(){
 		NTurnos++;
 	}
 

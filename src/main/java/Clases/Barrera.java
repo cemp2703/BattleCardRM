@@ -1,3 +1,5 @@
+package Clases;
+
 public class Barrera implements Cloneable{
 	public static final int MAXBARRERACARDS = 5;
 	
