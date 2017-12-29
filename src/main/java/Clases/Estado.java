@@ -54,10 +54,10 @@ public class Estado implements Cloneable {
 	public void funcionEvaluadora()
 	{	////MAQUINA ES JUGADOR 2
 		double hum=0,maq=0;
-		int nMaq = Jugador2.ZonaBatalla.Cartas.obtenerNumerodeCartas();
-		int nHum = Jugador1.ZonaBatalla.Cartas.obtenerNumerodeCartas();
+		int nMaq = Jugador2.ZonaBatalla.obtenerNumerodeCartas();
+		int nHum = Jugador1.ZonaBatalla.obtenerNumerodeCartas();
 		
-		int barreraHum = Jugador1.Barrera.Cartas.obtenerNumerodeCartas();
+		int barreraHum = Jugador1.Barrera.obtenerNumerodeCartas();
 	
 		//arreglo de una los valores que tiene una carta al enfrentarse a c/u de las oponentes
 		double CartasMaq[];
@@ -75,14 +75,14 @@ public class Estado implements Cloneable {
 		
 		//VALOR DE MAQ
 		for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
-			if(Jugador2.ZonaBatalla.Cartas.obtenerCartaxId(i)!=null){
-				valCarMaq=Jugador2.ZonaBatalla.Cartas.obtenerCartaxId(i).getValor();
+			if(Jugador2.ZonaBatalla.obtenerCartaxId(i)!=null){
+				valCarMaq=Jugador2.ZonaBatalla.obtenerCartaxId(i).getValor();
 				estCarMaq=Jugador2.ZonaBatalla.getPosCartaxId(i);
 				if(nHum==0)
 					CartasMaq[i] = valCarMaq * 2;
 				for(int j = 0; j < ZonaBatalla.MAXZONABATALLACARDS; j++){
-					if(Jugador1.ZonaBatalla.Cartas.obtenerCartaxId(j)!=null){
-						valCarHum=Jugador1.ZonaBatalla.Cartas.obtenerCartaxId(j).getValor();
+					if(Jugador1.ZonaBatalla.obtenerCartaxId(j)!=null){
+						valCarHum=Jugador1.ZonaBatalla.obtenerCartaxId(j).getValor();
 						estCarHum=Jugador1.ZonaBatalla.getPosCartaxId(j);
 						CartasMaq[i] = evalValorDeCartaParcMAQ(valCarMaq, valCarHum, estCarMaq, estCarHum);					
 					}
@@ -93,14 +93,14 @@ public class Estado implements Cloneable {
 		
 		//VALOR DE HUM
 		for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
-			if(Jugador1.ZonaBatalla.Cartas.obtenerCartaxId(i)!=null){
-				valCarHum=Jugador1.ZonaBatalla.Cartas.obtenerCartaxId(i).getValor();
+			if(Jugador1.ZonaBatalla.obtenerCartaxId(i)!=null){
+				valCarHum=Jugador1.ZonaBatalla.obtenerCartaxId(i).getValor();
 				estCarHum=Jugador1.ZonaBatalla.getPosCartaxId(i);
 				if(nMaq==0)
 					CartasHum[i] = valCarHum * 2;
 				for(int j = 0; j < ZonaBatalla.MAXZONABATALLACARDS; j++){
-					if(Jugador2.ZonaBatalla.Cartas.obtenerCartaxId(j)!=null){
-						valCarMaq=Jugador2.ZonaBatalla.Cartas.obtenerCartaxId(j).getValor();
+					if(Jugador2.ZonaBatalla.obtenerCartaxId(j)!=null){
+						valCarMaq=Jugador2.ZonaBatalla.obtenerCartaxId(j).getValor();
 						estCarMaq=Jugador2.ZonaBatalla.getPosCartaxId(j);
 						CartasHum[i] = evalValorDeCartaParcHUM(valCarMaq, valCarHum, estCarMaq, estCarHum);
 					}					
@@ -213,16 +213,16 @@ public class Estado implements Cloneable {
 		System.out.println("Jugador 1");
 		System.out.println("Mano");
 		for(int i=0;i < Mano.MAXMANOCARDS;i++){
-			if(Jugador1.Mano.Cartas.obtenerCartaxId(i) != null)
-				System.out.print(Jugador1.Mano.Cartas.obtenerCartaxId(i).getValor() + " " +
-					Carta.devuelveUnicode(Jugador1.Mano.Cartas.obtenerCartaxId(i).getElemento()) + " | ");
+			if(Jugador1.Mano.obtenerCartaxId(i) != null)
+				System.out.print(Jugador1.Mano.obtenerCartaxId(i).getValor() + " " +
+					Carta.devuelveUnicode(Jugador1.Mano.obtenerCartaxId(i).getElemento()) + " | ");
 			else
 				System.out.print("VACIO | ");
 		}
 		System.out.println();
 		System.out.println("Barrera");
 		for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
-			if(Jugador1.Barrera.Cartas.obtenerCartaxId(i) != null)
+			if(Jugador1.Barrera.obtenerCartaxId(i) != null)
 				System.out.print("BARRERA| ");
 			else
 				System.out.print("VACIO  | ");
@@ -230,9 +230,9 @@ public class Estado implements Cloneable {
 		System.out.println();
 		System.out.println("ZonaBatalla");
 		for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
-			if(Jugador1.ZonaBatalla.Cartas.obtenerCartaxId(i) != null)
-				System.out.print(Jugador1.ZonaBatalla.Cartas.obtenerCartaxId(i).getValor()+ " " +
-						Carta.devuelveUnicode(Jugador1.ZonaBatalla.Cartas.obtenerCartaxId(i).getElemento()) + " " +
+			if(Jugador1.ZonaBatalla.obtenerCartaxId(i) != null)
+				System.out.print(Jugador1.ZonaBatalla.obtenerCartaxId(i).getValor()+ " " +
+						Carta.devuelveUnicode(Jugador1.ZonaBatalla.obtenerCartaxId(i).getElemento()) + " " +
 						ZonaBatalla.devuelveposcarta(Jugador1.ZonaBatalla.poscarta[i]) + " | ");
 			else
 				System.out.print("VACIO | ");
@@ -243,16 +243,16 @@ public class Estado implements Cloneable {
 		System.out.println("Jugador 2");
 		System.out.println("Mano");
 		for(int i=0;i < Mano.MAXMANOCARDS;i++){
-			if(Jugador2.Mano.Cartas.obtenerCartaxId(i) != null)
-				System.out.print(Jugador2.Mano.Cartas.obtenerCartaxId(i).getValor() + " " +
-						Carta.devuelveUnicode(Jugador2.Mano.Cartas.obtenerCartaxId(i).getElemento()) + " | ");
+			if(Jugador2.Mano.obtenerCartaxId(i) != null)
+				System.out.print(Jugador2.Mano.obtenerCartaxId(i).getValor() + " " +
+						Carta.devuelveUnicode(Jugador2.Mano.obtenerCartaxId(i).getElemento()) + " | ");
 			else
 				System.out.print("VACIO | ");
 		}
 		System.out.println();
 		System.out.println("Barrera");
 		for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
-			if(Jugador2.Barrera.Cartas.obtenerCartaxId(i) != null)
+			if(Jugador2.Barrera.obtenerCartaxId(i) != null)
 				System.out.print("BARRERA| ");
 			else
 				System.out.print("VACIO | ");
@@ -260,9 +260,9 @@ public class Estado implements Cloneable {
 		System.out.println();
 		System.out.println("ZonaBatalla");
 		for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
-			if(Jugador2.ZonaBatalla.Cartas.obtenerCartaxId(i) != null)
-				System.out.print(Jugador2.ZonaBatalla.Cartas.obtenerCartaxId(i).getValor() + " " +
-						Carta.devuelveUnicode(Jugador2.ZonaBatalla.Cartas.obtenerCartaxId(i).getElemento()) + " " +
+			if(Jugador2.ZonaBatalla.obtenerCartaxId(i) != null)
+				System.out.print(Jugador2.ZonaBatalla.obtenerCartaxId(i).getValor() + " " +
+						Carta.devuelveUnicode(Jugador2.ZonaBatalla.obtenerCartaxId(i).getElemento()) + " " +
 						ZonaBatalla.devuelveposcarta(Jugador2.ZonaBatalla.poscarta[i]) + " | ");
 			else
 				System.out.print("VACIO | ");

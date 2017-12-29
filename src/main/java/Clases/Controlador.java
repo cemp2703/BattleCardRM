@@ -5,10 +5,10 @@ import java.util.Random;
 
 public class Controlador {
 	
-	public final int MAXVALORCARTA = 13;
-	public final int MAXNUMEROELEMENTOCARTAS = 4;
+	private final int MAXVALORCARTA = 13;
+	private final int MAXNUMEROELEMENTOCARTAS = 4;
 	
-	boolean cartaselegidas[][];
+	private boolean cartaselegidas[][];
 	public Controlador(){
 		cartaselegidas=new boolean[MAXNUMEROELEMENTOCARTAS][MAXVALORCARTA];
 	}
@@ -17,7 +17,7 @@ public class Controlador {
 		Random rm;
 		int n,m,maximoendeck,cartasrepartidas;
 		
-		maximoendeck=(jug.Deck.MAXDECK - Mano.MAXMANOCARDS - Barrera.MAXBARRERACARDS);
+		maximoendeck=(Deck.MAXDECK - Mano.MAXMANOCARDS - Barrera.MAXBARRERACARDS);
 		
 		for(int i=0;i<cartaselegidas.length;i++){
 			for(int j=0;j<cartaselegidas[i].length;j++){
@@ -27,25 +27,25 @@ public class Controlador {
 		
 		cartasrepartidas=0;
 		
-		while(cartasrepartidas < jug.Deck.MAXDECK ){
+		while(cartasrepartidas < Deck.MAXDECK ){
 			rm=new Random();
 			n=rm.nextInt(MAXNUMEROELEMENTOCARTAS);
 			rm=new Random();
 			m=rm.nextInt(MAXVALORCARTA);
 			
-			if(cartaselegidas[n][m]==false){
+			if(!cartaselegidas[n][m]){
 				cartaselegidas[n][m]=true;
 				
 				cartasrepartidas++;
 				
-				if(jug.Barrera.Cartas.obtenerNumerodeCartas()<Barrera.MAXBARRERACARDS){
-					jug.Barrera.Cartas.agregarCartaEnEspacioVacio(new Carta(n,m+1,Carta.USO.BARRERA));
+				if(jug.Barrera.obtenerNumerodeCartas()<Barrera.MAXBARRERACARDS){
+					jug.Barrera.agregarCartaEnEspacioVacio(new Carta(n,m+1));
 				}
-				else if(jug.Mano.Cartas.obtenerNumerodeCartas()<Mano.MAXMANOCARDS){
-					jug.Mano.Cartas.agregarCartaEnEspacioVacio(new Carta(n,m+1,Carta.USO.MANO));
+				else if(jug.Mano.obtenerNumerodeCartas()<Mano.MAXMANOCARDS){
+					jug.Mano.agregarCartaEnEspacioVacio(new Carta(n,m+1));
 				}
 				else if(jug.Deck.obtenerNumeroElementos()< maximoendeck ){
-					jug.Deck.agregarUnaCarta(new Carta(n,m+1,Carta.USO.DECK));
+					jug.Deck.agregarUnaCarta(new Carta(n,m+1));
 				}
 				
 			}

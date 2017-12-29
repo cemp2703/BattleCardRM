@@ -1,8 +1,6 @@
 package Vistas;
 
 import Clases.Estado;
-import Clases.Juego;
-import Clases.Jugador;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +23,6 @@ public class PanelInicio extends JPanel{
     PanelInicio(JFrame pJF, Juego pJuego){
         JuegoN=pJuego;
         JF=pJF;
-        JuegoN.Estado = new Estado(new Jugador("Jugador 1"), new Jugador("Jugador 2"), 0, Estado.TURNO.JUGADOR1, Estado.TERMINO.NOTERMINO);
 
         this.setBackground(SystemColor.activeCaption);
 
@@ -211,7 +208,7 @@ public class PanelInicio extends JPanel{
 
             lblModo.setText("Jugador vs Máquina");
 
-            JuegoN.Estado.Jugador2.setNombre("Máquina");
+            JuegoN.E.Jugador2.setNombre("Máquina");
 
             lblDificultad.setVisible(true);
             btnDificultadAdelante.setVisible(true);
@@ -225,7 +222,7 @@ public class PanelInicio extends JPanel{
             JuegoN.ModoJuego = Juego.MODOJUEGO.VSPLAYER;
 
             lblModo.setText("Jugador vs Jugador");
-            JuegoN.Estado.Jugador2.setNombre("Jugador 2");
+            JuegoN.E.Jugador2.setNombre("Jugador 2");
 
             lblDificultad.setVisible(false);
             btnDificultadAdelante.setVisible(false);
@@ -236,24 +233,24 @@ public class PanelInicio extends JPanel{
 
     void botonCambiarJugadorInicial() {
         if (JuegoN.ModoJuego == Juego.MODOJUEGO.VSPLAYER) {
-            if (JuegoN.Estado.getTurno() == Estado.TURNO.JUGADOR1) {
-                JuegoN.Estado.setTurno(Estado.TURNO.JUGADOR2BOT);
+            if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1) {
+                JuegoN.E.setTurno(Estado.TURNO.JUGADOR2BOT);
                 lblInicia.setText("Jugador 2");
-                JuegoN.Estado.Jugador2.setNombre("Jugador 2");
+                JuegoN.E.Jugador2.setNombre("Jugador 2");
             }
             else{
-                JuegoN.Estado.setTurno(Estado.TURNO.JUGADOR1);
+                JuegoN.E.setTurno(Estado.TURNO.JUGADOR1);
                 lblInicia.setText("Jugador 1");
             }
         } else {//Modo Jugador vs Maquina
-            if (JuegoN.Estado.getTurno() == Estado.TURNO.JUGADOR1) {
-                JuegoN.Estado.setTurno(Estado.TURNO.JUGADOR2BOT);
+            if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1) {
+                JuegoN.E.setTurno(Estado.TURNO.JUGADOR2BOT);
                 lblInicia.setText("Máquina");
-                JuegoN.Estado.Jugador2.setNombre("Máquina");
+                JuegoN.E.Jugador2.setNombre("Máquina");
             }
             else{
                 lblInicia.setText("Jugador 1");
-                JuegoN.Estado.setTurno(Estado.TURNO.JUGADOR1);
+                JuegoN.E.setTurno(Estado.TURNO.JUGADOR1);
             }
         }
     }

@@ -1,10 +1,8 @@
 package Clases;
 
-public class ZonaBatalla implements Cloneable{
+public class ZonaBatalla extends VectorCartas implements Cloneable{
 	
 	public static final int MAXZONABATALLACARDS = 3;
-	
-	public VectorCartas Cartas;
 
 	public boolean cartacolocada;
 
@@ -29,9 +27,7 @@ public class ZonaBatalla implements Cloneable{
 	}
 	
 	public ZonaBatalla() {
-		super();
-		
-		Cartas=new VectorCartas(MAXZONABATALLACARDS);
+		super(MAXZONABATALLACARDS);
 		poscarta=new int[MAXZONABATALLACARDS];
 		dispataque=new int[MAXZONABATALLACARDS];
 		dispcambio=new int[MAXZONABATALLACARDS];
@@ -44,8 +40,8 @@ public class ZonaBatalla implements Cloneable{
 		cartacolocada=false;
 	}
 	
-	public ZonaBatalla(VectorCartas pVectorCartas,int pposcarta[],int pdispataque[],int pdispcambio[],boolean pcartacolocada){
-		this.Cartas=pVectorCartas;
+	public ZonaBatalla(int pposcarta[],int pdispataque[],int pdispcambio[],boolean pcartacolocada){
+		super(MAXZONABATALLACARDS);
 		this.poscarta=pposcarta;
 		this.dispataque=pdispataque;
 		this.dispcambio=pdispcambio;
@@ -53,7 +49,6 @@ public class ZonaBatalla implements Cloneable{
 	}
 
 	public ZonaBatalla clone(){
-		VectorCartas vc=this.Cartas.clone();
 		int posc[]=new int[MAXZONABATALLACARDS];
 		int dataque[]=new int[MAXZONABATALLACARDS];
 		int dcambio[]=new int[MAXZONABATALLACARDS];
@@ -64,13 +59,13 @@ public class ZonaBatalla implements Cloneable{
 			dcambio[i]=dispcambio[i];
 		}
 		
-		ZonaBatalla clon=new ZonaBatalla(vc,posc,dataque,dcambio,this.cartacolocada);
+		ZonaBatalla clon=new ZonaBatalla(posc,dataque,dcambio,this.cartacolocada);
 		return clon;
 	}   
 
 	public void renovarDisponibilidades(){
 		for(int i=0;i<MAXZONABATALLACARDS;i++){
-			if(Cartas.obtenerCartaxId(i) != null){
+			if(this.obtenerCartaxId(i) != null){
 				dispataque[i]=1;
 				dispcambio[i]=1;
 			}

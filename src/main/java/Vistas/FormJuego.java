@@ -1,12 +1,10 @@
 package Vistas;
 
-import Clases.Juego;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class FormJuego {
-    public JFrame frmBattleCards;
+    private JFrame frmBattleCards;
     private JPanel PanelInicio;
     private JPanel PanelJuego;
     private Juego Juego;
@@ -30,7 +28,7 @@ public class FormJuego {
     /**
      * Create the application.
      */
-    public FormJuego() {
+    private FormJuego() {
         initialize();
     }
     
