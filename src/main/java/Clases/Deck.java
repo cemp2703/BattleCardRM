@@ -21,10 +21,7 @@ public class Deck implements Cloneable {
 		Deck clon=new Deck(D);
 		return clon;
 	}
-	
-	
-	
-	
+
 	public Carta sacarUnaCarta(){
 		Carta r;
 		if(!Deck.isEmpty()){	

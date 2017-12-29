@@ -10,36 +10,14 @@ public class Carta implements Cloneable{
 		public final static int TREBOL = 2; // Unicode 2663
 		public final static int ESPADA = 3;  // Unicode 2660
 	}
-
-	private int uso;
-	public static class USO {
-		public final static char CEMENTERIO = 0;
-		public final static char MANO = 1;
-		public final static char BARRERA = 2;
-		public final static char FIGHT = 3;
-		public final static char DECK = 4;
-	}
-
-	private int CartaPos;//posicion  de ataque, defenza, etc  almacenado para la carta a colocar en la zona de batalla
-	public static class CARTAPOS {
-		public final static char NOSELECCION = 0;
-		public final static char COLOCARENDEFENSA = 1;
-		public final static char COLOCARENATAQUE = 3;
-	}
 	
-	public Carta() {
-		super();
-		
-	}
-	
-	public Carta(int pelemento,int pvalor,int puso){
+	public Carta(int pelemento,int pvalor){
 		valor=pvalor;
 		elemento=pelemento;
-		uso=puso;
 	}
 	
 	public Carta clone(){
-		Carta clon=new Carta(this.elemento,this.valor,this.uso);
+		Carta clon=new Carta(this.elemento,this.valor);
 		return clon;
 	}
 
@@ -67,22 +45,6 @@ public class Carta implements Cloneable{
 
 	public void setElemento(int elemento) {
 		this.elemento = elemento;
-	}
-	
-	public int getUsocarta() {
-		return uso;
-	}
-
-	public void setUsocarta(int usocarta) {
-		this.uso = usocarta;
-	}
-
-	public int getCartaPos(){
-		return CartaPos;
-	}
-
-	public void setCartaPos(int pCartaPos){
-		CartaPos=pCartaPos;
 	}
 
 }
