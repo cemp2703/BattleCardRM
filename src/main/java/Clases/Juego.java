@@ -45,7 +45,7 @@ public class Juego {
         Maquina=null;
         Estado=null;
         Regla=null;
-        CartaPosSel= Carta.CARTAPOS.NOSELECCION;
+        CartaPosSel= ZonaBatalla.POSCARTA.NOHAYCARTA;
         IdCartaZonaBSel=-1;
         IdCartaManoSel=-1;
     }

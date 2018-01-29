@@ -7,5 +7,12 @@
     <groupId>com.xsr</groupId>
     <artifactId>battlecardre</artifactId>
     <version>1.0-SNAPSHOT</version>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.13</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

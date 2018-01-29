@@ -12,7 +12,7 @@ public class JCarta extends JLabel{
     private int jugador;
 
 
-    JCarta(int ppos,int pjugador){
+    public JCarta(int ppos,int pjugador){
         this.setOpaque(true);
         this.setHorizontalAlignment(SwingConstants.CENTER);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -21,7 +21,7 @@ public class JCarta extends JLabel{
         this.setJugador(pjugador);
     }
 
-    JCarta(Carta pcarta,int ppos,int pjugador){
+    public JCarta(Carta pcarta,int ppos,int pjugador){
         this.carta=pcarta;
         this.setOpaque(true);
         this.setHorizontalAlignment(SwingConstants.CENTER);

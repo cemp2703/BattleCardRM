@@ -4,17 +4,22 @@ import Vistas.JCarta;
 
 public class VectorCartas implements Cloneable{
 	
-	private JCarta carta[];
+	private JCarta jcarta[];
 	private int MaxNCartas;
-	
+
+	public final static int NOCARTASDISPONIBLES = -1;
+
 	public VectorCartas(int ncartas){
-		carta=new JCarta[ncartas];
+		jcarta=new JCarta[ncartas];
 		MaxNCartas=ncartas;
+		for(int i=0;i<ncartas;i++){
+			jcarta[i]=new JCarta(i,0);
+		}
 	}
 	
-	public VectorCartas(int pMaxNCartas,JCarta pcarta[]){
+	public VectorCartas(int pMaxNCartas,JCarta pjcarta[]){
 		MaxNCartas=pMaxNCartas;
-		carta=pcarta;
+		jcarta = pjcarta;
 	}
 
 	public VectorCartas clone(){
@@ -22,7 +27,7 @@ public class VectorCartas implements Cloneable{
 		JCarta v[]=new JCarta[MaxNCartas];
 		
 		for(int i=0; i<MaxNCartas;i++){
-			v[i]=this.carta[i];
+			v[i]=this.jcarta[i].clone();
 		}
 		
 		VectorCartas clon=new VectorCartas(this.MaxNCartas,v);
@@ -32,8 +37,8 @@ public class VectorCartas implements Cloneable{
 	public int obtenerNumerodeCartas(){
 		int n=0;
 		for(int i=0;i<MaxNCartas;i++){
-			if(carta[i]!=null){
-				if(carta[i].carta!=null)
+			if(jcarta[i]!=null){
+				if(jcarta[i].carta!=null)
 					n++;
 			}
 		}
@@ -43,39 +48,23 @@ public class VectorCartas implements Cloneable{
 	public int agregarCartaEnEspacioVacio(Carta c){
 		if(obtenerNumerodeCartas()==MaxNCartas)
 			return -1;
-		
-		int i=0;
-		while(true){
-			if(carta[i] != null){
-				if(carta[i].carta == null){
-					carta[i].carta = c;
+
+		for(int i=0;i< MaxNCartas;i++){
+			if(jcarta[i] != null){
+				if(jcarta[i].carta == null){
+					jcarta[i].carta = c;
 					return i;
 				}
 			}
-			i++;
 		}
+		return -1;
 	}
-
-	public int agregarJCartaEnEspacioVacio(JCarta c){
-		if(obtenerNumerodeCartas()==MaxNCartas)
-			return -1;
-
-		int i=0;
-		while(true){
-			if(carta[i]==null){
-				carta[i]=c;
-				return i;
-			}
-			i++;
-		}
-	}
-
 
 	public boolean agregarCartaEnPos(Carta c,int id){
 		if(id<0 || id>=MaxNCartas)
 			return false;
-		if(carta[id]!=null) {
-			carta[id].carta = c;
+		if(jcarta[id]!=null) {
+			jcarta[id].carta = c;
 			return true;
 		}
 		else
@@ -86,23 +75,16 @@ public class VectorCartas implements Cloneable{
 	public Carta obtenerCartaxId(int id){
 		if(id<0 || id>=MaxNCartas)
 			return null;
-		if(carta[id]!=null)
-			return carta[id].carta;
+		if(jcarta[id]!=null)
+			return jcarta[id].carta;
 		return null;
 	}
-
-	public JCarta obtenerJCartaxId(int id){
-		if(id<0 || id>=MaxNCartas)
-			return null;
-		return carta[id];
-	}
-
 
 	public boolean quitarCartaenPos(int id){
 		if(id<0 || id>=MaxNCartas)
 			return false;
-		if (carta[id] != null) {
-			carta[id].carta=null;
+		if (jcarta[id] != null) {
+			jcarta[id].carta=null;
 			return true;
 		}
 		return false;
@@ -110,12 +92,19 @@ public class VectorCartas implements Cloneable{
 
 	public int quitarUltimaCartaDisponible(){
 		for(int i=MaxNCartas-1;i>=0;i--){
-			if(carta[i]!=null){
-				if(carta[i].carta != null)
-					carta[i].carta=null;
-				return i;
+			if(jcarta[i]!=null){
+				if(jcarta[i].carta != null) {
+					jcarta[i].carta = null;
+					return i;
+				}
 			}
 		}
-		return -1;//no hay carta disponible que quitar
+		return NOCARTASDISPONIBLES;//no hay carta disponible que quitar
+	}
+
+	public JCarta obtenerJCartaxId(int id){
+		if(id<0 || id>=MaxNCartas)
+			return null;
+		return jcarta[id];
 	}
 }

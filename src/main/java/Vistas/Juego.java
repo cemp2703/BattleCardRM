@@ -68,22 +68,22 @@ public class Juego {
         //CSeleccionado=new Color(255,215,0);
 
         for (int i = 0; i < Mano.MAXMANOCARDS; i++) {
-            E.Jugador1.Mano.agregarJCartaEnEspacioVacio(new JCarta(i, Estado.TURNO.JUGADOR1));
-            E.Jugador2.Mano.agregarJCartaEnEspacioVacio(new JCarta(i,Estado.TURNO.JUGADOR2BOT));
+            E.Jugador1.Mano.obtenerJCartaxId(i).setJugador(Estado.TURNO.JUGADOR1);
+            E.Jugador2.Mano.obtenerJCartaxId(i).setJugador(Estado.TURNO.JUGADOR2BOT);
             E.Jugador1.Mano.obtenerJCartaxId(i).setBorder(new MatteBorder(2, 2, 2, 2, (Color) CMano));
             E.Jugador2.Mano.obtenerJCartaxId(i).setBorder(new MatteBorder(2, 2, 2, 2, (Color) CMano));
         }
 
         for (int i = 0; i < Barrera.MAXBARRERACARDS; i++) {
-            E.Jugador1.Barrera.agregarJCartaEnEspacioVacio(new JCarta(i, Estado.TURNO.JUGADOR1));
-            E.Jugador2.Barrera.agregarJCartaEnEspacioVacio(new JCarta(i, Estado.TURNO.JUGADOR2BOT));
+            E.Jugador1.Barrera.obtenerJCartaxId(i).setJugador(Estado.TURNO.JUGADOR1);
+            E.Jugador2.Barrera.obtenerJCartaxId(i).setJugador(Estado.TURNO.JUGADOR2BOT);
             E.Jugador1.Barrera.obtenerJCartaxId(i).setBorder(new MatteBorder(2, 2, 2, 2, (Color) CBarrera));
             E.Jugador2.Barrera.obtenerJCartaxId(i).setBorder(new MatteBorder(2, 2, 2, 2, (Color) CBarrera));
         }
 
         for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
-            E.Jugador1.ZonaBatalla.agregarJCartaEnEspacioVacio(new JCarta(i, Estado.TURNO.JUGADOR1));
-            E.Jugador2.ZonaBatalla.agregarJCartaEnEspacioVacio(new JCarta(i, Estado.TURNO.JUGADOR2BOT));
+            E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).setJugador(Estado.TURNO.JUGADOR1);
+            E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).setJugador(Estado.TURNO.JUGADOR2BOT);
             E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).setBorder(new MatteBorder(2, 2, 2, 2, (Color) CZonaBatalla));
             E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).setBorder(new MatteBorder(2, 2, 2, 2, (Color) CZonaBatalla));
         }
