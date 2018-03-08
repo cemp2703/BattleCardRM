@@ -41,13 +41,11 @@ public class FormJuego {
         frmBattleCards.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frmBattleCards.getContentPane().setLayout(new CardLayout(0, 0));
 
-        Juego=new Juego();
-
-        PanelInicio= new PanelInicio(frmBattleCards,Juego);
+        PanelInicio= new PanelInicio(frmBattleCards);
         PanelInicio.setBackground(SystemColor.activeCaption);
         frmBattleCards.getContentPane().add(PanelInicio, "PanelInicio");
 
-        PanelJuego = new PanelJuego(frmBattleCards,Juego);
+        PanelJuego = new PanelJuego(frmBattleCards);
         PanelJuego.setBackground(SystemColor.activeCaption);
         frmBattleCards.getContentPane().add(PanelJuego, "PanelJuego");
 

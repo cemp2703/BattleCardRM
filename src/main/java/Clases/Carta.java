@@ -16,9 +16,20 @@ public class Carta implements Cloneable{
 		elemento=pelemento;
 	}
 	
-	public Carta clone(){
-		Carta clon=new Carta(this.elemento,this.valor);
+	public Object clone() throws CloneNotSupportedException{
+		Object clon=super.clone();
 		return clon;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Carta)) return false;
+
+		Carta carta = (Carta) o;
+
+		if (valor != carta.valor) return false;
+		return elemento == carta.elemento;
 	}
 
 	public static String devuelveUnicode(int n){
@@ -27,8 +38,8 @@ public class Carta implements Cloneable{
 			case 1: return "\u2666";
 			case 2: return "\u2663";
 			case 3: return "\u2660";
+			default: return "";
 		}
-		return "";
 	}
 	
 	public int getValor() {

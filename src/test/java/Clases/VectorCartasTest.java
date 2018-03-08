@@ -1,14 +1,10 @@
 package Clases;
 
-import Vistas.JCarta;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Vector;
-
-import static org.testng.Assert.*;
 
 public class VectorCartasTest {
 
@@ -38,20 +34,20 @@ public class VectorCartasTest {
         Assert.assertEquals(vc.obtenerNumerodeCartas(),2);
         Assert.assertEquals(vc.quitarCartaenPos(POSFUERADEZONA),false);
         Assert.assertEquals(vc.quitarCartaenPos(POS2),true);
-        Assert.assertEquals(vc.obtenerJCartaxId(POSFUERADEZONA),null);//Id de JCarta fuera de longitud (inexistente)
-        Assert.assertNotEquals(vc.obtenerJCartaxId(POS0),null);
         Assert.assertEquals(vc.quitarUltimaCartaDisponible(),POS0);
         Assert.assertEquals(vc.quitarUltimaCartaDisponible(),VectorCartas.NOCARTASDISPONIBLES);//No quedan cartas disponibles para quitar
     }
 
     @Test
-    public void testclone() throws Exception {
+    public void testClone() throws Exception {
         VectorCartas vc=new VectorCartas(Mano.MAXMANOCARDS);
-        VectorCartas vclone=vc.clone();
+        VectorCartas vclone=(VectorCartas)vc.clone();
         vc.agregarCartaEnEspacioVacio(new Carta(1,Carta.ELEMENTO.COCO));
-        Assert.assertNotEquals(vclone.obtenerNumerodeCartas(),vc.obtenerNumerodeCartas());
-        vclone=vc.clone();
-        Assert.assertEquals(vclone.obtenerCartaxId(0).getElemento(),vc.obtenerCartaxId(0).getElemento());
-        Assert.assertEquals(vclone.obtenerCartaxId(0).getValor(),vc.obtenerCartaxId(0).getValor());
+        Assert.assertNotEquals(vclone,vc);
+        vclone=(VectorCartas)vc.clone();
+        Assert.assertEquals(vclone,vc);
+        vc.setMaxNCartas(8);
+        Assert.assertNotEquals(vclone.getMaxNCartas(),vc.getMaxNCartas());
     }
+
 }

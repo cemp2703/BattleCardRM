@@ -3,7 +3,6 @@
 <suite name="Default Suite">
     <test name="battlecardrm">
         <classes>
-            <class name="Clases.TestNGSimpleTest"/>
             <class name="Clases.VectorCartasTest"/>
         </classes>
     </test> <!-- battlecardrm -->

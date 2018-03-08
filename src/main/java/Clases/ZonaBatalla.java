@@ -1,5 +1,7 @@
 package Clases;
 
+import java.util.Arrays;
+
 public class ZonaBatalla extends VectorCartas implements Cloneable{
 	
 	public static final int MAXZONABATALLACARDS = 3;
@@ -25,13 +27,13 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 		public final static char NODISPONIBLE = 0;  // No Disponible para cambiar de posicion
 		public final static char DISPONIBLE = 1;  // Disponible para cambiar de posicion
 	}
-	
+
 	public ZonaBatalla() {
 		super(MAXZONABATALLACARDS);
 		poscarta=new int[MAXZONABATALLACARDS];
 		dispataque=new int[MAXZONABATALLACARDS];
 		dispcambio=new int[MAXZONABATALLACARDS];
-		
+
 		for(int i=0;i<MAXZONABATALLACARDS;i++){
 			poscarta[i]=POSCARTA.NOHAYCARTA;
 			dispataque[i]=DISPATAQUE.NODISPONIBLE;
@@ -39,46 +41,55 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 		}
 		cartacolocada=false;
 	}
-	
-	public ZonaBatalla(int pposcarta[],int pdispataque[],int pdispcambio[],boolean pcartacolocada){
-		super(MAXZONABATALLACARDS);
-		this.poscarta=pposcarta;
-		this.dispataque=pdispataque;
-		this.dispcambio=pdispcambio;
-		this.cartacolocada=pcartacolocada;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ZonaBatalla)) return false;
+		if (!super.equals(o)) return false;
+
+		ZonaBatalla that = (ZonaBatalla) o;
+
+		if (cartacolocada != that.cartacolocada) return false;
+		if (!Arrays.equals(poscarta, that.poscarta)) return false;
+		if (!Arrays.equals(dispataque, that.dispataque)) return false;
+		return Arrays.equals(dispcambio, that.dispcambio);
 	}
 
-	public ZonaBatalla clone(){
+
+	public Object clone() throws CloneNotSupportedException{
+		ZonaBatalla clon=(ZonaBatalla) super.clone();
+
 		int posc[]=new int[MAXZONABATALLACARDS];
 		int dataque[]=new int[MAXZONABATALLACARDS];
 		int dcambio[]=new int[MAXZONABATALLACARDS];
-		
+
 		for(int i=0;i<MAXZONABATALLACARDS;i++){
 			posc[i]=poscarta[i];
 			dataque[i]=dispataque[i];
 			dcambio[i]=dispcambio[i];
 		}
-		
-		ZonaBatalla clon=new ZonaBatalla(posc,dataque,dcambio,this.cartacolocada);
+
+		clon.dispcambio=dcambio;
+		clon.poscarta=posc;
+		clon.dispataque=dataque;
 		return clon;
-	}   
+	}
 
 	public void renovarDisponibilidades(){
 		for(int i=0;i<MAXZONABATALLACARDS;i++){
 			if(this.obtenerCartaxId(i) != null){
-				dispataque[i]=1;
-				dispcambio[i]=1;
+				if(poscarta[i] == POSCARTA.ATAQUE) {
+					dispataque[i] = ZonaBatalla.DISPATAQUE.DISPONIBLE;
+					dispcambio[i] = DISPCAMBIO.DISPONIBLE;
+				}
+				else {
+					dispataque[i] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+					dispcambio[i] = DISPCAMBIO.DISPONIBLE;
+				}
 			}
 		}
 		cartacolocada=false;
-	}
-
-	public boolean isCartacolocada() {
-		return cartacolocada;
-	}
-
-	public void setCartacolocada(boolean cartacolocada) {
-		this.cartacolocada = cartacolocada;
 	}
 	
 	public int getPosCartaxId(int id){
@@ -86,23 +97,64 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 			return poscarta[id];			
 		}
 		else
-			return 0;
+			return POSCARTA.NOHAYCARTA;
 	}
 
-	public static String devuelvedispataque(int dispataque){
-		switch(dispataque){
-			case 0: return "N";
-			case 1: return "Y";
+	public boolean agregarCartaEnPos(Carta pCarta,int idCartaZB,int posCarta ){
+		boolean respuesta = false;
+		if(super.agregarCartaEnPos(pCarta, idCartaZB) == true ){
+			poscarta[idCartaZB] = posCarta;
+			setCartacolocada(true);
+			if(posCarta == POSCARTA.ATAQUE) {
+				dispataque[idCartaZB] = ZonaBatalla.DISPATAQUE.DISPONIBLE;
+				dispcambio[idCartaZB] = DISPCAMBIO.NODISPONIBLE;
+			}
+			else {
+				dispataque[idCartaZB] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+				dispcambio[idCartaZB] = DISPCAMBIO.NODISPONIBLE;
+			}
+			respuesta=true;
 		}
-		return "";
+		return respuesta;
 	}
 
-	public static String devuelvedispcambio(int dispcambio){
-		switch(dispcambio){
-			case 0: return "N";
-			case 1: return "Y";
+
+	public int agregarCartaEnEspacioVacio(Carta pCarta, int posCarta){
+		for(int i=0;i< this.getMaxNCartas();i++){
+			if(agregarCartaEnPos(pCarta,i,i) == true)
+				return i;
 		}
-		return "";
+		return NOSEPUEDEAGREGARCARTAS;
+	}
+
+
+	public boolean cambiarPosicionBatalla(int idCartaZBJAct){
+		boolean respuesta = false;
+		if(obtenerCartaxId(idCartaZBJAct) != null
+				&& dispcambio[idCartaZBJAct] == ZonaBatalla.DISPCAMBIO.DISPONIBLE ){
+			if( poscarta[idCartaZBJAct] == ZonaBatalla.POSCARTA.DEFCARAARRIBA ||
+					poscarta[idCartaZBJAct] == ZonaBatalla.POSCARTA.DEFCARAABAJO){
+				poscarta[idCartaZBJAct] = ZonaBatalla.POSCARTA.ATAQUE;
+				dispcambio[idCartaZBJAct] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
+				dispataque[idCartaZBJAct] = ZonaBatalla.DISPATAQUE.DISPONIBLE;
+				respuesta = true;
+			}
+			else if(poscarta[idCartaZBJAct] == ZonaBatalla.POSCARTA.ATAQUE){
+				poscarta[idCartaZBJAct] = ZonaBatalla.POSCARTA.DEFCARAARRIBA;
+				dispcambio[idCartaZBJAct] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
+				dispataque[idCartaZBJAct] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+				respuesta = true;
+			}
+		}
+		return respuesta;
+	}
+
+	@Override
+	public boolean quitarCartaenPos(int id){
+		dispataque[id] = DISPATAQUE.NODISPONIBLE;
+		dispcambio[id] = DISPCAMBIO.DISPONIBLE;
+		poscarta[id] = POSCARTA.NOHAYCARTA;
+		return super.quitarCartaenPos(id);
 	}
 
 	public static String devuelveposcarta(int poscarta){
@@ -111,8 +163,16 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 			case 1: return "ATQ";
 			case 2: return "DBA"; //defensa boca abajo
 			case 3: return "DBV"; //defensa boca arriba
+			default: return "";
 		}
-		return "";
+	}
+
+	public boolean isCartacolocada() {
+		return cartacolocada;
+	}
+
+	public void setCartacolocada(boolean cartacolocada) {
+		this.cartacolocada = cartacolocada;
 	}
 }
 
