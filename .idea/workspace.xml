@@ -2,34 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="397e5be9-c5ae-477a-af19-b3d6bb494fe2" name="Default" comment="- Refactoring de clases.&#10;- Añadiendto tests unitarios&#10;- Juego en consola en progreso&#10;&#10;- Se detectan errores de regresion en la interfaz visual, producto del refactoring">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/Clases/POJO/ResultadoAtaque.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/Consola/MainConsola.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/Juego/IA.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/test/java/Clases/CartaTest.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/test/java/Clases/DeckTest.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/test/java/Clases/JugadorTest.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/test/java/Clases/ZonaBatallaTest.java" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Barrera.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Barrera.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Carta.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Carta.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Controlador.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Deck.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Deck.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Estado.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Estado.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Juego.java" afterPath="$PROJECT_DIR$/src/main/java/Juego/Operaciones.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Jugador.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Jugador.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Mano.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Mano.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Maquina.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Regla.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/VectorCartas.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/VectorCartas.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/ZonaBatalla.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/ZonaBatalla.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/FormJuego.java" afterPath="$PROJECT_DIR$/src/main/java/Vistas/FormJuego.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/JCarta.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/Juego.java" afterPath="$PROJECT_DIR$/src/main/java/Vistas/Juego.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/PanelInicio.java" afterPath="$PROJECT_DIR$/src/main/java/Vistas/PanelInicio.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/PanelJuego.java" afterPath="$PROJECT_DIR$/src/main/java/Vistas/PanelJuego.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/prueba.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Clases/VectorCartasTest.java" afterPath="$PROJECT_DIR$/src/test/java/Clases/VectorCartasTest.java" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Clases/testng-customsuite.xml" afterPath="$PROJECT_DIR$/src/test/java/Clases/testng-customsuite.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -740,7 +713,14 @@
       <option name="project" value="LOCAL" />
       <updated>1514564333419</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="- Refactoring de clases.&#10;- Añadiendto tests unitarios&#10;- Juego en consola en progreso&#10;&#10;- Se detectan errores de regresion en la interfaz visual, producto del refactoring">
+      <created>1520530204210</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1520530204210</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -796,7 +776,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15938303" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1897436" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5820513" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5846154" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32948717" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
