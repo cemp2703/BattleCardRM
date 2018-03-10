@@ -76,7 +76,7 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 		return clon;
 	}
 
-	public void renovarDisponibilidades(){
+	public void renovarPosibilidades(){
 		for(int i=0;i<MAXZONABATALLACARDS;i++){
 			if(this.obtenerCartaxId(i) != null){
 				if(poscarta[i] == POSCARTA.ATAQUE) {
@@ -91,6 +91,7 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 		}
 		cartacolocada=false;
 	}
+
 	
 	public int getPosCartaxId(int id){
 		if(id>=0 && id < MAXZONABATALLACARDS ){
@@ -152,7 +153,7 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 	@Override
 	public boolean quitarCartaenPos(int id){
 		dispataque[id] = DISPATAQUE.NODISPONIBLE;
-		dispcambio[id] = DISPCAMBIO.DISPONIBLE;
+		dispcambio[id] = DISPCAMBIO.NODISPONIBLE;
 		poscarta[id] = POSCARTA.NOHAYCARTA;
 		return super.quitarCartaenPos(id);
 	}

@@ -24,10 +24,4 @@ public class CartaTest {
         vclone=(Carta)c.clone();
         Assert.assertEquals(vclone,c);
     }
-
-    @Test
-    public void testDevuelveUnicode() throws Exception {
-        Assert.assertEquals(Carta.devuelveUnicode(50),"");
-        Assert.assertEquals(Carta.devuelveUnicode(0),"\u2665");
-    }
 }

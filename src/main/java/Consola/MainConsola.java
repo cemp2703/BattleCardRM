@@ -1,29 +1,25 @@
 package Consola;
-//TODO: Implementar ataque a una carta
 //TODO: Implementar ataque a una barrera
+//TODO; Implementar cambiar posicion de batalla
 //TODO: Implementar fin del juego
 //TODO: implementar reinicio de juego
 //TODO: sacar toda imprsion de consola de clase estado
 //TODO: Crear un ID de jugador dentro de jugador en lugar de la variable turno actual.
 
-import Clases.Estado;
-import Clases.ZonaBatalla;
+import Clases.*;
+import Clases.POJO.ResultadoAtaque;
 import Juego.Operaciones;
-import Clases.Jugador;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class MainConsola {
 
-    int MAXPANTALLAS = 2;
-    static int idpantalla;
-    static int iddialogo;
     static Estado E;
-    static Jugador J1;
-    static Jugador J2;
     static Operaciones Ops;
 
+    static int idpantalla;
+    static int iddialogo;
 
     public static void main(String[] args) throws IOException, InterruptedException{
         Inicializando();
@@ -41,12 +37,10 @@ public class MainConsola {
     }
 
     static void  Inicializando(){
+        E = new Estado(new Jugador("Jugador1"),new Jugador("Jugador2"));
+        Ops = new Operaciones();
         idpantalla = 0;
         iddialogo = 0;
-        J1 = new Jugador("Jugador1");
-        J2 = new Jugador("Jugador2");
-        E = new Estado(J1,J2);
-        Ops = new Operaciones();
     }
 
     static void cambiandoPantalla(int pantalla){
@@ -67,7 +61,7 @@ public class MainConsola {
                 break;
             case 1:
                 System.out.print("TURNO: "+E.JugadorActual.getNombre()+"\n");
-                E.imprimeEstado();
+                imprimeEstado(E);
                 break;
 
         }
@@ -129,14 +123,26 @@ public class MainConsola {
                     break;
                 case 7://Colocar carta - Ataque Realizado
                     System.out.println("Ataque Realizado!!");
-                    System.out.println("Victoria!!");
-                    System.out.println("Derrota!!");
-                    System.out.println("Empate!!");
+                    if(Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.GANAATACANTE)
+                        System.out.println("Victoria!!");
+                    else if(Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.PIERDEATACANTE)
+                        System.out.println("Derrota!!");
+                    else if(Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.EMPATE)
+                        System.out.println("Empate!!");
                     System.out.println("     Tu Carta     |        Enemigo         ");
-                    System.out.println("6 (d)(Al Ataque)  >   5 (d) (A la Defensa) ");
-                    System.out.println("Barrera enemiga destruida");
-                    System.out.println("Tu Carta en Zona de Batalla ha sido destruida");
-                    System.out.println("Carta enemiga en Zona de Batalla destruida");
+                    System.out.println(
+                            Ops.resATK.valorCartaAtacante+" ("+imprimirElementoUnicode(Ops.resATK.elementoCartaAtacante)+") " +
+                            "(Al Ataque)"+
+                            "  |   " +
+                            Ops.resATK.valorCartaAtacada+" ("+imprimirElementoUnicode(Ops.resATK.elementoCartaAtacada)+") "+
+                            (Ops.resATK.posicionCartaAtacada == ZonaBatalla.POSCARTA.ATAQUE? "(Al Ataque)" : "(A la Defensa) ")
+                    );
+                    if(Ops.resATK.barrera == Jugador.RESULTADOCARTA.DOWN)
+                        System.out.println("Barrera enemiga destruida");
+                    if(Ops.resATK.cartaAtacante == Jugador.RESULTADOCARTA.DOWN)
+                        System.out.println("Tu Carta en Zona de Batalla ha sido destruida");
+                    if(Ops.resATK.cartaAtacada == Jugador.RESULTADOCARTA.DOWN)
+                        System.out.println("Carta enemiga en Zona de Batalla destruida");
                     System.out.println("Ingrese (C) para continuar");
                     break;
                 case 8://Atacar barrera - Seleccionando carta en zona de batalla
@@ -158,29 +164,30 @@ public class MainConsola {
         int id;
         if(idpantalla == 0 && iddialogo == 0){
             if(pResp.equalsIgnoreCase("i")){
-                Ops.repartirCartas(J1);
-                Ops.repartirCartas(J2);
-                E.JugadorActual.contarTurno();
+                Ops.repartirCartas(E.Jugador1);
+                Ops.repartirCartas(E.Jugador2);
+                E.JugadorActual.accionIniciarTurno();
                 cambiandoPantalla(idpantalla+1);
             }
         }
-        else if(idpantalla == 1 && iddialogo == 0){
-            if(E.JugadorActual.puedeColocarCarta()) {
-                if (pResp.equalsIgnoreCase("C"))
+        else if(idpantalla == 1 && iddialogo == 0) {
+            if (pResp.equalsIgnoreCase("C")){
+                if (E.JugadorActual.puedeColocarCarta())
                     iddialogo = 1;
             }
-            else if(E.JugadorActual.puedeAtacarAUnaCarta(E.JugadorAnterior)){
-                if (pResp.equalsIgnoreCase("A"))
-                    iddialogo = 4;
+            else if (pResp.equalsIgnoreCase("A")){
+                if(E.JugadorActual.puedeAtacarAUnaCarta(E.JugadorAnterior))
+                    iddialogo = 5;
             }
-            else if(E.JugadorActual.puedeAtacarAUnaBarrera(E.JugadorAnterior)){
-                if (pResp.equalsIgnoreCase("B"))
+            else if (pResp.equalsIgnoreCase("B")){
+                if(E.JugadorActual.puedeAtacarAUnaBarrera(E.JugadorAnterior))
                     iddialogo = 8;
             }
             else {
-                if (pResp.equalsIgnoreCase("T"))
+                if (pResp.equalsIgnoreCase("T")){
                     E.cambioDeTurno();
                     iddialogo = 0;
+                }
             }
         }
         else if(idpantalla == 1 && iddialogo == 1) {
@@ -226,5 +233,111 @@ public class MainConsola {
                 iddialogo = 0;
             }
         }
+        else if(idpantalla == 1 && iddialogo == 5) {
+            if(pResp.matches("[0-2]")){
+                id = Integer.parseInt(pResp);
+                if(E.JugadorActual.ZBatalla.obtenerCartaxId(id) != null) {
+                    Ops.IdCartaZonaBSel = id;
+                    iddialogo = 6;
+                }
+            }
+            else if(pResp.equalsIgnoreCase("c")){
+                iddialogo = 1;
+            }
+        }
+        else if(idpantalla == 1 && iddialogo == 6) {
+            if(pResp.matches("[0-2]")){
+                id = Integer.parseInt(pResp);
+                if(E.JugadorAnterior.ZBatalla.obtenerCartaxId(id) != null) {
+                    Ops.IdCartaZonaBSelEnemigo = id;
+                    Ops.resATK= E.JugadorActual.accionAtacarCarta(E.JugadorAnterior,Ops.IdCartaZonaBSelEnemigo,Ops.IdCartaZonaBSel);
+                    iddialogo = 7;
+                }
+            }
+            else if(pResp.equalsIgnoreCase("c")){
+                iddialogo = 5;
+            }
+        }
+        else if(idpantalla == 1 && iddialogo == 7) {
+            if(pResp.equalsIgnoreCase("c")){
+                iddialogo = 0;
+            }
+        }
+
     }
+
+    static void imprimeEstado(Estado E){
+        System.out.println("*****************************************************************************");
+        System.out.println("Jugador 1");
+        System.out.println("Mano");
+        for(int i = 0; i < Mano.MAXMANOCARDS; i++){
+            if(E.Jugador1.Mano.obtenerCartaxId(i) != null)
+                System.out.print(E.Jugador1.Mano.obtenerCartaxId(i).getValor() + " " +
+                        imprimirElementoUnicode(E.Jugador1.Mano.obtenerCartaxId(i).getElemento()) + " | ");
+            else
+                System.out.print("VACIO | ");
+        }
+        System.out.println();
+        System.out.println("Barrera");
+        for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
+            if(E.Jugador1.Barrera.obtenerCartaxId(i) != null)
+                System.out.print("BARRERA| ");
+            else
+                System.out.print("VACIO  | ");
+        }
+        System.out.println();
+        System.out.println("ZonaBatalla");
+        for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
+            if(E.Jugador1.ZBatalla.obtenerCartaxId(i) != null)
+                System.out.print(E.Jugador1.ZBatalla.obtenerCartaxId(i).getValor()+ " " +
+                        imprimirElementoUnicode(E.Jugador1.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
+                        ZonaBatalla.devuelveposcarta(E.Jugador1.ZBatalla.poscarta[i]) + " | ");
+            else
+                System.out.print("VACIO | ");
+        }
+        System.out.println();
+
+        System.out.println("Jugador 2");
+        System.out.println("Mano");
+        for(int i=0;i < Mano.MAXMANOCARDS;i++){
+            if(E.Jugador2.Mano.obtenerCartaxId(i) != null)
+                System.out.print(E.Jugador2.Mano.obtenerCartaxId(i).getValor() + " " +
+                        imprimirElementoUnicode(E.Jugador2.Mano.obtenerCartaxId(i).getElemento()) + " | ");
+            else
+                System.out.print("VACIO | ");
+        }
+        System.out.println();
+        System.out.println("Barrera");
+        for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
+            if(E.Jugador2.Barrera.obtenerCartaxId(i) != null)
+                System.out.print("BARRERA| ");
+            else
+                System.out.print("VACIO | ");
+        }
+        System.out.println();
+        System.out.println("ZonaBatalla");
+        for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
+            if(E.Jugador2.ZBatalla.obtenerCartaxId(i) != null)
+                System.out.print(E.Jugador2.ZBatalla.obtenerCartaxId(i).getValor() + " " +
+                        imprimirElementoUnicode(E.Jugador2.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
+                        ZonaBatalla.devuelveposcarta(E.Jugador2.ZBatalla.poscarta[i]) + " | ");
+            else
+                System.out.print("VACIO | ");
+        }
+        System.out.println();
+        System.out.println("*****************************************************************************");
+        System.out.println();
+        System.out.println();
+    }
+
+    static String imprimirElementoUnicode(int n){
+        switch(n){
+            case 0: return "\u2665";
+            case 1: return "\u2666";
+            case 2: return "\u2663";
+            case 3: return "\u2660";
+            default: return "";
+        }
+    }
+
 }

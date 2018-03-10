@@ -164,7 +164,7 @@ public class JugadorTest {
         ResultadoAtaque rs= j1.accionAtacarCarta(j2,IDCARTAZB,IDCARTAZB);
         Assert.assertEquals(rs.resultado,resultadoAtaque);
         Assert.assertEquals(rs.cartaAtacante, resultadoCartaAtacante);
-        Assert.assertEquals(rs.cartaAtacado, resultadoCartaAtacada);
+        Assert.assertEquals(rs.cartaAtacada, resultadoCartaAtacada);
         Assert.assertEquals(rs.barrera, resultadoBarrera);
         Assert.assertEquals(rs.idbarrera, resultadoIdBarrera);
         j1.accionTerminarTurno();
@@ -178,7 +178,6 @@ public class JugadorTest {
         Jugador dclone=(Jugador)d.clone();
         Assert.assertEquals(d,dclone);
         d.setNombre("J2");
-        d.contarTurno();
         Assert.assertNotEquals(d,dclone);
     }
 

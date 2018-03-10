@@ -1,6 +1,7 @@
 package Juego;
 
 import Clases.*;
+import Clases.POJO.ResultadoAtaque;
 
 import java.util.Random;
 
@@ -20,21 +21,24 @@ public class Operaciones {
     }
 
     public int CartaPosSel;//posicion  de ataque, defenza, etc  almacenado temporalmente para la carta a colocar en la zona de batalla
-    public int IdCartaZonaBSel;//id de primera posicion almacenada temporalmente
+    public int IdCartaZonaBSel;//id de posicion en Zona de batalla
+    public int IdCartaZonaBSelEnemigo;//id de posicion en Zona de batalla Enemiga
     public int IdCartaManoSel;//id de segunda posicion almacenada temporalmente
 
     private final int MAXVALORCARTA = 13;
     private final int MAXNUMEROELEMENTOCARTAS = 4;
     private boolean cartaselegidas[][];
-
+    public ResultadoAtaque resATK;
 
     public Operaciones(){
         ModoJuego=MODOJUEGO.VSPLAYER;
         Dificultad=DIFICULTAD.FACIL;
         IdCartaZonaBSel=-1;
         IdCartaManoSel=-1;
+        IdCartaZonaBSelEnemigo= -1;
         CartaPosSel= ZonaBatalla.POSCARTA.NOHAYCARTA;
         cartaselegidas=new boolean[MAXNUMEROELEMENTOCARTAS][MAXVALORCARTA];
+        resATK = null;
     }
 
     public void repartirCartas(Jugador jug){

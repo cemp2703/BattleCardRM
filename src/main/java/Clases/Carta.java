@@ -31,16 +31,6 @@ public class Carta implements Cloneable{
 		if (valor != carta.valor) return false;
 		return elemento == carta.elemento;
 	}
-
-	public static String devuelveUnicode(int n){
-		switch(n){
-			case 0: return "\u2665";
-			case 1: return "\u2666";
-			case 2: return "\u2663";
-			case 3: return "\u2660";
-			default: return "";
-		}
-	}
 	
 	public int getValor() {
 		return valor;

@@ -50,7 +50,7 @@ public class Estado implements Cloneable {
 			TurnoActual = TURNO.JUGADOR1;
 
 		}
-		JugadorActual.contarTurno();
+		JugadorActual.accionIniciarTurno();
 	}
 
 	public double getValorEstado() {
@@ -64,69 +64,6 @@ public class Estado implements Cloneable {
 	}
 	public void setTurno(int turno) {
 		TurnoActual = turno;
-	}
-
-	public void imprimeEstado(){
-		System.out.println("*****************************************************************************");
-		System.out.println("Jugador 1");
-		System.out.println("Mano");
-		for(int i=0;i < Mano.MAXMANOCARDS;i++){
-			if(Jugador1.Mano.obtenerCartaxId(i) != null)
-				System.out.print(Jugador1.Mano.obtenerCartaxId(i).getValor() + " " +
-					Carta.devuelveUnicode(Jugador1.Mano.obtenerCartaxId(i).getElemento()) + " | ");
-			else
-				System.out.print("VACIO | ");
-		}
-		System.out.println();
-		System.out.println("Barrera");
-		for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
-			if(Jugador1.Barrera.obtenerCartaxId(i) != null)
-				System.out.print("BARRERA| ");
-			else
-				System.out.print("VACIO  | ");
-		}
-		System.out.println();
-		System.out.println("ZonaBatalla");
-		for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
-			if(Jugador1.ZBatalla.obtenerCartaxId(i) != null)
-				System.out.print(Jugador1.ZBatalla.obtenerCartaxId(i).getValor()+ " " +
-						Carta.devuelveUnicode(Jugador1.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
-						ZonaBatalla.devuelveposcarta(Jugador1.ZBatalla.poscarta[i]) + " | ");
-			else
-				System.out.print("VACIO | ");
-		}
-		System.out.println();
-
-		System.out.println("Jugador 2");
-		System.out.println("Mano");
-		for(int i=0;i < Mano.MAXMANOCARDS;i++){
-			if(Jugador2.Mano.obtenerCartaxId(i) != null)
-				System.out.print(Jugador2.Mano.obtenerCartaxId(i).getValor() + " " +
-						Carta.devuelveUnicode(Jugador2.Mano.obtenerCartaxId(i).getElemento()) + " | ");
-			else
-				System.out.print("VACIO | ");
-		}
-		System.out.println();
-		System.out.println("Barrera");
-		for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
-			if(Jugador2.Barrera.obtenerCartaxId(i) != null)
-				System.out.print("BARRERA| ");
-			else
-				System.out.print("VACIO | ");
-		}
-		System.out.println();
-		System.out.println("ZonaBatalla");
-		for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
-			if(Jugador2.ZBatalla.obtenerCartaxId(i) != null)
-				System.out.print(Jugador2.ZBatalla.obtenerCartaxId(i).getValor() + " " +
-						Carta.devuelveUnicode(Jugador2.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
-						ZonaBatalla.devuelveposcarta(Jugador2.ZBatalla.poscarta[i]) + " | ");
-			else
-				System.out.print("VACIO | ");
-		}
-		System.out.println("*****************************************************************************");
-		System.out.println();
-		System.out.println();
 	}
 
 	public Integer getTermino() {

@@ -21,7 +21,7 @@ public class ZonaBatallaTest {
         int POS = 0;
         ZonaBatalla zb=new ZonaBatalla();
         zb.jcarta[POS].carta=new Carta(1,Carta.ELEMENTO.ESPADA);
-        zb.renovarDisponibilidades();
+        zb.renovarPosibilidades();
         Assert.assertEquals(zb.dispataque[POS],ZonaBatalla.DISPATAQUE.DISPONIBLE);
         Assert.assertEquals(zb.dispcambio[POS],ZonaBatalla.DISPCAMBIO.DISPONIBLE);
         */
@@ -37,7 +37,7 @@ public class ZonaBatallaTest {
         int idZB1 = 1;
         zb.agregarCartaEnPos(c, idZB0 , POSCARTA0);
         zb.agregarCartaEnPos(c, idZB1 , POSCARTA1);
-        zb.renovarDisponibilidades();
+        zb.renovarPosibilidades();
         Assert.assertEquals(zb.dispataque[idZB0],ZonaBatalla.DISPATAQUE.DISPONIBLE);
         Assert.assertEquals(zb.dispcambio[idZB0],ZonaBatalla.DISPCAMBIO.DISPONIBLE);
         Assert.assertEquals(zb.dispataque[idZB1],ZonaBatalla.DISPATAQUE.NODISPONIBLE);

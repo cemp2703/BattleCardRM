@@ -77,8 +77,9 @@ public class Jugador implements Cloneable{
 	public ResultadoAtaque accionAtacarCarta(Jugador JugadorAtacado, int idCartaAtacada, int idCartaAtacante){//Sistema de produccion
 		ResultadoAtaque rs = new ResultadoAtaque();
 		rs.resultado = RESULTADOATACARCARTA.NOSECUMPLENCOND;
+		Carta cartaAtacante = null;
+		Carta cartaAtacada = null;
 
-		int valorJugadorAtacante,valorJugadorAtacado;
 		if( posibilidadAtacarCarta(JugadorAtacado,idCartaAtacada,idCartaAtacante) ){
 
 			//Jugador Atacado en defensa cara abajo, se revela la carta.
@@ -86,18 +87,22 @@ public class Jugador implements Cloneable{
 				JugadorAtacado.ZBatalla.poscarta[idCartaAtacada] = ZonaBatalla.POSCARTA.DEFCARAARRIBA;
 			}
 
-			valorJugadorAtacante = this.ZBatalla.obtenerCartaxId(idCartaAtacante).getValor();
-			valorJugadorAtacado = JugadorAtacado.ZBatalla.obtenerCartaxId(idCartaAtacada).getValor();
+			cartaAtacante = this.ZBatalla.obtenerCartaxId(idCartaAtacante);
+			cartaAtacada = JugadorAtacado.ZBatalla.obtenerCartaxId(idCartaAtacada);
+			rs.valorCartaAtacante = cartaAtacante.getValor();
+			rs.elementoCartaAtacante = cartaAtacante.getElemento();
+			rs.valorCartaAtacada = cartaAtacada.getValor();
+			rs.elementoCartaAtacada = cartaAtacada.getElemento();
 
-			if(valorJugadorAtacante > valorJugadorAtacado ){
+			if(rs.valorCartaAtacante > rs.valorCartaAtacada ){
 				rs.resultado = RESULTADOATACARCARTA.GANAATACANTE;//gana
 				rs.cartaAtacante = RESULTADOCARTA.UP;
-				rs.cartaAtacado = RESULTADOCARTA.DOWN;
+				rs.cartaAtacada = RESULTADOCARTA.DOWN;
 			}
-			else if(valorJugadorAtacante < valorJugadorAtacado){
+			else if(rs.valorCartaAtacante  < rs.valorCartaAtacada){
 				rs.resultado = RESULTADOATACARCARTA.PIERDEATACANTE;//pierde
 				rs.cartaAtacante = RESULTADOCARTA.DOWN;
-				rs.cartaAtacado = RESULTADOCARTA.UP;
+				rs.cartaAtacada = RESULTADOCARTA.UP;
 			}
 			else{
 				rs.resultado = RESULTADOATACARCARTA.EMPATE;//empata
@@ -105,6 +110,7 @@ public class Jugador implements Cloneable{
 
 			//Jugador Atacado al Ataque
 			if(JugadorAtacado.ZBatalla.poscarta[idCartaAtacada] == ZonaBatalla.POSCARTA.ATAQUE){
+				rs.posicionCartaAtacada = ZonaBatalla.POSCARTA.ATAQUE;
 				if(rs.resultado == RESULTADOATACARCARTA.GANAATACANTE){
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 					rs.idbarrera = JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
@@ -120,10 +126,11 @@ public class Jugador implements Cloneable{
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 					this.ZBatalla.quitarCartaenPos(idCartaAtacante);
 					rs.cartaAtacante = RESULTADOCARTA.DOWN;
-					rs.cartaAtacado = RESULTADOCARTA.DOWN;
+					rs.cartaAtacada = RESULTADOCARTA.DOWN;
 				}
 			}
 			else if(JugadorAtacado.ZBatalla.poscarta[idCartaAtacada] == ZonaBatalla.POSCARTA.DEFCARAARRIBA ){//Jugador Atacado a la Defensa
+				rs.posicionCartaAtacada = ZonaBatalla.POSCARTA.DEFCARAARRIBA;
 				if(rs.resultado == RESULTADOATACARCARTA.GANAATACANTE){//gana atacante
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 				}
@@ -132,9 +139,12 @@ public class Jugador implements Cloneable{
 				}
 				else{//Empate
 					rs.cartaAtacante = RESULTADOCARTA.UP;
-					rs.cartaAtacado = RESULTADOCARTA.UP;
+					rs.cartaAtacada = RESULTADOCARTA.UP;
 				}
 			}
+
+			this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+            this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
 		}
 		return rs;
 	}
@@ -154,9 +164,9 @@ public class Jugador implements Cloneable{
 			else{
 				respuesta=RESULTADOATACARBARRERA.EXITO;
 				JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
-				this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
-				this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.DISPONIBLE;
 			}
+            this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+            this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
 		}
 		return respuesta;
 	}
@@ -187,19 +197,16 @@ public class Jugador implements Cloneable{
 	}
 
 	public int accionIniciarTurno(){
-		this.contarTurno();
+		NTurnos++;
+		this.accionRenovarPosibilidades();
 		return 0;
 	}
 
-	//endregion
-	
-	public void contarTurno(){
-		NTurnos++;
+	public void accionRenovarPosibilidades(){
+		this.ZBatalla.renovarPosibilidades();
 	}
 
-	public int getNTurnos() {
-		return NTurnos;
-	}
+	//endregion
 
 	public String getNombre() {
 		return Nombre;
