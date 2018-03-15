@@ -1,10 +1,14 @@
 package Clases;
 
+import Clases.POJO.ResultadoAtaque;
+
 public class Estado implements Cloneable {
-	public Jugador Jugador1;
-	public Jugador Jugador2;//Aveces se comporta como maquina
 	public Jugador JugadorActual;
 	public Jugador JugadorAnterior;
+	public Jugador Jugador1;
+	public Jugador Jugador2;
+	public Jugador JugadorVictorioso;
+	public Jugador JugadorDerrotado;
 
 	private int TurnoActual;
 	public static class TURNO {
@@ -21,24 +25,28 @@ public class Estado implements Cloneable {
 	}
 
 	public Estado(Jugador pJugador1,Jugador pJugador2){
-		Jugador1 = pJugador1;
-		Jugador2 = pJugador2;
+		Jugador1=pJugador1;
+		Jugador2=pJugador2;
 		TurnoActual = TURNO.JUGADOR1;
 		valorEstado = 0;
 		JugadorActual=Jugador1;
 		JugadorAnterior=Jugador2;
+		JugadorVictorioso = null;
+		JugadorDerrotado = null;
 	}
 
 	public Object clone() throws CloneNotSupportedException{
 		Estado clon=(Estado) super.clone();
 		clon.JugadorActual=JugadorActual;
 		clon.JugadorAnterior=JugadorAnterior;
-		clon.Jugador1=Jugador1;
-		clon.Jugador2=Jugador2;
+		clon.JugadorVictorioso=JugadorVictorioso;
+		clon.JugadorDerrotado=JugadorDerrotado;
+		clon.JugadorVictorioso =JugadorVictorioso;
+		clon.JugadorDerrotado=JugadorDerrotado;
 		return clon;
 	}
 
-	public void cambioDeTurno(){
+	public int cambioDeTurno(){
 		Jugador JugadorTmp = JugadorActual;
 		JugadorActual = JugadorAnterior;
 		JugadorAnterior = JugadorTmp;
@@ -50,7 +58,24 @@ public class Estado implements Cloneable {
 			TurnoActual = TURNO.JUGADOR1;
 
 		}
-		JugadorActual.accionIniciarTurno();
+		int res= JugadorActual.accionIniciarTurno();
+
+		if( res == Jugador.RESULTADOCOJERUNACARTA.DECKVACIO) {
+			terminoSinCartas();
+		}
+		return res;
+	}
+
+	public void terminoSinBarreras(){
+		Termino = Estado.TERMINO.SINBARRERAS;
+		JugadorVictorioso = JugadorActual;
+		JugadorDerrotado = JugadorAnterior;
+	}
+
+	public void terminoSinCartas(){
+		JugadorVictorioso=JugadorAnterior;
+		JugadorDerrotado=JugadorActual;
+		Termino = TERMINO.SINCARTAS;
 	}
 
 	public double getValorEstado() {

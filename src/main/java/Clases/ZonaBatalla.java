@@ -128,11 +128,17 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 		return NOSEPUEDEAGREGARCARTAS;
 	}
 
+	public boolean posibilidadCambiarPosicionBatalla(int idCartaZBJAct){
+		if(obtenerCartaxId(idCartaZBJAct) == null)
+			return false;
+		if(dispcambio[idCartaZBJAct] == DISPCAMBIO.NODISPONIBLE)
+			return false;
+		return true;
+	}
 
 	public boolean cambiarPosicionBatalla(int idCartaZBJAct){
 		boolean respuesta = false;
-		if(obtenerCartaxId(idCartaZBJAct) != null
-				&& dispcambio[idCartaZBJAct] == ZonaBatalla.DISPCAMBIO.DISPONIBLE ){
+		if(posibilidadCambiarPosicionBatalla(idCartaZBJAct)){
 			if( poscarta[idCartaZBJAct] == ZonaBatalla.POSCARTA.DEFCARAARRIBA ||
 					poscarta[idCartaZBJAct] == ZonaBatalla.POSCARTA.DEFCARAABAJO){
 				poscarta[idCartaZBJAct] = ZonaBatalla.POSCARTA.ATAQUE;

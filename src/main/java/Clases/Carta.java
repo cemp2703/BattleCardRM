@@ -1,6 +1,8 @@
 package Clases;
 
+
 public class Carta implements Cloneable{
+
 	private int valor;
 
 	private int elemento;
@@ -31,7 +33,7 @@ public class Carta implements Cloneable{
 		if (valor != carta.valor) return false;
 		return elemento == carta.elemento;
 	}
-	
+
 	public int getValor() {
 		return valor;
 	}

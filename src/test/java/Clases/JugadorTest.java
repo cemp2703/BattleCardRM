@@ -43,7 +43,7 @@ public class JugadorTest {
 
         j1.accionIniciarTurno();
         Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),true);
-        Assert.assertEquals(j1.accionAtacarBarrera(j2,IDCARTAZB),Jugador.RESULTADOATACARBARRERA.EXITO);
+        Assert.assertEquals(j1.accionAtacarBarrera(j2,IDCARTAZB),Jugador.RESULTADOATACARBARRERA.SINBARRERAS);
         j1.accionTerminarTurno();
     }
 

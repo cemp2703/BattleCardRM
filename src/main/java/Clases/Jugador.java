@@ -21,6 +21,80 @@ public class Jugador implements Cloneable{
 
 	//region Operaciones (Reglas)
 
+	public boolean posibilidadCambiarPosicionBatalla(int idCartaZBJAct){
+		return ZBatalla.posibilidadCambiarPosicionBatalla(idCartaZBJAct);
+	}
+
+	public boolean posibilidadAtacarCarta(Jugador JugadorAtacado,int idCartaAtacada,int idCartaAtacante){
+		if(NTurnos == 1)
+			return false;
+		if (ZBatalla.obtenerCartaxId(idCartaAtacante) == null)
+			return false;
+		if (JugadorAtacado.ZBatalla.obtenerCartaxId(idCartaAtacada) == null)
+			return false;
+		if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0)
+			return false;
+		if(ZBatalla.poscarta[idCartaAtacante] != ZonaBatalla.POSCARTA.ATAQUE)
+			return false;
+		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
+			return false;
+
+		return true;
+	}
+
+	public boolean posibilidadAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante) {
+		if(NTurnos == 1)
+			return false;
+		if (ZBatalla.obtenerCartaxId(idCartaAtacante) == null)
+			return false;
+		if(JugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0)
+			return false;
+		if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0)
+			return false;
+		if(ZBatalla.poscarta[idCartaAtacante] != ZonaBatalla.POSCARTA.ATAQUE)
+			return false;
+		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
+			return false;
+
+		return true;
+	}
+
+	public boolean puedeColocarCarta(){
+		return !ZBatalla.isCartacolocada();
+	}
+
+	public boolean puedeAtacarAUnaCarta( Jugador pJugadorAtacado){
+		if( ZBatalla.obtenerNumerodeCartas() > 0 && pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0){
+			for(int i=0; i<ZBatalla.getMaxNCartas();i++)
+				for(int j=0; j<ZBatalla.getMaxNCartas();j++)
+					if(posibilidadAtacarCarta(pJugadorAtacado,j,i))
+						return true;
+		}
+		return false;
+	}
+
+	public boolean puedeAtacarAUnaBarrera( Jugador pJugadorAtacado){
+		if( ZBatalla.obtenerNumerodeCartas() > 0 && pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() == 0){
+			for(int i=0; i<ZBatalla.getMaxNCartas();i++)
+				if(posibilidadAtacarBarrera(pJugadorAtacado,i))
+					return true;
+		}
+		return false;
+	}
+
+	public boolean puedeCambiarPosición(){
+		if( ZBatalla.obtenerNumerodeCartas() == 0)
+			return false;
+		for(int i=0; i<ZBatalla.getMaxNCartas();i++)
+			if(posibilidadCambiarPosicionBatalla(i))
+				return true;
+		return false;
+	}
+
+	public boolean accionCambiarPosicionBatalla(int idCartaZBJAct){
+		return ZBatalla.cambiarPosicionBatalla(idCartaZBJAct);
+	}
+
 	public boolean accionColocarCarta(int idCartaZB,int idCartaMano,int posCarta){
 		boolean respuesta = false;
 		if(this.Mano.obtenerCartaxId(idCartaMano) != null &&
@@ -29,34 +103,6 @@ public class Jugador implements Cloneable{
 			this.Mano.quitarCartaenPos(idCartaMano);
 			this.ZBatalla.agregarCartaEnPos(c,idCartaZB,posCarta);
 			respuesta=true;
-		}
-		return respuesta;
-	}
-
-	public boolean accionCambiarPosicionBatalla(int idCartaZBJAct){
-		return ZBatalla.cambiarPosicionBatalla(idCartaZBJAct);
-	}
-
-	public boolean posibilidadAtacarCarta(Jugador JugadorAtacado,int idCartaAtacada,int idCartaAtacante){
-		boolean respuesta=false;
-		if(ZBatalla.obtenerCartaxId(idCartaAtacante) != null &&
-				ZBatalla.poscarta[idCartaAtacante] == ZonaBatalla.POSCARTA.ATAQUE &&
-				ZBatalla.dispataque[idCartaAtacante] == ZonaBatalla.DISPATAQUE.DISPONIBLE &&
-				NTurnos > 1 &&
-				JugadorAtacado.ZBatalla.obtenerCartaxId(idCartaAtacada) != null){
-			respuesta=true;
-		}
-		return respuesta;
-	}
-
-	public boolean posibilidadAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante) {
-		boolean respuesta = false;
-		if (ZBatalla.obtenerCartaxId(idCartaAtacante) != null &&
-				ZBatalla.poscarta[idCartaAtacante] == ZonaBatalla.POSCARTA.ATAQUE &&
-				ZBatalla.dispataque[idCartaAtacante] == ZonaBatalla.DISPATAQUE.DISPONIBLE &&
-				NTurnos > 1 &&
-				JugadorAtacado.ZBatalla.obtenerNumerodeCartas() == 0) {
-			respuesta = true;
 		}
 		return respuesta;
 	}
@@ -158,12 +204,13 @@ public class Jugador implements Cloneable{
 	public int accionAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante){
 		int respuesta=RESULTADOATACARBARRERA.NOSECUMPLENCOND;
 		if( posibilidadAtacarBarrera(JugadorAtacado,idCartaAtacante) ){
-			if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0){
-				respuesta=RESULTADOATACARBARRERA.SINBARRERAS;
+			JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
+
+			if(JugadorAtacado.Barrera.obtenerNumerodeCartas() >  0){
+				respuesta=RESULTADOATACARBARRERA.EXITO;
 			}
 			else{
-				respuesta=RESULTADOATACARBARRERA.EXITO;
-				JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
+				respuesta= RESULTADOATACARBARRERA.SINBARRERAS;
 			}
             this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
             this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
@@ -198,8 +245,8 @@ public class Jugador implements Cloneable{
 
 	public int accionIniciarTurno(){
 		NTurnos++;
-		this.accionRenovarPosibilidades();
-		return 0;
+		accionRenovarPosibilidades();
+		return accionCojerUnaCartaDelDeck();
 	}
 
 	public void accionRenovarPosibilidades(){
@@ -215,30 +262,6 @@ public class Jugador implements Cloneable{
 	public void setNombre(String nombre) {
 		Nombre = nombre;
 	}
-
-	public boolean puedeColocarCarta(){
-		return !ZBatalla.isCartacolocada();
-	}
-
-	public boolean puedeAtacarAUnaCarta( Jugador pJugadorAtacado){
-		if( ZBatalla.obtenerNumerodeCartas() > 0 && pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0){
-			for(int i=0; i<ZBatalla.getMaxNCartas();i++)
-				for(int j=0; j<ZBatalla.getMaxNCartas();j++)
-					if(posibilidadAtacarCarta(pJugadorAtacado,j,i))
-						return true;
-		}
-		return false;
-	}
-
-	public boolean puedeAtacarAUnaBarrera( Jugador pJugadorAtacado){
-		if( ZBatalla.obtenerNumerodeCartas() > 0 && pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() == 0){
-			for(int i=0; i<ZBatalla.getMaxNCartas();i++)
-				if(posibilidadAtacarBarrera(pJugadorAtacado,i))
-						return true;
-		}
-		return false;
-	}
-
 
 	@Override
 	public boolean equals(Object o) {

@@ -106,7 +106,7 @@ public class ZonaBatallaTest {
             zb.agregarCartaEnPos(c, i, POSCARTA);
             zb.quitarCartaenPos(i);
             Assert.assertEquals(zb.poscarta[i],ZonaBatalla.POSCARTA.NOHAYCARTA);
-            Assert.assertEquals(zb.dispcambio[i],ZonaBatalla.DISPCAMBIO.DISPONIBLE);
+            Assert.assertEquals(zb.dispcambio[i],ZonaBatalla.DISPCAMBIO.NODISPONIBLE);
             Assert.assertEquals(zb.dispataque[i],ZonaBatalla.DISPATAQUE.NODISPONIBLE);
         }
     }
