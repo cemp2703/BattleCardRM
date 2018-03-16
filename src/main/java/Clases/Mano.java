@@ -6,10 +6,5 @@ public class Mano extends VectorCartas implements Cloneable{
 	public Mano(){
 		super(MAXMANOCARDS);
 	}
-	
-	public Mano clone(){
-		Mano clon=new Mano();
-		return clon;
-	}
-	
+
 }

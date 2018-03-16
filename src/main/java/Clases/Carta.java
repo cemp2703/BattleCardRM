@@ -1,6 +1,8 @@
 package Clases;
 
+
 public class Carta implements Cloneable{
+
 	private int valor;
 
 	private int elemento;
@@ -16,21 +18,22 @@ public class Carta implements Cloneable{
 		elemento=pelemento;
 	}
 	
-	public Carta clone(){
-		Carta clon=new Carta(this.elemento,this.valor);
+	public Object clone() throws CloneNotSupportedException{
+		Object clon=super.clone();
 		return clon;
 	}
 
-	public static String devuelveUnicode(int n){
-		switch(n){
-			case 0: return "\u2665";
-			case 1: return "\u2666";
-			case 2: return "\u2663";
-			case 3: return "\u2660";
-		}
-		return "";
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Carta)) return false;
+
+		Carta carta = (Carta) o;
+
+		if (valor != carta.valor) return false;
+		return elemento == carta.elemento;
 	}
-	
+
 	public int getValor() {
 		return valor;
 	}

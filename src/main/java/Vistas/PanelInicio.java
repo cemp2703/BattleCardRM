@@ -1,6 +1,7 @@
 package Vistas;
 
 import Clases.Estado;
+import Juego.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,19 +20,25 @@ public class PanelInicio extends JPanel{
 
     Juego JuegoN;
     private JFrame JF;
+    Operaciones Ops;
 
-    PanelInicio(JFrame pJF, Juego pJuego){
-        JuegoN=pJuego;
+    PanelInicio(JFrame pJF) {
         JF=pJF;
+        Ops=new Operaciones();
 
         this.setBackground(SystemColor.activeCaption);
 
-        JButton btnIniciarJuego = new JButton("Iniciar Juego");
+        JButton btnIniciarJuego = new JButton("Iniciar Operaciones");
         btnIniciarJuego.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
-                botonIniciarJuego();
+                try {
+                    botonIniciarJuego();
+                } catch (CloneNotSupportedException e1) {
+                    e1.printStackTrace();
+                }
             }
-        });
+        }) ;
         btnIniciarJuego.setFont(new Font("Wide Latin", Font.BOLD, 11));
 
         JLabel lbl456 = new JLabel("Modo");
@@ -193,7 +200,7 @@ public class PanelInicio extends JPanel{
         this.setLayout(gl_PanelInicio);
     }
 
-    void botonIniciarJuego() {
+    void botonIniciarJuego() throws CloneNotSupportedException {
         Component PJ= JF.getContentPane().getComponent(1);
         ((PanelJuego)PJ).iniciarJuego();
         ((CardLayout) JF.getContentPane().getLayout()).show(JF.getContentPane(),"PanelJuego");
@@ -201,10 +208,10 @@ public class PanelInicio extends JPanel{
 
     void botonCambiarModoJuego() {
 
-        if (JuegoN.ModoJuego == Juego.MODOJUEGO.VSPLAYER) {
-            //Maquina vs Jugador
+        if (Ops.ModoJuego == Operaciones.MODOJUEGO.VSPLAYER) {
+            //IA vs Jugador
 
-            JuegoN.ModoJuego = Juego.MODOJUEGO.VSBOT;
+            Ops.ModoJuego = Operaciones.MODOJUEGO.VSBOT;
 
             lblModo.setText("Jugador vs Máquina");
 
@@ -219,7 +226,7 @@ public class PanelInicio extends JPanel{
 
             //Jugador1 vs Jugador2
 
-            JuegoN.ModoJuego = Juego.MODOJUEGO.VSPLAYER;
+            Ops.ModoJuego = Operaciones.MODOJUEGO.VSPLAYER;
 
             lblModo.setText("Jugador vs Jugador");
             JuegoN.E.Jugador2.setNombre("Jugador 2");
@@ -232,7 +239,7 @@ public class PanelInicio extends JPanel{
     }
 
     void botonCambiarJugadorInicial() {
-        if (JuegoN.ModoJuego == Juego.MODOJUEGO.VSPLAYER) {
+        if (Ops.ModoJuego == Operaciones.MODOJUEGO.VSPLAYER) {
             if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1) {
                 JuegoN.E.setTurno(Estado.TURNO.JUGADOR2BOT);
                 lblInicia.setText("Jugador 2");
@@ -242,7 +249,7 @@ public class PanelInicio extends JPanel{
                 JuegoN.E.setTurno(Estado.TURNO.JUGADOR1);
                 lblInicia.setText("Jugador 1");
             }
-        } else {//Modo Jugador vs Maquina
+        } else {//Modo Jugador vs IA
             if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1) {
                 JuegoN.E.setTurno(Estado.TURNO.JUGADOR2BOT);
                 lblInicia.setText("Máquina");
@@ -256,19 +263,19 @@ public class PanelInicio extends JPanel{
     }
 
     void botonCambiarDificultad(int sumando) {
-        if (JuegoN.ModoJuego == Juego.MODOJUEGO.VSBOT) {
-            if (JuegoN.Dificultad + sumando == Juego.DIFICULTAD.FACIL) {
-                JuegoN.Dificultad = Juego.DIFICULTAD.FACIL;
+        if (Ops.ModoJuego == Operaciones.MODOJUEGO.VSBOT) {
+            if (Ops.Dificultad + sumando == Operaciones.DIFICULTAD.FACIL) {
+                Ops.Dificultad = Operaciones.DIFICULTAD.FACIL;
                 lblDificultad.setText("Facil");
                 btnDificultadAtras.setEnabled(false);
                 btnDificultadAdelante.setEnabled(true);
-            } else if (JuegoN.Dificultad + sumando == Juego.DIFICULTAD.NORMAL) {
-                JuegoN.Dificultad = Juego.DIFICULTAD.NORMAL;
+            } else if (Ops.Dificultad + sumando == Operaciones.DIFICULTAD.NORMAL) {
+                Ops.Dificultad = Operaciones.DIFICULTAD.NORMAL;
                 lblDificultad.setText("Normal");
                 btnDificultadAdelante.setEnabled(true);
                 btnDificultadAtras.setEnabled(true);
-            } else if (JuegoN.Dificultad + sumando == Juego.DIFICULTAD.AVANZADO ){
-                JuegoN.Dificultad = Juego.DIFICULTAD.AVANZADO;
+            } else if (Ops.Dificultad + sumando == Operaciones.DIFICULTAD.AVANZADO ){
+                Ops.Dificultad = Operaciones.DIFICULTAD.AVANZADO;
                 lblDificultad.setText("Experto");
                 btnDificultadAdelante.setEnabled(false);
                 btnDificultadAtras.setEnabled(true);

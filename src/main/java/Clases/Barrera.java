@@ -6,9 +6,5 @@ public class Barrera extends VectorCartas implements Cloneable{
 	public Barrera(){
 		super(MAXBARRERACARDS);
 	}
-	
-	public Barrera clone(){
-		Barrera clon=new Barrera();
-		return clon;
-	}
+
 }

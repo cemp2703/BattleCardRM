@@ -1,6 +1,7 @@
 package Vistas;
 
 import Clases.*;
+import Juego.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -31,11 +32,14 @@ public class PanelJuego extends JPanel {
     private DefaultListModel mhistorial;
     private JScrollPane scrollPane;
 
-    private Juego JuegoN;
+    private Operaciones Ops;
     private JFrame JF;
+    private Estado E;
+    private IA M;
+    private Juego JuegoN;
 
-    PanelJuego(JFrame pJF, Juego pJuego) {
-        JuegoN = pJuego;
+    PanelJuego(JFrame pJF) {
+        Ops = new Operaciones();
         JF = pJF;
 
         CSeleccionado = new Color(255, 215, 0);
@@ -59,13 +63,13 @@ public class PanelJuego extends JPanel {
         };
 
         for (int i = 0; i < Mano.MAXMANOCARDS; i++) {
-            JuegoN.E.Jugador1.Mano.obtenerJCartaxId(i).addMouseListener(MAManoSeleccionada);
-            JuegoN.E.Jugador2.Mano.obtenerJCartaxId(i).addMouseListener(MAManoSeleccionada);
+           // JuegoN.E.Jugador1.Mano.obtenerCartaxId(i).addMouseListener(MAManoSeleccionada);
+           // JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).addMouseListener(MAManoSeleccionada);
         }
 
         for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
-            JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).addMouseListener(MAZonaBatallaSeleccionada);
-            JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).addMouseListener(MAZonaBatallaSeleccionada);
+            //JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).addMouseListener(MAZonaBatallaSeleccionada);
+           // JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).addMouseListener(MAZonaBatallaSeleccionada);
         }
 
         lblJugador1Deck = new JLabel("");
@@ -166,6 +170,7 @@ public class PanelJuego extends JPanel {
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(lstHistorial);
 
+        /*
         //region gl_PanelTablero
         GroupLayout gl_PanelTablero = new GroupLayout(this);
         gl_PanelTablero.setHorizontalGroup(
@@ -342,40 +347,38 @@ public class PanelJuego extends JPanel {
 
         this.setLayout(gl_PanelTablero);
         //endregion
+        */
     }
 
     //region Acciones
 
-    void iniciarJuego(){
+    void iniciarJuego() throws CloneNotSupportedException{
 
-        lblJugador1.setText(JuegoN.E.Jugador1.getNombre());
-        lblJugador2.setText(JuegoN.E.Jugador2.getNombre());
+        lblJugador1.setText(E.Jugador1.getNombre());
+        lblJugador2.setText(E.Jugador2.getNombre());
 
-        JuegoN.Controlador = new Controlador();
-        JuegoN.Controlador.repartirCartas(JuegoN.E.Jugador1);
-        JuegoN.Controlador.repartirCartas(JuegoN.E.Jugador2);
+        Ops.repartirCartas(E.Jugador1);
+        Ops.repartirCartas(E.Jugador2);
 
-        JuegoN.Regla = new Regla();
-
-        if(JuegoN.ModoJuego == Juego.MODOJUEGO.VSBOT)
-            JuegoN.Maquina = new Maquina();
+        if(Ops.ModoJuego == Operaciones.MODOJUEGO.VSBOT)
+            M= new IA();
 
         JuegoN.Accion = Juego.ACCION.NOACCION;
         JuegoN.E.Termino = Estado.TERMINO.NOTERMINO;
 
-        if(JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1){
-            JuegoN.JugadorActual = JuegoN.E.Jugador1;
-            JuegoN.JugadorAnterior = JuegoN.E.Jugador2;
-            JuegoN.E.Jugador1.contarTurno();
+        if(E.getTurno() == Estado.TURNO.JUGADOR1){
+            E.JugadorActual = JuegoN.E.Jugador1;
+            E.JugadorAnterior = JuegoN.E.Jugador2;
+            //JuegoN.E.Jugador1.contarTurno();
         }
         else{
-            JuegoN.JugadorActual = JuegoN.E.Jugador2;
-            JuegoN.JugadorAnterior = JuegoN.E.Jugador1;
-            JuegoN.E.Jugador2.contarTurno();
+            E.JugadorActual = JuegoN.E.Jugador2;
+            E.JugadorAnterior = JuegoN.E.Jugador1;
+            //E.Jugador2.contarTurno();
         }
 
         mhistorial.clear();
-        mhistorial.addElement("Turno: "+JuegoN.JugadorActual.getNombre());
+        mhistorial.addElement("Turno: "+E.JugadorActual.getNombre());
 
         btnAtacar.setEnabled(false);
         btnColocarEnAtk.setEnabled(false);
@@ -384,11 +387,11 @@ public class PanelJuego extends JPanel {
         lblNDeckJ1.setText(JuegoN.E.Jugador1.Deck.Deck.size() + "");
         lblNDeckJ2.setText(JuegoN.E.Jugador2.Deck.Deck.size() + "");
 
-        JuegoN.JugadorActual.ZonaBatalla.renovarDisponibilidades();
+        E.JugadorActual.ZBatalla.renovarPosibilidades();
 
         habilitarControlesXTurno();
         actualizarVista();
-        if(JuegoN.ModoJuego == Juego.MODOJUEGO.VSBOT &&
+        if(Ops.ModoJuego == Operaciones.MODOJUEGO.VSBOT &&
                 JuegoN.E.getTurno() == Estado.TURNO.JUGADOR2BOT &&
                 JuegoN.E.Termino == Estado.TERMINO.NOTERMINO){
             TurnoMaquina();
@@ -398,14 +401,14 @@ public class PanelJuego extends JPanel {
 
     void terminarJuego() {
         if (JuegoN.E.Termino == Estado.TERMINO.SINCARTAS) {//Jugador Actual sin cartas que jalar en su Deck
-            JOptionPane.showMessageDialog(null, JuegoN.JugadorActual.getNombre() +
-                            " se ha quedado sin cartas en su DECK, " + JuegoN.JugadorAnterior.getNombre() +
-                            " ha ganado la partida", JuegoN.JugadorAnterior.getNombre() + " Gano!!",
+            JOptionPane.showMessageDialog(null, E.JugadorActual.getNombre() +
+                            " se ha quedado sin cartas en su DECK, " + E.JugadorAnterior.getNombre() +
+                            " ha ganado la partida", E.JugadorAnterior.getNombre() + " Gano!!",
                     JOptionPane.INFORMATION_MESSAGE);
         } else if (JuegoN.E.Termino == Estado.TERMINO.SINBARRERAS) {//Jugador Anterior se quedó sin barreras
-            JOptionPane.showMessageDialog(null, JuegoN.JugadorAnterior.getNombre() +
-                            " se ha quedado sin barreras que lo protejan, " + JuegoN.JugadorActual.getNombre() +
-                            " ha ganado la partida", JuegoN.JugadorActual.getNombre() + " Gano!!",
+            JOptionPane.showMessageDialog(null, E.JugadorAnterior.getNombre() +
+                            " se ha quedado sin barreras que lo protejan, " + E.JugadorActual.getNombre() +
+                            " ha ganado la partida", E.JugadorActual.getNombre() + " Gano!!",
                     JOptionPane.INFORMATION_MESSAGE);
         }
         ((CardLayout) JF.getContentPane().getLayout()).show(JF.getContentPane(), "PanelInicio");
@@ -419,14 +422,18 @@ public class PanelJuego extends JPanel {
             btnCambiarPosicion.setEnabled(false);
             DeSeleccionarMano();
             DeSeleccionarZonaBatalla();
-            accionTerminarTurno();
+            try {
+                accionTerminarTurno();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     void botonCambiarPosicionBatalla() {
         if (btnCambiarPosicion.isEnabled()) {
             if (JuegoN.Accion == Juego.ACCION.NOACCION) {
-                JuegoN.Regla.accionCambiarPosicionBatalla(JuegoN.JugadorActual, JuegoN.IdCartaZonaBSel - 1);
+                E.JugadorActual.accionCambiarPosicionBatalla(Ops.IdCartaZonaBSel - 1);
                 btnCambiarPosicion.setEnabled(false);
                 btnAtacar.setEnabled(false);
                 DeSeleccionarZonaBatalla();
@@ -470,14 +477,14 @@ public class PanelJuego extends JPanel {
     void botonAtacar() {
         if (btnAtacar.isEnabled()) {
             if (JuegoN.Accion == Juego.ACCION.NOACCION) {//Atacar
-                if (JuegoN.JugadorAnterior.ZonaBatalla.obtenerNumerodeCartas() == 0) {///Atacar a la barrera
+                if (E.JugadorAnterior.ZBatalla.obtenerNumerodeCartas() == 0) {///Atacar a la barrera
                     int resp;
-                    resp = JuegoN.Regla.accionAtacarBarrera(JuegoN.JugadorActual, JuegoN.JugadorAnterior, JuegoN.IdCartaZonaBSel);
+                    resp = E.JugadorActual.accionAtacarBarrera(E.JugadorAnterior, Ops.IdCartaZonaBSel);
                     btnAtacar.setEnabled(false);
                     btnCambiarPosicion.setEnabled(false);
                     actualizarVista();
                     DeSeleccionarZonaBatalla();
-                    if (resp == Regla.RESULTADOATACARBARRERA.SINBARRERAS) {
+                    if (resp == Jugador.RESULTADOATACARBARRERA.SINBARRERAS) {
                         JuegoN.E.Termino = Estado.TERMINO.SINBARRERAS;
                         terminarJuego();
                     }
@@ -499,9 +506,10 @@ public class PanelJuego extends JPanel {
     }
 
     void ManoSeleccionada(MouseEvent e) {
+        /*
         JCarta JL = (JCarta) e.getSource();
         if (JL.getJugador() == JuegoN.E.getTurno()) {//Jugador Actual toca una carta (o espacio de carta) que le pertenece
-            if (JuegoN.Accion == Juego.ACCION.NOACCION) {
+            if (JuegoN.Accion == Operaciones.ACCION.NOACCION) {
                 if (JuegoN.JugadorActual.Mano.obtenerJCartaxId(JL.getPos()) != null) {//Si hay carta en ese espacio
                     if (JuegoN.JugadorActual.Mano.obtenerCartaxId(JL.getPos()) != null) {
                         if (JuegoN.JugadorActual.ZonaBatalla.obtenerNumerodeCartas() < ZonaBatalla.MAXZONABATALLACARDS) {
@@ -521,20 +529,21 @@ public class PanelJuego extends JPanel {
                 }
             }
         }
-
+*/
     }
 
     void ZonaBatallaSeleccionada(MouseEvent e) {
+       /*
         JCarta JL = (JCarta) e.getSource();
         if (JL.getJugador() == JuegoN.E.getTurno()) { //Jugador Actual toca una carta (o espacio de carta) que le pertenece
-            if (JuegoN.Accion == Juego.ACCION.COLOCARATK ||
-                    JuegoN.Accion == Juego.ACCION.COLOCARDEFBA) { //Colocar una carta en ataque o defensa en espacio vacio
+            if (JuegoN.Accion == Operaciones.ACCION.COLOCARATK ||
+                    JuegoN.Accion == Operaciones.ACCION.COLOCARDEFBA) { //Colocar una carta en ataque o defensa en espacio vacio
                 if (JuegoN.JugadorActual.ZonaBatalla.obtenerJCartaxId(JL.getPos()) != null) {
                     if (JuegoN.JugadorActual.ZonaBatalla.obtenerCartaxId(JL.getPos()) == null) {
                         if (JuegoN.JugadorActual.ZonaBatalla.obtenerNumerodeCartas() <= ZonaBatalla.MAXZONABATALLACARDS) {
                             JuegoN.IdCartaZonaBSel=JL.getPos();
                             btnTerminarTurno.setEnabled(true);
-                            if (JuegoN.Accion == Juego.ACCION.COLOCARATK){
+                            if (JuegoN.Accion == Operaciones.ACCION.COLOCARATK){
                                 JuegoN.Regla.accionColocarCarta(JuegoN.JugadorActual, JuegoN.IdCartaZonaBSel, JuegoN.IdCartaManoSel, ZonaBatalla.POSCARTA.ATAQUE);
                                 btnAtacar.setEnabled(true);
                             }
@@ -546,7 +555,7 @@ public class PanelJuego extends JPanel {
                             btnColocarEnAtk.setText("Colocar en ATK");
                             btnColocarEnDef.setEnabled(false);
                             btnColocarEnDef.setText("Colocar en DEF");
-                            JuegoN.Accion = Juego.ACCION.NOACCION;
+                            JuegoN.Accion = Operaciones.ACCION.NOACCION;
                             DeSeleccionarMano();
                             DeSeleccionarZonaBatalla();
                             actualizarVista();
@@ -555,7 +564,7 @@ public class PanelJuego extends JPanel {
                     }
                 }
             }
-            else if (JuegoN.Accion == Juego.ACCION.NOACCION) {//Si no hay alguna accion en progreso, seleccionas una carta
+            else if (JuegoN.Accion == Operaciones.ACCION.NOACCION) {//Si no hay alguna accion en progreso, seleccionas una carta
                 if (JuegoN.JugadorActual.ZonaBatalla.obtenerJCartaxId(JL.getPos()) != null) {
                     if (JuegoN.JugadorActual.ZonaBatalla.obtenerCartaxId(JL.getPos()) != null) {
                         if (JuegoN.JugadorActual.getNTurnos() > 1) {
@@ -586,7 +595,7 @@ public class PanelJuego extends JPanel {
             }
         }
         else{ //Jugador Actual toca una carta (o espacio de carta) que no le pertenece
-            if (JuegoN.Accion == Juego.ACCION.ATACARCARTA) {//Si se está atacando a una carta
+            if (JuegoN.Accion == Operaciones.ACCION.ATACARCARTA) {//Si se está atacando a una carta
                 if (JuegoN.JugadorAnterior.ZonaBatalla.obtenerJCartaxId(JL.getPos()) != null) {//Si existe carta en dicha posicion
                     if (JuegoN.JugadorAnterior.ZonaBatalla.obtenerCartaxId(JL.getPos()) != null) {//Si existe carta en dicha posicion
                         btnAtacar.setEnabled(false);
@@ -598,7 +607,7 @@ public class PanelJuego extends JPanel {
                         imprimirAtaque(JL.getPos(), JuegoN.IdCartaZonaBSel);
                         int resp;
                         resp = JuegoN.Regla.accionAtacarCarta(JuegoN.JugadorActual, JuegoN.JugadorAnterior, JL.getPos(), JuegoN.IdCartaZonaBSel);
-                        JuegoN.Accion = Juego.ACCION.NOACCION;
+                        JuegoN.Accion = Operaciones.ACCION.NOACCION;
                         DeSeleccionarZonaBatalla();
                         actualizarVista();
                         if (resp == Regla.RESULTADOATACARCARTA.ENEMIGOSINCARTAS) {//Termina el juego porque enemigo se quedo sin cartas
@@ -609,40 +618,41 @@ public class PanelJuego extends JPanel {
                 }
             }
         }
+        */
     }
 
-    void accionTerminarTurno() {
-        JuegoN.E.imprimeEstado();
+    void accionTerminarTurno() throws CloneNotSupportedException{
+        //JuegoN.E.imprimeEstado();
         if(JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1){
             JuegoN.E.setTurno(Estado.TURNO.JUGADOR2BOT);
-            JuegoN.JugadorActual=JuegoN.E.Jugador2;
-            JuegoN.JugadorAnterior=JuegoN.E.Jugador1;
-            JuegoN.E.Jugador2.contarTurno();
+            E.JugadorActual=JuegoN.E.Jugador2;
+            E.JugadorAnterior=JuegoN.E.Jugador1;
+            //E.Jugador2.contarTurno();
         }
         else{
-            JuegoN.E.setTurno(Estado.TURNO.JUGADOR1);
-            JuegoN.JugadorActual=JuegoN.E.Jugador1;
-            JuegoN.JugadorAnterior=JuegoN.E.Jugador2;
-            JuegoN.E.Jugador1.contarTurno();
+            E.setTurno(Estado.TURNO.JUGADOR1);
+            E.JugadorActual=JuegoN.E.Jugador1;
+            E.JugadorAnterior=JuegoN.E.Jugador2;
+            //E.Jugador1.contarTurno();
         }
-        if( JuegoN.JugadorActual.Mano.obtenerNumerodeCartas() < Mano.MAXMANOCARDS &&
-                JuegoN.JugadorActual.Deck.obtenerNumeroElementos() > 0){
+        if( E.JugadorActual.Mano.obtenerNumerodeCartas() < Mano.MAXMANOCARDS &&
+                E.JugadorActual.Deck.obtenerNumeroElementos() > 0){
             //Jugador con menos cartas del maximo o con cartas iguales al maximo (Deck tiene cartas) Agrega una carata a su mano
-            JuegoN.JugadorActual.Mano.agregarCartaEnEspacioVacio(JuegoN.JugadorActual.Deck.sacarUnaCarta());
+            E.JugadorActual.Mano.agregarCartaEnEspacioVacio(E.JugadorActual.Deck.sacarUnaCarta());
         }
-        if (JuegoN.JugadorActual.Deck.obtenerNumeroElementos() == 0) {//Deck sin cartas
+        if (E.JugadorActual.Deck.obtenerNumeroElementos() == 0) {//Deck sin cartas
             JuegoN.E.Termino = Estado.TERMINO.SINCARTAS;
             terminarJuego();
         }
-        JuegoN.JugadorActual.ZonaBatalla.renovarDisponibilidades();
+        E.JugadorActual.ZBatalla.renovarPosibilidades();
         habilitarControlesXTurno();
         actualizarVista();
         lblNDeckJ1.setText(JuegoN.E.Jugador1.Deck.Deck.size() + "");
         lblNDeckJ2.setText(JuegoN.E.Jugador2.Deck.Deck.size() + "");
         mhistorial.addElement("---------------------------------------------");
-        mhistorial.addElement("Turno: "+JuegoN.JugadorActual.getNombre());
+        mhistorial.addElement("Turno: "+E.JugadorActual.getNombre());
         JuegoN.Accion= Juego.ACCION.NOACCION;
-        if (JuegoN.ModoJuego == Juego.MODOJUEGO.VSBOT &&
+        if (Ops.ModoJuego == Operaciones.MODOJUEGO.VSBOT &&
                 JuegoN.E.getTurno() == Estado.TURNO.JUGADOR2BOT &&
                 JuegoN.E.Termino == Estado.TERMINO.NOTERMINO) {
             TurnoMaquina();
@@ -650,22 +660,22 @@ public class PanelJuego extends JPanel {
         }
     }
 
-    void TurnoMaquina(){
+    void TurnoMaquina() throws CloneNotSupportedException{
         Estado EI,EF;//Estado Inicial y Final del turno
         EI=JuegoN.E;
-        JuegoN.Maquina.cargarEstado(EI);
-        JuegoN.Maquina.EstadosGenerados=JuegoN.Maquina.sistemaDeProduccion(JuegoN.Regla,EI);
-        if(JuegoN.Dificultad==Juego.DIFICULTAD.FACIL){
-            JuegoN.E=JuegoN.Maquina.estrategiaRandom(JuegoN.Maquina.EstadosGenerados).clone();
+        M.cargarEstado(EI);
+        M.EstadosGenerados=M.sistemaDeProduccion(EI);
+        if(Ops.Dificultad==Operaciones.DIFICULTAD.FACIL){
+            JuegoN.E=(Estado)M.estrategiaRandom(M.EstadosGenerados).clone();
         }
-        else if(JuegoN.Dificultad==Juego.DIFICULTAD.NORMAL){
-            JuegoN.E=JuegoN.Maquina.estrategiaPrimeroElMejor(JuegoN.Maquina.EstadosGenerados,Maquina.MEJOR.MAYOR).clone();
+        else if(Ops.Dificultad==Operaciones.DIFICULTAD.NORMAL){
+            JuegoN.E=(Estado)M.estrategiaPrimeroElMejor(M.EstadosGenerados, IA.MEJOR.MAYOR).clone();
         }
-        else if(JuegoN.Dificultad==Juego.DIFICULTAD.AVANZADO){
-            JuegoN.E=JuegoN.Maquina.estrategiaMinMax(JuegoN.Maquina.EstadosGenerados).clone();
+        else if(Ops.Dificultad==Operaciones.DIFICULTAD.AVANZADO){
+            JuegoN.E=(Estado)M.estrategiaMinMax(M.EstadosGenerados).clone();
         }
         EF=JuegoN.E;
-        imprimirMovimiento(EI, EF);
+        //imprimirMovimiento(EI, EF);
         actualizarVista();
         if(JuegoN.E.Termino > Estado.TERMINO.NOTERMINO ){
             terminarJuego();
@@ -681,6 +691,7 @@ public class PanelJuego extends JPanel {
     //region Vista
 
     void DeSeleccionarMano() {
+        /*
         MatteBorder B = new MatteBorder(2, 2, 2, 2, (Color) JuegoN.CMano);
         for(int i=0;i < Mano.MAXMANOCARDS;i++){
             if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1) {
@@ -689,10 +700,11 @@ public class PanelJuego extends JPanel {
                 JuegoN.E.Jugador2.Mano.obtenerJCartaxId(i).setBorder(B);
             }
         }
-
+*/
     }
 
     void DeSeleccionarZonaBatalla() {
+        /*
         MatteBorder B = new MatteBorder(2, 2, 2, 2, (Color) JuegoN.CZonaBatalla);
         for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
             if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1) {
@@ -701,16 +713,17 @@ public class PanelJuego extends JPanel {
                 JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).setBorder(B);
             }
         }
-
+*/
     }
 
     void actualizarVista() {
+        /*
         for(int i=0;i < Mano.MAXMANOCARDS;i++){
             if(JuegoN.E.Jugador1.Mano.obtenerJCartaxId(i) != null){
                 if(JuegoN.E.Jugador1.Mano.obtenerCartaxId(i) != null){
                     if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1){
                         JuegoN.E.Jugador1.Mano.obtenerJCartaxId(i).setText(JuegoN.E.Jugador1.Mano.obtenerCartaxId(i).getValor()  + " " +
-                                Carta.devuelveUnicode(JuegoN.E.Jugador1.Mano.obtenerCartaxId(i).getElemento()) + "");
+                                Carta.imprimirElementoUnicode(JuegoN.E.Jugador1.Mano.obtenerCartaxId(i).getElemento()) + "");
                     }
                     else{
                         JuegoN.E.Jugador1.Mano.obtenerJCartaxId(i).setText("M");
@@ -726,40 +739,40 @@ public class PanelJuego extends JPanel {
                 if(JuegoN.E.Jugador2.Mano.obtenerCartaxId(i) != null){
                     if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR2BOT){
                         JuegoN.E.Jugador2.Mano.obtenerJCartaxId(i).setText(JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).getValor()  + " " +
-                                Carta.devuelveUnicode(JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).getElemento()) + "");
+                                Carta.imprimirElementoUnicode(JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).getElemento()) + "");
                     }
                     else{
-                        JuegoN.E.Jugador2.Mano.obtenerJCartaxId(i).setText("M");
+                        JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).setText("M");
                     }
-                    JuegoN.E.Jugador2.Mano.obtenerJCartaxId(i).setBackground(Color.white);
+                    JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).setBackground(Color.white);
                 }
                 else{
-                    JuegoN.E.Jugador2.Mano.obtenerJCartaxId(i).setText("X");
-                    JuegoN.E.Jugador2.Mano.obtenerJCartaxId(i).setBackground(Color.lightGray);
+                    JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).setText("X");
+                    JuegoN.E.Jugador2.Mano.obtenerCartaxId(i).setBackground(Color.lightGray);
                 }
             }
         }
         for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
-            if (JuegoN.E.Jugador1.Barrera.obtenerJCartaxId(i) != null) {
-                JuegoN.E.Jugador1.Barrera.obtenerJCartaxId(i).setText("B");
-                JuegoN.E.Jugador1.Barrera.obtenerJCartaxId(i).setBackground(JuegoN.CBarrera);
+            if (JuegoN.E.Jugador1.Barrera.obtenerCartaxId(i) != null) {
+                JuegoN.E.Jugador1.Barrera.obtenerCartaxId(i).setText("B");
+                JuegoN.E.Jugador1.Barrera.obtenerCartaxId(i).setBackground(JuegoN.CBarrera);
             } else {
-                JuegoN.E.Jugador1.Barrera.obtenerJCartaxId(i).setText("X");
-                JuegoN.E.Jugador1.Barrera.obtenerJCartaxId(i).setBackground(Color.lightGray);
+                JuegoN.E.Jugador1.Barrera.obtenerCartaxId(i).setText("X");
+                JuegoN.E.Jugador1.Barrera.obtenerCartaxId(i).setBackground(Color.lightGray);
             }
-            if (JuegoN.E.Jugador2.Barrera.obtenerJCartaxId(i) != null) {
-                JuegoN.E.Jugador2.Barrera.obtenerJCartaxId(i).setText("B");
-                JuegoN.E.Jugador2.Barrera.obtenerJCartaxId(i).setBackground(JuegoN.CBarrera);
+            if (JuegoN.E.Jugador2.Barrera.obtenerCartaxId(i) != null) {
+                JuegoN.E.Jugador2.Barrera.obtenerCartaxId(i).setText("B");
+                JuegoN.E.Jugador2.Barrera.obtenerCartaxId(i).setBackground(JuegoN.CBarrera);
             } else {
-                JuegoN.E.Jugador2.Barrera.obtenerJCartaxId(i).setText("X");
-                JuegoN.E.Jugador2.Barrera.obtenerJCartaxId(i).setBackground(Color.lightGray);
+                JuegoN.E.Jugador2.Barrera.obtenerCartaxId(i).setText("X");
+                JuegoN.E.Jugador2.Barrera.obtenerCartaxId(i).setBackground(Color.lightGray);
             }
         }
         for(int i=0;i< ZonaBatalla.MAXZONABATALLACARDS;i++){
             if (JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i) != null) {
                 if(JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).carta != null){
                     JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).setText(JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).carta.getValor()  + " " +
-                            Carta.devuelveUnicode(JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).carta.getElemento()));
+                            Carta.imprimirElementoUnicode(JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).carta.getElemento()));
                     if (JuegoN.E.Jugador1.ZonaBatalla.poscarta[i] == ZonaBatalla.POSCARTA.ATAQUE) {
                         JuegoN.E.Jugador1.ZonaBatalla.obtenerJCartaxId(i).setBackground(Color.RED);
                     } else if (JuegoN.E.Jugador1.ZonaBatalla.poscarta[i] == ZonaBatalla.POSCARTA.DEFCARAARRIBA) {
@@ -779,7 +792,7 @@ public class PanelJuego extends JPanel {
             if (JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i) != null) {
                 if(JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).carta != null) {
                     JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).setText(JuegoN.E.Jugador2.ZonaBatalla.obtenerCartaxId(i).getValor() + " " +
-                            Carta.devuelveUnicode(JuegoN.E.Jugador2.ZonaBatalla.obtenerCartaxId(i).getElemento()));
+                            Carta.imprimirElementoUnicode(JuegoN.E.Jugador2.ZonaBatalla.obtenerCartaxId(i).getElemento()));
                     if (JuegoN.E.Jugador2.ZonaBatalla.poscarta[i] == ZonaBatalla.POSCARTA.ATAQUE) {
                         JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).setBackground(Color.RED);
                     } else if (JuegoN.E.Jugador2.ZonaBatalla.poscarta[i] == ZonaBatalla.POSCARTA.DEFCARAARRIBA) {
@@ -808,9 +821,11 @@ public class PanelJuego extends JPanel {
         } else {
             lblJugador2Deck.setText("X");
         }
+        */
     }
 
     void habilitarControlesXTurno() {
+        /*
         if (JuegoN.E.getTurno() == Estado.TURNO.JUGADOR1) {
             lblJugador1.setEnabled(true);
             lblJugador2.setEnabled(false);
@@ -846,9 +861,11 @@ public class PanelJuego extends JPanel {
                 JuegoN.E.Jugador2.ZonaBatalla.obtenerJCartaxId(i).setEnabled(true);
             }
         }
+        */
     }
 
     void enfocarCarta(MouseEvent e) {
+        /*
         JCarta JL = (JCarta) e.getSource();
         int dueñocarta = JL.getJugador();
         boolean JACA = false;//Jugador Actual toca una carta (o espacio de carta) que le pertenece
@@ -862,7 +879,7 @@ public class PanelJuego extends JPanel {
         if (JACA) {
             if (JuegoN.JugadorActual.ZonaBatalla.obtenerCartaxId(idCarta) != null) {
                 lblEnfoque.setText(JuegoN.JugadorActual.ZonaBatalla.obtenerCartaxId(idCarta).getValor() + " " +
-                        Carta.devuelveUnicode(JuegoN.JugadorActual.ZonaBatalla.obtenerCartaxId(idCarta).getElemento()) + "");
+                        Carta.imprimirElementoUnicode(JuegoN.JugadorActual.ZonaBatalla.obtenerCartaxId(idCarta).getElemento()) + "");
                 lblEnfoque.setBackground(Color.white);
             }
         } else {
@@ -871,8 +888,9 @@ public class PanelJuego extends JPanel {
                 lblEnfoque.setBackground(Color.white);
             }
         }
+        */
     }
-
+    /*
     void imprimirMovimiento(Estado EI, Estado EF) {//Estado Inicial, Estado Final
         int idcartacolocadazb = -1;
         Carta Cartacolocada = null;
@@ -888,9 +906,9 @@ public class PanelJuego extends JPanel {
         boolean encontrada = false;
         if (Cartacolocada != null) {
             for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
-                if (EF.Jugador2.ZonaBatalla.obtenerCartaxId(i) != null) {
-                    if (Cartacolocada.getElemento() == EF.Jugador2.ZonaBatalla.obtenerCartaxId(i).getElemento()
-                            && Cartacolocada.getValor() == EF.Jugador2.ZonaBatalla.obtenerCartaxId(i).getValor()) {
+                if (EF.Jugador2.ZBatalla.obtenerCartaxId(i) != null) {
+                    if (Cartacolocada.getElemento() == EF.Jugador2.ZBatalla.obtenerCartaxId(i).getElemento()
+                            && Cartacolocada.getValor() == EF.Jugador2.ZBatalla.obtenerCartaxId(i).getValor()) {
                         encontrada = true;
                         idcartacolocadazb = i;
                     }
@@ -898,61 +916,61 @@ public class PanelJuego extends JPanel {
             }
 
             if (encontrada) {
-                if (EF.Jugador2.ZonaBatalla.poscarta[idcartacolocadazb] == ZonaBatalla.POSCARTA.DEFCARAABAJO) {
+                if (EF.Jugador2.ZBatalla.poscarta[idcartacolocadazb] == ZonaBatalla.POSCARTA.DEFCARAABAJO) {
                     mhistorial.addElement("-> Carta Colocada Cara Abajo");
                 } else {
-                    mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.devuelveUnicode(Cartacolocada.getElemento()) + " Colocada en Ataque");
+                    mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.imprimirElementoUnicode(Cartacolocada.getElemento()) + " Colocada en Ataque");
                 }
             } else {
-                mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.devuelveUnicode(Cartacolocada.getElemento()) + " Colocada en Ataque");
-                mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.devuelveUnicode(Cartacolocada.getElemento()) + " Atac� y se elimin� (perdi� o empat�)");
+                mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.imprimirElementoUnicode(Cartacolocada.getElemento()) + " Colocada en Ataque");
+                mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.imprimirElementoUnicode(Cartacolocada.getElemento()) + " Atac� y se elimin� (perdi� o empat�)");
             }
         }
 
         for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
             //Si sigue habiendo carta
-            if (EI.Jugador2.ZonaBatalla.obtenerCartaxId(i) != null && EF.Jugador2.ZonaBatalla.obtenerCartaxId(i) != null) {
+            if (EI.Jugador2.ZBatalla.obtenerCartaxId(i) != null && EF.Jugador2.ZBatalla.obtenerCartaxId(i) != null) {
                 //Si es la misma carta
-                if (EI.Jugador2.ZonaBatalla.obtenerCartaxId(i).getElemento() == EF.Jugador2.ZonaBatalla.obtenerCartaxId(i).getElemento()
-                        && EI.Jugador2.ZonaBatalla.obtenerCartaxId(i).getValor() == EF.Jugador2.ZonaBatalla.obtenerCartaxId(i).getValor()) {
-                    if (EI.Jugador2.ZonaBatalla.poscarta[i] >= ZonaBatalla.POSCARTA.DEFCARAARRIBA && EF.Jugador2.ZonaBatalla.poscarta[i] == ZonaBatalla.POSCARTA.ATAQUE) {
-                        mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.devuelveUnicode(Cartacolocada.getElemento()) + " Cambio a Ataque");
+                if (EI.Jugador2.ZBatalla.obtenerCartaxId(i).getElemento() == EF.Jugador2.ZBatalla.obtenerCartaxId(i).getElemento()
+                        && EI.Jugador2.ZBatalla.obtenerCartaxId(i).getValor() == EF.Jugador2.ZBatalla.obtenerCartaxId(i).getValor()) {
+                    if (EI.Jugador2.ZBatalla.poscarta[i] >= ZonaBatalla.POSCARTA.DEFCARAARRIBA && EF.Jugador2.ZBatalla.poscarta[i] == ZonaBatalla.POSCARTA.ATAQUE) {
+                        mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.imprimirElementoUnicode(Cartacolocada.getElemento()) + " Cambio a Ataque");
                     }
-                    if (EF.Jugador2.ZonaBatalla.dispataque[i] == ZonaBatalla.DISPATAQUE.NODISPONIBLE) {
-                        mhistorial.addElement("-> Carta " + Cartacolocada.getValor()  + " " + Carta.devuelveUnicode(Cartacolocada.getElemento()) + " Atac� (Gan� o Empat�)");
+                    if (EF.Jugador2.ZBatalla.dispataque[i] == ZonaBatalla.DISPATAQUE.NODISPONIBLE) {
+                        mhistorial.addElement("-> Carta " + Cartacolocada.getValor()  + " " + Carta.imprimirElementoUnicode(Cartacolocada.getElemento()) + " Atac� (Gan� o Empat�)");
                     }
-                    if (EI.Jugador2.ZonaBatalla.poscarta[i] == ZonaBatalla.POSCARTA.ATAQUE && EF.Jugador2.ZonaBatalla.poscarta[i] >= ZonaBatalla.POSCARTA.DEFCARAARRIBA) { //jug2 en def cara arriba o cara abajo
-                        mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + Carta.devuelveUnicode(Cartacolocada.getElemento()) + " Cambio a Defenza");
+                    if (EI.Jugador2.ZBatalla.poscarta[i] == ZonaBatalla.POSCARTA.ATAQUE && EF.Jugador2.ZBatalla.poscarta[i] >= ZonaBatalla.POSCARTA.DEFCARAARRIBA) { //jug2 en def cara arriba o cara abajo
+                        mhistorial.addElement("-> Carta " + Cartacolocada.getValor() + " " + imprimirElementoUnicode(Cartacolocada.getElemento()) + " Cambio a Defenza");
                     }
                 }
-            } else if (EI.Jugador2.ZonaBatalla.obtenerCartaxId(i) != null && EF.Jugador2.ZonaBatalla.obtenerCartaxId(i) == null) {
+            } else if (EI.Jugador2.ZBatalla.obtenerCartaxId(i) != null && EF.Jugador2.ZBatalla.obtenerCartaxId(i) == null) {
                 if (i != idcartacolocadazb) {
-                    mhistorial.addElement("-> Carta " + EI.Jugador2.ZonaBatalla.obtenerCartaxId(i).getValor() + " " + Carta.devuelveUnicode(EI.Jugador2.ZonaBatalla.obtenerCartaxId(i).getElemento()) + " Atac� y se elimin� (perdi� o empat�)");
+                    mhistorial.addElement("-> Carta " + EI.Jugador2.ZBatalla.obtenerCartaxId(i).getValor() + " " + Carta.imprimirElementoUnicode(EI.Jugador2.ZBatalla.obtenerCartaxId(i).getElemento()) + " Atac� y se elimin� (perdi� o empat�)");
                 }
             }
         }
     }
-
+*/
     void imprimirAtaque(int idCartaAtacada, int idCartaAtacante) {//Muestra visualmente resultados
         int valorJugadorActual, valorJugadorAnterior;
 
-        valorJugadorActual = JuegoN.JugadorActual.ZonaBatalla.obtenerCartaxId(idCartaAtacante).getValor();
-        valorJugadorAnterior = JuegoN.JugadorAnterior.ZonaBatalla.obtenerCartaxId(idCartaAtacada).getValor();
+        valorJugadorActual = E.JugadorActual.ZBatalla.obtenerCartaxId(idCartaAtacante).getValor();
+        valorJugadorAnterior = E.JugadorAnterior.ZBatalla.obtenerCartaxId(idCartaAtacada).getValor();
 
         if (valorJugadorActual > valorJugadorAnterior) {
-            JOptionPane.showMessageDialog(null, JuegoN.JugadorActual.getNombre() + " (" +
+            JOptionPane.showMessageDialog(null, E.JugadorActual.getNombre() + " (" +
                             valorJugadorActual + ")" + " > "  +
-                            JuegoN.JugadorAnterior.getNombre() + " (" + valorJugadorAnterior + ")",
+                            E.JugadorAnterior.getNombre() + " (" + valorJugadorAnterior + ")",
                     "Resultado de Batalla", JOptionPane.INFORMATION_MESSAGE);
         } else if (valorJugadorActual < valorJugadorAnterior) {
-            JOptionPane.showMessageDialog(null, JuegoN.JugadorActual.getNombre() + " (" +
+            JOptionPane.showMessageDialog(null, E.JugadorActual.getNombre() + " (" +
                             valorJugadorActual + ")" + " < " +
-                            JuegoN.JugadorAnterior.getNombre() + " (" + valorJugadorAnterior + ")",
+                            E.JugadorAnterior.getNombre() + " (" + valorJugadorAnterior + ")",
                     "Resultado de Batalla", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null, JuegoN.JugadorActual.getNombre() + " (" +
+            JOptionPane.showMessageDialog(null, E.JugadorActual.getNombre() + " (" +
                             valorJugadorActual + ")" + " = " +
-                            JuegoN.JugadorAnterior.getNombre() + " (" + valorJugadorAnterior + ")",
+                            E.JugadorAnterior.getNombre() + " (" + valorJugadorAnterior + ")",
                     "Resultado de Batalla", JOptionPane.INFORMATION_MESSAGE);
         }
     }

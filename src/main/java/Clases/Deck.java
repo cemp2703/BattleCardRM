@@ -10,15 +10,10 @@ public class Deck implements Cloneable {
 	public Deck(){
 		Deck=new Stack<Carta>();
 	}
-	
-	public Deck(Stack<Carta> pDeck){
-		Deck=pDeck;
-	}
-	
-	public Deck clone(){
-		Stack<Carta> D;
-		D=(Stack<Carta>) this.Deck.clone();
-		Deck clon=new Deck(D);
+
+	public Object clone() throws CloneNotSupportedException{
+		Deck clon= (Deck) super.clone();
+		clon.Deck=(Stack<Carta>) Deck.clone();
 		return clon;
 	}
 
@@ -38,9 +33,22 @@ public class Deck implements Cloneable {
 	}
 	
 	public boolean agregarUnaCarta(Carta c){
-		Deck.add(c);
-		return true;
+		if(Deck.size() < MAXDECK && c!= null) {
+			Deck.add(c);
+			return true;
+		}
+		return false;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Deck)) return false;
+
+		Deck deck = (Deck) o;
+
+		return Deck != null ? Deck.equals(deck.Deck) : deck.Deck == null;
+	}
+
 }
 
