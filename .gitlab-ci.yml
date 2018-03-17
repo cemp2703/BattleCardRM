@@ -10,10 +10,9 @@ variables:
 job1:
     stage: build
     script:
-        - 'mvn test'
-        - 'mvn compile'
-        - 'mvn package'
+        - 'mvn $MAVEN_OPTS test compile package'
     only:
         - master
     tags:
         - docker
+
