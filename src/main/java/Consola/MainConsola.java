@@ -4,6 +4,10 @@ import Clases.*;
 import Juego.Operaciones;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.text.Format;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.Scanner;
 
 public class MainConsola {
@@ -49,6 +53,8 @@ public class MainConsola {
     public static void main(String[] args) throws IOException, InterruptedException{
         Scanner sc = new Scanner(System.in);
         String resp="";
+        pantalla = Pantalla.INICIAL;
+        dialogo = Dialogo.INICIAL;
         do{
             imprimirPantalla();
             imprimirDialogo();
@@ -110,7 +116,7 @@ public class MainConsola {
                     System.out.println("(A) Atacar a una carta en Zona de batalla");
                 if(E.JugadorActual.puedeAtacarAUnaBarrera(E.JugadorAnterior))
                     System.out.println("(B) Atacar a una Barrera");
-                if(E.JugadorActual.puedeCambiarPosición())
+                if(E.JugadorActual.puedecambiarposicion())
                     System.out.println("(K) Cambiar posición de batalla");
                 System.out.println("(T) Terminar Turno");
                 System.out.println("Accion: ");
@@ -226,7 +232,7 @@ public class MainConsola {
                     if (E.JugadorActual.puedeAtacarAUnaBarrera(E.JugadorAnterior))
                         dialogo = Dialogo.SELECCIONARZONABATALLAB;
                 } else if (pResp.equalsIgnoreCase("K")) {
-                    if (E.JugadorActual.puedeCambiarPosición())
+                    if (E.JugadorActual.puedecambiarposicion())
                         dialogo = Dialogo.SELECCIONARZONABATALLAC;
                 } else if (pResp.equalsIgnoreCase("T")) {
                     int res = E.cambioDeTurno();
@@ -421,6 +427,7 @@ public class MainConsola {
             else
                 System.out.print("VACIO | ");
         }
+
         System.out.println();
         System.out.println("*****************************************************************************");
         System.out.println();
@@ -428,13 +435,14 @@ public class MainConsola {
     }
 
     static String imprimirElementoUnicode(int n){
+        String elemento = "";
         switch(n){
-            case 0: return "\u2665";
-            case 1: return "\u2666";
-            case 2: return "\u2663";
-            case 3: return "\u2660";
-            default: return "";
+            case 0: elemento =  "\u2665"; break;
+            case 1: elemento = "\u2666"; break;
+            case 2: elemento = "\u2663"; break;
+            case 3: elemento = "\u2660"; break;
         }
+        return elemento;
     }
 
 }

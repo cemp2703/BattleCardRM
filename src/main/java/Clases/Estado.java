@@ -1,6 +1,5 @@
 package Clases;
 
-import Clases.POJO.ResultadoAtaque;
 
 public class Estado implements Cloneable {
 	public Jugador JugadorActual;
