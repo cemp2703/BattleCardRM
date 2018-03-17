@@ -10,14 +10,6 @@ job1:
     script:
         - 'mvn test'
         - 'mvn compile'
-    only:
-        - master
-    tags:
-        - docker
-
-job2:
-    stage: build
-    script:
         - 'mvn package'
     only:
         - master
