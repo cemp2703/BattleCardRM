@@ -5,17 +5,17 @@ cache:
     - .m2/repository
 
 
-job:bluild:
-stage: build
-  script:
-    - 'mvn test'
-    - 'mvn compile'
-  only:
-    - master
-  tags:
-    - docker
+job1:
+    stage: build
+    script:
+        - 'mvn test'
+        - 'mvn compile'
+    only:
+        - master
+    tags:
+        - docker
 
-job:package:
+job2:
     stage: build
     script:
         - 'mvn package'
