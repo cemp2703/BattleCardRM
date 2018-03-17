@@ -103,7 +103,7 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 
 	public boolean agregarCartaEnPos(Carta pCarta,int idCartaZB,int posCarta ){
 		boolean respuesta = false;
-		if(super.agregarCartaEnPos(pCarta, idCartaZB) == true ){
+		if(super.agregarCartaEnPos(pCarta, idCartaZB) ){
 			poscarta[idCartaZB] = posCarta;
 			setCartacolocada(true);
 			if(posCarta == POSCARTA.ATAQUE) {
@@ -122,7 +122,7 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 
 	public int agregarCartaEnEspacioVacio(Carta pCarta, int posCarta){
 		for(int i=0;i< this.getMaxNCartas();i++){
-			if(agregarCartaEnPos(pCarta,i,i) == true)
+			if(agregarCartaEnPos(pCarta,i,i))
 				return i;
 		}
 		return NOSEPUEDEAGREGARCARTAS;

@@ -133,7 +133,6 @@ public class JugadorTest {
     ){
         int IDCARTAZB = 0;
         int IDCARTAMANO = 0;
-        int IDBARRERA = 1;
         int POSCARTAATACANTE = ZonaBatalla.POSCARTA.ATAQUE;
         Jugador j1=new Jugador("J1");
         Jugador j2=new Jugador("J2");

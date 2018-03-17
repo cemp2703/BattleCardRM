@@ -57,7 +57,7 @@ public class VectorCartas implements Cloneable{
 			return NOSEPUEDEAGREGARCARTAS;
 
 		for(int i=0;i< MaxNCartas;i++){
-			if(agregarCartaEnPos(c,i) == true)
+			if(agregarCartaEnPos(c,i))
 				return i;
 		}
 		return NOSEPUEDEAGREGARCARTAS;

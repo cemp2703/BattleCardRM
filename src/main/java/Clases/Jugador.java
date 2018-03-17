@@ -82,7 +82,7 @@ public class Jugador implements Cloneable{
 		return false;
 	}
 
-	public boolean puedeCambiarPosición(){
+	public boolean puedecambiarposicion(){
 		if( ZBatalla.obtenerNumerodeCartas() == 0)
 			return false;
 		for(int i=0; i<ZBatalla.getMaxNCartas();i++)

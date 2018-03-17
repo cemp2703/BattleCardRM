@@ -11,9 +11,10 @@ public class Deck implements Cloneable {
 		Deck=new Stack<Carta>();
 	}
 
+	@SuppressWarnings (value="unchecked")
 	public Object clone() throws CloneNotSupportedException{
 		Deck clon= (Deck) super.clone();
-		clon.Deck=(Stack<Carta>) Deck.clone();
+		clon.Deck = (Stack<Carta>) Deck.clone();
 		return clon;
 	}
 
