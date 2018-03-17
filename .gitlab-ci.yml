@@ -1,8 +1,9 @@
+image: maven:3.3.9-jdk-8
+
 cache:
   paths:
     - .m2/repository
 
-image: maven:3.3.9-jdk-8
 
 job:bluild:
 stage: build
@@ -15,13 +16,13 @@ stage: build
     - docker
 
 job:package:
-stage: build
-  script:
-    - 'mvn package'
-  only:
-    - master
-  tags:
-    - docker
+    stage: build
+    script:
+        - 'mvn package'
+    only:
+        - master
+    tags:
+        - docker
 
 
 
