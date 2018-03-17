@@ -4,6 +4,8 @@ cache:
   paths:
     - .m2/repository
 
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 job1:
     stage: build
@@ -15,7 +17,3 @@ job1:
         - master
     tags:
         - docker
-
-
-
-
