@@ -13,9 +13,6 @@
 # * Uses site:stage to collect the documentation for multi-module projects.
 # * Publishes the documentation for `master` branch.
 
-variables:
-  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-
 cache:
   paths:
     - .m2/repository
@@ -25,8 +22,8 @@ image: maven:3.3.9-jdk-8
 job:bluild:
 stage: build
   script:
-    - 'mvn $MAVEN_CLI_OPTS test'
-    - 'mvn $MAVEN_CLI_OPTS compile'
+    - 'mvn test'
+    - 'mvn compile'
   only:
     - master
   tags:
@@ -35,7 +32,7 @@ stage: build
 job:package:
 stage: build
   script:
-    - 'mvn $MAVEN_CLI_OPTS package'
+    - 'mvn package'
   only:
     - master
   tags:
