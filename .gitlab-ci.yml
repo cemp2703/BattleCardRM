@@ -2,10 +2,10 @@ image: maven:3.3.9-jdk-8
 
 cache:
   paths:
-    - /builds/XsrTeam/BattleCardRM
+    - .m2/repository
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=/builds/XsrTeam/BattleCardRM"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 job1:
     stage: build
