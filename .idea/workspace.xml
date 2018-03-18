@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="397e5be9-c5ae-477a-af19-b3d6bb494fe2" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_beust_jcommander_1_66.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_testng_testng_6_13.xml" afterPath="" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/battlecardrm.iml" afterPath="$PROJECT_DIR$/battlecardrm.iml" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Deck.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Deck.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Estado.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Estado.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/Jugador.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/Jugador.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/VectorCartas.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/VectorCartas.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Clases/ZonaBatalla.java" afterPath="$PROJECT_DIR$/src/main/java/Clases/ZonaBatalla.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Consola/MainConsola.java" afterPath="$PROJECT_DIR$/src/main/java/Consola/MainConsola.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/FormJuego.form" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/FormJuego.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/Juego.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/PanelInicio.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Vistas/PanelJuego.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Clases/JugadorTest.java" afterPath="$PROJECT_DIR$/src/test/java/Clases/JugadorTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -632,7 +615,14 @@
       <option name="project" value="LOCAL" />
       <updated>1521085746918</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="- Código para ejecutar en maven">
+      <created>1521276204603</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1521276204603</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -678,7 +668,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="916" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17820513" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -689,7 +678,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14845759" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3551282" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32948717" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
