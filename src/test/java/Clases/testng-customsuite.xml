@@ -3,7 +3,11 @@
 <suite name="Default Suite">
     <test name="battlecardrm">
         <classes>
+            <class name="Clases.CartaTest"/>
+            <class name="Clases.DeckTest"/>
             <class name="Clases.VectorCartasTest"/>
+            <class name="Clases.ZonaBatallaTest"/>
+            <class name="Clases.JugadorTest"/>
         </classes>
     </test> <!-- battlecardrm -->
 </suite> <!-- Default Suite -->

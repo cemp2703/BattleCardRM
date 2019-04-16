@@ -36,7 +36,7 @@ public class Operaciones {
         IdCartaZonaBSel=-1;
         IdCartaManoSel=-1;
         IdCartaZonaBSelEnemigo= -1;
-        CartaPosSel= ZonaBatalla.POSCARTA.NOHAYCARTA;
+        CartaPosSel= ZonaBatalla.POSBATALLA.NOHAYCARTA;
         cartaselegidas=new boolean[MAXNUMEROELEMENTOCARTAS][MAXVALORCARTA];
         resATK = null;
     }
@@ -72,7 +72,7 @@ public class Operaciones {
                 else if(jug.Mano.obtenerNumerodeCartas()<Mano.MAXMANOCARDS){
                     jug.Mano.agregarCartaEnEspacioVacio(new Carta(n,m+1));
                 }
-                else if(jug.Deck.obtenerNumeroElementos()< maximoendeck ){
+                else if(jug.Deck.Deck.size()< maximoendeck ){
                     jug.Deck.agregarUnaCarta(new Carta(n,m+1));
                 }
 

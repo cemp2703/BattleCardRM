@@ -38,16 +38,10 @@ public class Carta implements Cloneable{
 		return valor;
 	}
 
-	public void setValor(int valor) {
-		this.valor = valor;
-	}
-
 	public int getElemento() {
 		return elemento;
 	}
 
-	public void setElemento(int elemento) {
-		this.elemento = elemento;
-	}
+
 
 }

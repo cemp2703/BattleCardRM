@@ -29,10 +29,6 @@ public class Deck implements Cloneable {
 			return null;
 	}
 	
-	public int obtenerNumeroElementos(){
-		return Deck.size();
-	}
-	
 	public boolean agregarUnaCarta(Carta c){
 		if(Deck.size() < MAXDECK && c!= null) {
 			Deck.add(c);

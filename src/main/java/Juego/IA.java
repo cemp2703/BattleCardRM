@@ -50,7 +50,7 @@ public class IA {
 			}
 		}
 
-		//CARTAS PUEDEN PASAR DE DEFENZA A ATAQUE(SI PUEDEN) O NO LO HACEN
+		//CARTAS PUEDEN PASAR DE DEFENSA A ATAQUE(SI PUEDEN) O NO LO HACEN
 		
 		List<Estado> EstadosCambiadosATK=new ArrayList<Estado>();
 
@@ -67,15 +67,15 @@ public class IA {
 						vcumple[l]=false;
 					}
 					if(j==2 || (j==1 && k==0) || (j==1 && k==1) || (j==0 && k==0) ){
-						if(ENuevo.Jugador2.ZBatalla.poscarta[0]>=2)
+						if(ENuevo.Jugador2.ZBatalla.posbatalla[0]>=2)
 							vcumple[0]=ENuevo.Jugador2.accionCambiarPosicionBatalla(0);
 					}
 					if(j==2 || (j==1 && k==0) ||  (j==1 && k==2) || (j==0 && k==1)){
-						if(ENuevo.Jugador2.ZBatalla.poscarta[1]>=2)
+						if(ENuevo.Jugador2.ZBatalla.posbatalla[1]>=2)
 						vcumple[1]=ENuevo.Jugador2.accionCambiarPosicionBatalla(1);
 					}
 					if(j==2 || (j==1 && k==2) || (j==1 && k==1) || (j==0 && k==2)){
-						if(ENuevo.Jugador2.ZBatalla.poscarta[2]>=2)
+						if(ENuevo.Jugador2.ZBatalla.posbatalla[2]>=2)
 						vcumple[2]=ENuevo.Jugador2.accionCambiarPosicionBatalla(2);
 					}
 					cnt=0;
@@ -198,15 +198,15 @@ public class IA {
 					}
 					
 					if(j==2 || (j==1 && k==0) || (j==1 && k==2) || (j==0 && k==0) ){
-						if(ENuevo.Jugador2.ZBatalla.poscarta[0]==1)
+						if(ENuevo.Jugador2.ZBatalla.posbatalla[0]==1)
 						vcumple[0]=ENuevo.Jugador2.accionCambiarPosicionBatalla(0);
 					}
 					if(j==2 || (j==1 && k==0) ||  (j==1 && k==1) || (j==0 && k==1)){
-						if(ENuevo.Jugador2.ZBatalla.poscarta[1]==1)
+						if(ENuevo.Jugador2.ZBatalla.posbatalla[1]==1)
 						vcumple[1]=ENuevo.Jugador2.accionCambiarPosicionBatalla(1);
 					}
 					if(j==2 || (j==1 && k==1) || (j==1 && k==2) || (j==0 && k==2)){
-						if(ENuevo.Jugador2.ZBatalla.poscarta[2]==1)
+						if(ENuevo.Jugador2.ZBatalla.posbatalla[2]==1)
 						vcumple[2]=ENuevo.Jugador2.accionCambiarPosicionBatalla(2);
 					}
 					
@@ -330,13 +330,13 @@ public class IA {
 		for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
 			if(E.Jugador2.ZBatalla.obtenerCartaxId(i)!=null){
 				valCarMaq=E.Jugador2.ZBatalla.obtenerCartaxId(i).getValor();
-				estCarMaq=E.Jugador2.ZBatalla.getPosCartaxId(i);
+				estCarMaq=E.Jugador2.ZBatalla.getPosBatallaxId(i);
 				if(nHum==0)
 					CartasMaq[i] = valCarMaq * 2;
 				for(int j = 0; j < ZonaBatalla.MAXZONABATALLACARDS; j++){
 					if(E.Jugador1.ZBatalla.obtenerCartaxId(j)!=null){
 						valCarHum=E.Jugador1.ZBatalla.obtenerCartaxId(j).getValor();
-						estCarHum=E.Jugador1.ZBatalla.getPosCartaxId(j);
+						estCarHum=E.Jugador1.ZBatalla.getPosBatallaxId(j);
 						CartasMaq[i] = evalValorDeCartaParcMAQ(valCarMaq, valCarHum, estCarMaq, estCarHum);
 					}
 				}
@@ -348,13 +348,13 @@ public class IA {
 		for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
 			if(E.Jugador1.ZBatalla.obtenerCartaxId(i)!=null){
 				valCarHum=E.Jugador1.ZBatalla.obtenerCartaxId(i).getValor();
-				estCarHum=E.Jugador1.ZBatalla.getPosCartaxId(i);
+				estCarHum=E.Jugador1.ZBatalla.getPosBatallaxId(i);
 				if(nMaq==0)
 					CartasHum[i] = valCarHum * 2;
 				for(int j = 0; j < ZonaBatalla.MAXZONABATALLACARDS; j++){
 					if(E.Jugador2.ZBatalla.obtenerCartaxId(j)!=null){
 						valCarMaq=E.Jugador2.ZBatalla.obtenerCartaxId(j).getValor();
-						estCarMaq=E.Jugador2.ZBatalla.getPosCartaxId(j);
+						estCarMaq=E.Jugador2.ZBatalla.getPosBatallaxId(j);
 						CartasHum[i] = evalValorDeCartaParcHUM(valCarMaq, valCarHum, estCarMaq, estCarHum);
 					}
 				}
@@ -384,10 +384,10 @@ public class IA {
 	 */
 	private double evalValorDeCartaParcMAQ(int vCM, int vCH, int eCM, int eCH ){
 		//Si carta humana esta boca abajo en def
-		if(eCH == ZonaBatalla.POSCARTA.DEFCARAABAJO)
+		if(eCH == ZonaBatalla.POSBATALLA.DEFCARAABAJO)
 			return vCM;
 		//Si carta bot esta en defensa en def
-		if(eCM == ZonaBatalla.POSCARTA.DEFCARAARRIBA || eCM == ZonaBatalla.POSCARTA.DEFCARAABAJO){
+		if(eCM == ZonaBatalla.POSBATALLA.DEFCARAARRIBA || eCM == ZonaBatalla.POSBATALLA.DEFCARAABAJO){
 			if(vCM > vCH)
 				return vCM * FACTORBOT.DEFVICTORIA;
 			if(vCM == vCH)
@@ -396,7 +396,7 @@ public class IA {
 				return vCM * FACTORBOT.DEFDERROTA;
 		}
 		//Si carta bot esta en atk
-		if(eCM == ZonaBatalla.POSCARTA.ATAQUE){
+		if(eCM == ZonaBatalla.POSBATALLA.ATAQUE){
 			if(vCM > vCH)
 				return vCM * FACTORBOT.ATKVICTORIA;
 			if(vCM == vCH)
@@ -428,10 +428,10 @@ public class IA {
 	 */
 	private double evalValorDeCartaParcHUM(int vCM, int vCH, int eCM, int eCH ){
 		//Si carta enemiga esta boca abajo en def
-		if(eCH == ZonaBatalla.POSCARTA.DEFCARAABAJO)
+		if(eCH == ZonaBatalla.POSBATALLA.DEFCARAABAJO)
 			return FACTORJUG.CARTAHUMANABOCAABAJO;
 		//Si carta maq en def
-		if(eCM == ZonaBatalla.POSCARTA.DEFCARAARRIBA || eCM == ZonaBatalla.POSCARTA.DEFCARAABAJO){
+		if(eCM == ZonaBatalla.POSBATALLA.DEFCARAARRIBA || eCM == ZonaBatalla.POSBATALLA.DEFCARAABAJO){
 			if(vCH > vCM)
 				return vCH * FACTORJUG.DEFVICTORIA;
 			if(vCH == vCM)
@@ -440,7 +440,7 @@ public class IA {
 				return vCH * FACTORJUG.DEFDERROTA;
 		}
 		//Si carta maq en atk
-		if(eCM == ZonaBatalla.POSCARTA.ATAQUE){
+		if(eCM == ZonaBatalla.POSBATALLA.ATAQUE){
 			if(vCH > vCM)
 				return vCH * FACTORJUG.ATKVICTORIA;
 			if(vCH == vCM)

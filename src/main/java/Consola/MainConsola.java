@@ -4,38 +4,56 @@ import Clases.*;
 import Juego.Operaciones;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.text.Format;
-import java.util.FormatFlagsConversionMismatchException;
 import java.util.Scanner;
 
 public class MainConsola {
 
     public enum Pantalla {
-        INICIAL,//Pantalla de Bienvenida
+        BIENVENIDAJUEGO,//Pantalla de Bienvenida
         JUEGO,//Pantalla de Juego
         FINDEJUEGO//Pantalla de Finde Juego
     }
     public enum Dialogo {
-        INICIAL,//Pantalla de Bienvenida
+        BIENVENIDAJUEGO,//Pantalla de Bienvenida
 
-        ACCIONES,//Acciones de Juego
-            //ColocarCarta
-            SELECCIONARMANO,//Seleccionar Carta en Mano
-            SELECCIONARZONABATALLA,//Seleecionar posicion en zona de batalla para colocar carta
-            ELEGIRPOSICIONBATALLA,//Elegir posicion de batalla
-            CARTACOLOCADA,
-            //AtacarCarta
-            SELECCIONARZONABATALLAATK,//Seleccionar Carta en zona de batalla
-            SELECCIONARZONABATALLAE,//Seleccionar Carta en zona de batalla enemiga
-            ATAQUEREALIZADO,//Ataque realizado
-            //AtacarBarrera
-            SELECCIONARZONABATALLAB,
-            ATAQUEBARRERA,
-            //CambioDePosicionDeBatalla
-            SELECCIONARZONABATALLAC,
-            CAMBIODEPOSICIONREALIZADO,
+        OPCIONESENTURNO,
+
+        SELECCIONAR_MANO,
+        SELECCIONAR_ZONABATALLA,
+        SELECCIONAR_POSICIONBATALLA,
+
+        CARTA_COLOCADA,
+        ATAQUE_CARTA_REALIZADO,
+        ATAQUE_BARRERA_REALIZADO,
+        CAMBIODEPOSICION_REALIZADO,
+
+        //FINALES
+        JUGADORSINCARTASBARRERA,
+        JUGADORSINCARTASMAZO,
+
+        FINDEJUEGO //Pantalla Final
+    }
+
+    public enum MomentoJuego{
+        BIENVENIDAJUEGO,//Pantalla de Bienvenida
+
+        OPCIONESENTURNO,//Opciones ofrecidas al jugador en su turno
+        //ColocarCarta
+        COLOCAR_SELECCIONARMANO,//Seleccionar Carta en Mano
+        COLOCAR_SELECCIONARZONABATALLA,//Selecionar posicion en zona de batalla para colocar carta
+        COLOCAR_SELECCIONARPOSICIONBATALLA,//Elegir posicion de batalla
+        COLOCAR_CARTACOLOCADA,
+        //AtacarCarta
+        ATACARCARTA_SELECCIONARZONABATALLA,//Seleccionar Carta en zona de batalla
+        ATACARCARTA_SELECCIONARZONABATALLAE,//Seleccionar Carta en zona de batalla enemiga
+        ATACARCARTA_ATAQUEREALIZADO,//Ataque realizado
+        //AtacarBarrera
+        ATACARBARRERA_SELECCIONARZONABATALLA,
+        ATACARBARRERA_ATAQUEREALIZADO,
+        //CambioDePosicionDeBatalla
+        CAMBIARPOSICIONBATALLA_SELECCIONARZONABATALLA,
+        CAMBIARPOSICIONBATALLA_REALIZADO,
+
 
         //FINALES
         JUGADORSINCARTASBARRERA,
@@ -49,19 +67,21 @@ public class MainConsola {
 
     static Pantalla pantalla;
     static Dialogo dialogo;
+    static MomentoJuego momento;
 
     public static void main(String[] args) throws IOException, InterruptedException{
         Scanner sc = new Scanner(System.in);
         String resp="";
-        pantalla = Pantalla.INICIAL;
-        dialogo = Dialogo.INICIAL;
+        pantalla = Pantalla.BIENVENIDAJUEGO;
+        dialogo = Dialogo.BIENVENIDAJUEGO;
+        momento = MomentoJuego.BIENVENIDAJUEGO;
         do{
             imprimirPantalla();
             imprimirDialogo();
             resp=sc.next();
             clear();
             if(!resp.equalsIgnoreCase("cerrar")){
-                recibeRespuesta(resp);
+                recibeRespuestaDialogo(resp);
             }
         }while(!resp.equalsIgnoreCase("cerrar"));
     }
@@ -80,7 +100,7 @@ public class MainConsola {
 
     static void  imprimirPantalla() {
         switch(pantalla){
-            case INICIAL:
+            case BIENVENIDAJUEGO:
                 System.out.println("******************");
                 System.out.println("   Battle Cards   ");
                 System.out.println("******************");
@@ -103,12 +123,13 @@ public class MainConsola {
 
     static void imprimirDialogo(){
         switch (dialogo){
-            case INICIAL:
+            case BIENVENIDAJUEGO:
                 System.out.println("Ingrese:");
                 System.out.println("(I) Iniciar Juego");
                 System.out.println("(Cerrar) Cerrar el Juego (En cualquier momento)");
+
                 break;
-            case ACCIONES://dialogo acciones
+            case OPCIONESENTURNO://Opciones en turno
                 System.out.println("Seleccion accion a realizar:");
                 if(E.JugadorActual.puedeColocarCarta())
                     System.out.println("(C) Colocar una carta");
@@ -121,37 +142,27 @@ public class MainConsola {
                 System.out.println("(T) Terminar Turno");
                 System.out.println("Accion: ");
                 break;
-            case SELECCIONARMANO://Colocar carta - Seleccionando carta en mano
+            case SELECCIONAR_MANO://Seleccionando carta en mano
                 System.out.println("Seleccionando carta en Mano");
                 System.out.println("Ingrese la posicion de (0 - 4) de la carta en su mano: ");
                 System.out.println("O Ingrese (C) Cancelar para volver");
                 break;
-            case SELECCIONARZONABATALLA://Colocar carta - Seleccionando carta en zona de batalla
-                System.out.println("Colocando Carta en Zona de batalla");
+            case SELECCIONAR_ZONABATALLA://Seleccionando carta en zona de batalla
+                System.out.println("Seleccionando carta en Zona de batalla");
                 System.out.println("Ingrese la posicion de (0 - 2) de la zona de batalla: ");
                 System.out.println("O Ingrese (C) Cancelar para volver");
                 break;
-            case ELEGIRPOSICIONBATALLA://Colocar carta - Elegir posición de batalla
+            case SELECCIONAR_POSICIONBATALLA://Elegir posición de batalla
                 System.out.println("Elegir posición de batalla");
                 System.out.println("Ingrese (A) para Ataque: ");
                 System.out.println("Ingrese (D) para Defensa: ");
                 System.out.println("O Ingrese (C) Cancelar para volver");
                 break;
-            case CARTACOLOCADA://Colocar carta - Carta Colocada
+            case CARTA_COLOCADA://Colocar carta -
                 System.out.println("Carta Colocada!!");
                 System.out.println("Ingrese (C) para continuar");
                 break;
-            case SELECCIONARZONABATALLAATK://Atacar carta - Seleccionando carta en zona de batalla
-                System.out.println("Seleccionando carta en Zona de Batalla");
-                System.out.println("Ingrese la posicion de (0 - 2) de la zona de batalla: ");
-                System.out.println("O Ingrese (C) Cancelar para volver");
-                break;
-            case SELECCIONARZONABATALLAE://Atacar carta - Seleccionando carta en zona de batalla enemiga
-                System.out.println("Seleccionando carta en Zona de Batalla Enemiga");
-                System.out.println("Ingrese la posicion de (0 - 2) de la zona de batalla enemiga: ");
-                System.out.println("O Ingrese (C) Cancelar para volver");
-                break;
-            case ATAQUEREALIZADO://Colocar carta - Ataque Realizado
+            case ATAQUE_CARTA_REALIZADO://Ataque Carta Realizado
                 System.out.println("Ataque Realizado!!");
                 if(Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.GANAATACANTE)
                     System.out.println("Victoria!!");
@@ -165,7 +176,7 @@ public class MainConsola {
                         "(Al Ataque)"+
                         "  |   " +
                         Ops.resATK.valorCartaAtacada+" ("+imprimirElementoUnicode(Ops.resATK.elementoCartaAtacada)+") "+
-                        (Ops.resATK.posicionCartaAtacada == ZonaBatalla.POSCARTA.ATAQUE? "(Al Ataque)" : "(A la Defensa) ")
+                        (Ops.resATK.posicionCartaAtacada == ZonaBatalla.POSBATALLA.ATAQUE? "(Al Ataque)" : "(A la Defensa) ")
                 );
                 if(Ops.resATK.barrera == Jugador.RESULTADOCARTA.DOWN)
                     System.out.println("Barrera enemiga destruida");
@@ -175,22 +186,12 @@ public class MainConsola {
                     System.out.println("Carta enemiga en Zona de Batalla destruida");
                 System.out.println("Ingrese (C) para continuar");
                 break;
-            case SELECCIONARZONABATALLAB://Atacar barrera - Seleccionando carta en zona de batalla
-                System.out.println("Seleccionando carta en Zona de Batalla");
-                System.out.println("Ingrese la posicion de (0 - 2) de la zona de batalla: ");
-                System.out.println("O Ingrese (C) Cancelar para volver");
-                break;
-            case ATAQUEBARRERA://Atacar barrera - Ataque Realizado
+            case ATAQUE_BARRERA_REALIZADO://Ataque barrera realizado
                 System.out.println("Ataque Realizado!!");
                 System.out.println("Barrera Destruida");
                 System.out.println("Ingrese (C) para continuar");
                 break;
-            case SELECCIONARZONABATALLAC://Cambiar Posición - Seleccionando carta en zona de batalla
-                System.out.println("Seleccionando carta en Zona de Batalla");
-                System.out.println("Ingrese la posicion de (0 - 2) de la zona de batalla: ");
-                System.out.println("O Ingrese (C) Cancelar para volver");
-                break;
-            case CAMBIODEPOSICIONREALIZADO://Cambiar Posición - Cambio de posición realizado
+            case CAMBIODEPOSICION_REALIZADO://Cambiar Posición - Cambio de posición realizado
                 System.out.println("Cambio de Posición Realizado!!");
                 System.out.println("Ingrese (C) para continuar");
                 break;
@@ -212,87 +213,106 @@ public class MainConsola {
         }
     }
 
-    static void recibeRespuesta(String pResp){
+    static void recibeRespuestaDialogo(String pResp){
         int id;
-        switch(dialogo) {
-            case INICIAL:
+        switch(momento) {
+            case BIENVENIDAJUEGO:
                 if (pResp.equalsIgnoreCase("i")) {
                     Inicializando();
                     pantalla = Pantalla.JUEGO;
+                    dialogo = Dialogo.OPCIONESENTURNO;
+                    momento = MomentoJuego.OPCIONESENTURNO;
                 }
                 break;
-            case ACCIONES:
-                if (pResp.equalsIgnoreCase("C")) {
-                    if (E.JugadorActual.puedeColocarCarta())
-                        dialogo = Dialogo.SELECCIONARMANO;
-                } else if (pResp.equalsIgnoreCase("A")) {
-                    if (E.JugadorActual.puedeAtacarAUnaCarta(E.JugadorAnterior))
-                        dialogo = Dialogo.SELECCIONARZONABATALLAATK;
-                } else if (pResp.equalsIgnoreCase("B")) {
-                    if (E.JugadorActual.puedeAtacarAUnaBarrera(E.JugadorAnterior))
-                        dialogo = Dialogo.SELECCIONARZONABATALLAB;
-                } else if (pResp.equalsIgnoreCase("K")) {
-                    if (E.JugadorActual.puedecambiarposicion())
-                        dialogo = Dialogo.SELECCIONARZONABATALLAC;
+            case OPCIONESENTURNO:
+                if (pResp.equalsIgnoreCase("C")) { //Colocar una carta
+                    if (E.JugadorActual.puedeColocarCarta()){
+                        dialogo = Dialogo.SELECCIONAR_MANO;
+                        momento = MomentoJuego.COLOCAR_SELECCIONARMANO;
+                    }
+                } else if (pResp.equalsIgnoreCase("A")) {//Atacar a una carta en Zona de batalla
+                    if (E.JugadorActual.puedeAtacarAUnaCarta(E.JugadorAnterior)){
+                        dialogo = Dialogo.SELECCIONAR_ZONABATALLA;
+                        momento = MomentoJuego.ATACARCARTA_SELECCIONARZONABATALLA;
+                    }
+
+                } else if (pResp.equalsIgnoreCase("B")) {//Atacar a una Barrera
+                    if (E.JugadorActual.puedeAtacarAUnaBarrera(E.JugadorAnterior)){
+                        dialogo = Dialogo.SELECCIONAR_ZONABATALLA;
+                        momento = MomentoJuego.ATACARBARRERA_SELECCIONARZONABATALLA;
+                    }
+                } else if (pResp.equalsIgnoreCase("K")) {//Cambiar posición de batalla
+                    if (E.JugadorActual.puedecambiarposicion()){
+                        dialogo = Dialogo.SELECCIONAR_ZONABATALLA;
+                        momento = MomentoJuego.CAMBIARPOSICIONBATALLA_SELECCIONARZONABATALLA;
+                    }
                 } else if (pResp.equalsIgnoreCase("T")) {
                     int res = E.cambioDeTurno();
-                    if (res == Jugador.RESULTADOCOJERUNACARTA.EXITO || res == Jugador.RESULTADOCOJERUNACARTA.MANOLLENA)
-                        dialogo = Dialogo.ACCIONES;
+                    if (res == Jugador.RESULTADOCOJERUNACARTA.EXITO || res == Jugador.RESULTADOCOJERUNACARTA.MANOLLENA) {
+                        dialogo = Dialogo.OPCIONESENTURNO;
+                        momento = MomentoJuego.OPCIONESENTURNO;
+                    }
                     else if (res == Jugador.RESULTADOCOJERUNACARTA.DECKVACIO) {
                         dialogo = Dialogo.JUGADORSINCARTASBARRERA;
+                        momento = MomentoJuego.JUGADORSINCARTASBARRERA;
                     }
                 }
                 break;
-            case SELECCIONARMANO:
+            case COLOCAR_SELECCIONARMANO:
                 if (pResp.matches("[0-4]")) {
                     id = Integer.parseInt(pResp);
                     if (E.JugadorActual.Mano.obtenerCartaxId(id) != null) {
                         Ops.IdCartaManoSel = id;
-                        dialogo = Dialogo.SELECCIONARZONABATALLA;
+                        dialogo = Dialogo.SELECCIONAR_ZONABATALLA;
+                        momento = MomentoJuego.COLOCAR_SELECCIONARZONABATALLA;
                     }
                 } else if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
+                    dialogo = Dialogo.OPCIONESENTURNO;
+                    momento = MomentoJuego.OPCIONESENTURNO;
                 }
                 break;
-            case SELECCIONARZONABATALLA:
+            case COLOCAR_SELECCIONARZONABATALLA:
                 if (pResp.matches("[0-2]")) {
                     id = Integer.parseInt(pResp);
                     if (E.JugadorActual.ZBatalla.obtenerCartaxId(id) == null) {
                         Ops.IdCartaZonaBSel = id;
-                        dialogo = Dialogo.CARTACOLOCADA;
+                        dialogo = Dialogo.SELECCIONAR_POSICIONBATALLA;
+                        momento = MomentoJuego.COLOCAR_SELECCIONARPOSICIONBATALLA;
                     }
                 } else if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.SELECCIONARMANO;
+                    dialogo = Dialogo.SELECCIONAR_MANO;
+                    momento = MomentoJuego.COLOCAR_SELECCIONARMANO;
                 }
                 break;
-            case ELEGIRPOSICIONBATALLA:
-                if (pResp.equalsIgnoreCase("a")) {
-                    E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.POSCARTA.ATAQUE);
-                    dialogo = Dialogo.CARTACOLOCADA;
-                } else if (pResp.equalsIgnoreCase("d")) {
-                    E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.POSCARTA.DEFCARAABAJO);
-                    dialogo = Dialogo.CARTACOLOCADA;
+            case COLOCAR_SELECCIONARPOSICIONBATALLA:
+                if (pResp.equalsIgnoreCase("a")) {//ATAQUE
+                    E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.POSBATALLA.ATAQUE);
+                    dialogo = Dialogo.CARTA_COLOCADA;
+                    momento = MomentoJuego.COLOCAR_CARTACOLOCADA;
+                } else if (pResp.equalsIgnoreCase("d")) {//DEF
+                    E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.POSBATALLA.DEFCARAABAJO);
+                    dialogo = Dialogo.CARTA_COLOCADA;
+                    momento = MomentoJuego.COLOCAR_CARTACOLOCADA;
                 } else if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.SELECCIONARZONABATALLA;
+                    dialogo = Dialogo.SELECCIONAR_ZONABATALLA;
+                    momento = MomentoJuego.COLOCAR_SELECCIONARZONABATALLA;
                 }
                 break;
-            case CARTACOLOCADA:
-                if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
-                }
-                break;
-            case SELECCIONARZONABATALLAATK:
+            case ATACARCARTA_SELECCIONARZONABATALLA:
                 if (pResp.matches("[0-2]")) {
                     id = Integer.parseInt(pResp);
                     if (E.JugadorActual.ZBatalla.obtenerCartaxId(id) != null) {
                         Ops.IdCartaZonaBSel = id;
-                        dialogo = Dialogo.SELECCIONARZONABATALLAE;
+                        dialogo = Dialogo.SELECCIONAR_ZONABATALLA;
+                        momento = MomentoJuego.ATACARCARTA_SELECCIONARZONABATALLAE;
                     }
-                } else if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
+                }
+                else if (pResp.equalsIgnoreCase("c")) {
+                    dialogo = Dialogo.OPCIONESENTURNO;
+                    momento = MomentoJuego.OPCIONESENTURNO;
                 }
                 break;
-            case SELECCIONARZONABATALLAE:
+            case ATACARCARTA_SELECCIONARZONABATALLAE:
                 if (pResp.matches("[0-2]")) {
                     id = Integer.parseInt(pResp);
                     Ops.IdCartaZonaBSelEnemigo = id;
@@ -300,70 +320,70 @@ public class MainConsola {
                     if (Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.ENEMIGOSINBARRERA) {
                         E.terminoSinBarreras();
                         dialogo = Dialogo.JUGADORSINCARTASBARRERA;
+                        momento = MomentoJuego.JUGADORSINCARTASBARRERA;
                     } else if (Ops.resATK.resultado != Jugador.RESULTADOATACARCARTA.NOSECUMPLENCOND) {
-                        dialogo = Dialogo.ATAQUEREALIZADO;
+                        dialogo = Dialogo.ATAQUE_CARTA_REALIZADO;
+                        momento = MomentoJuego.ATACARCARTA_ATAQUEREALIZADO;
                     }
-                } else if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.SELECCIONARZONABATALLAATK;
+                }
+                else if (pResp.equalsIgnoreCase("c")) {
+                    dialogo = Dialogo.SELECCIONAR_ZONABATALLA;
+                    momento = MomentoJuego.ATACARCARTA_SELECCIONARZONABATALLA;
                 }
                 break;
-            case ATAQUEREALIZADO:
+            case COLOCAR_CARTACOLOCADA:
+            case ATACARCARTA_ATAQUEREALIZADO:
+            case ATACARBARRERA_ATAQUEREALIZADO:
+            case CAMBIARPOSICIONBATALLA_REALIZADO:
                 if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
+                    dialogo = Dialogo.OPCIONESENTURNO;
+                    momento = MomentoJuego.OPCIONESENTURNO;
                 }
                 break;
-            case SELECCIONARZONABATALLAB:
+            case ATACARBARRERA_SELECCIONARZONABATALLA:
                 if (pResp.matches("[0-2]")) {
                     id = Integer.parseInt(pResp);
                     Ops.IdCartaZonaBSel = id;
                     int res = E.JugadorActual.accionAtacarBarrera(E.JugadorAnterior, Ops.IdCartaZonaBSel);
                     if (res == Jugador.RESULTADOATACARBARRERA.EXITO) {
-                        dialogo = Dialogo.ATAQUEBARRERA;
+                        dialogo = Dialogo.ATAQUE_BARRERA_REALIZADO;
+                        momento = MomentoJuego.ATACARBARRERA_ATAQUEREALIZADO;
                     } else if (res == Jugador.RESULTADOATACARBARRERA.SINBARRERAS) {
                         E.terminoSinBarreras();
                         dialogo = Dialogo.JUGADORSINCARTASBARRERA;
+                        momento = MomentoJuego.JUGADORSINCARTASBARRERA;
                     }
-                } else if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
+                }
+                else if (pResp.equalsIgnoreCase("c")) {
+                    dialogo = Dialogo.OPCIONESENTURNO;
+                    momento = MomentoJuego.OPCIONESENTURNO;
                 }
                 break;
-            case ATAQUEBARRERA:
-                if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
-                }
-                break;
-            case SELECCIONARZONABATALLAC:
+            case CAMBIARPOSICIONBATALLA_SELECCIONARZONABATALLA:
                 if (pResp.matches("[0-2]")) {
                     id = Integer.parseInt(pResp);
                     Ops.IdCartaZonaBSel = id;
                     if (E.JugadorActual.accionCambiarPosicionBatalla(Ops.IdCartaZonaBSel)) {
-                        dialogo = Dialogo.CAMBIODEPOSICIONREALIZADO;
+                        dialogo = Dialogo.CAMBIODEPOSICION_REALIZADO;
+                        momento = MomentoJuego.CAMBIARPOSICIONBATALLA_REALIZADO;
                     }
-                } else if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
                 }
-                break;
-            case CAMBIODEPOSICIONREALIZADO:
-                if (pResp.equalsIgnoreCase("c")) {
-                    dialogo = Dialogo.ACCIONES;
-                }
-                break;
-            case JUGADORSINCARTASBARRERA:
-                if (pResp.equalsIgnoreCase("c")) {
-                    pantalla = Pantalla.FINDEJUEGO;
-                    dialogo = Dialogo.ACCIONES;
+                else if (pResp.equalsIgnoreCase("c")) {
+                    dialogo = Dialogo.OPCIONESENTURNO;
+                    momento = MomentoJuego.OPCIONESENTURNO;
                 }
                 break;
             case JUGADORSINCARTASMAZO:
+            case JUGADORSINCARTASBARRERA:
                 if (pResp.equalsIgnoreCase("c")) {
                     pantalla = Pantalla.FINDEJUEGO;
-                    dialogo = Dialogo.ACCIONES;
+                    dialogo = Dialogo.FINDEJUEGO;
                 }
                 break;
             case FINDEJUEGO:
                 if (pResp.equalsIgnoreCase("c")) {
-                    pantalla = Pantalla.INICIAL;
-                    dialogo = Dialogo.INICIAL;
+                    pantalla = Pantalla.BIENVENIDAJUEGO;
+                    dialogo = Dialogo.BIENVENIDAJUEGO;
                 }
                 break;
         }
@@ -394,7 +414,7 @@ public class MainConsola {
             if(E.Jugador1.ZBatalla.obtenerCartaxId(i) != null)
                 System.out.print(E.Jugador1.ZBatalla.obtenerCartaxId(i).getValor()+ " " +
                         imprimirElementoUnicode(E.Jugador1.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
-                        ZonaBatalla.devuelveposcarta(E.Jugador1.ZBatalla.poscarta[i]) + " | ");
+                        devuelveposcarta(E.Jugador1.ZBatalla.posbatalla[i]) + " | ");
             else
                 System.out.print("VACIO | ");
         }
@@ -423,7 +443,7 @@ public class MainConsola {
             if(E.Jugador2.ZBatalla.obtenerCartaxId(i) != null)
                 System.out.print(E.Jugador2.ZBatalla.obtenerCartaxId(i).getValor() + " " +
                         imprimirElementoUnicode(E.Jugador2.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
-                        ZonaBatalla.devuelveposcarta(E.Jugador2.ZBatalla.poscarta[i]) + " | ");
+                        devuelveposcarta(E.Jugador2.ZBatalla.posbatalla[i]) + " | ");
             else
                 System.out.print("VACIO | ");
         }
@@ -443,6 +463,16 @@ public class MainConsola {
             case 3: elemento = "\u2660"; break;
         }
         return elemento;
+    }
+
+    public static String devuelveposcarta(int poscarta){
+        switch(poscarta){
+            case 0: return "VACIO";
+            case 1: return "ATQ";
+            case 2: return "DBA"; //defensa boca abajo
+            case 3: return "DBV"; //defensa boca arriba
+            default: return "";
+        }
     }
 
 }

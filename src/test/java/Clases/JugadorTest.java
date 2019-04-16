@@ -18,37 +18,88 @@ public class JugadorTest {
     }
 
     @Test
-    public void testOps(){
+    public void testAccionCogerUnaCartaDelDeck() throws Exception{
+        //Inicializando juego
         int IDCARTAZB = 0;
         int IDCARTAMANO = 0;
-        int POSCARTA = ZonaBatalla.POSCARTA.ATAQUE;
+        int POSCARTAATACANTE = ZonaBatalla.POSBATALLA.DEFCARAABAJO;
+        Jugador j1=new Jugador("J1");
+        Jugador j2=new Jugador("J2");
+        Carta c1=new Carta(Carta.ELEMENTO.CORAZON,1);
+        Carta c2=new Carta(Carta.ELEMENTO.CORAZON,2);
+        Carta c3=new Carta(Carta.ELEMENTO.CORAZON,3);
+        Carta c4=new Carta(Carta.ELEMENTO.CORAZON,4);
+        Carta c5=new Carta(Carta.ELEMENTO.CORAZON,5);
+        Carta c6=new Carta(Carta.ELEMENTO.CORAZON,6);
+        j1.Mano.agregarCartaEnEspacioVacio(c1);
+        j1.Mano.agregarCartaEnEspacioVacio(c2);
+        j1.Mano.agregarCartaEnEspacioVacio(c3);
+        j1.Mano.agregarCartaEnEspacioVacio(c4);
+        j1.Mano.agregarCartaEnEspacioVacio(c5);
+        //RESULTADOCOJERUNACARTA.MANOLLENA
+        Assert.assertEquals(j1.accionCogerUnaCartaDelDeck(), Jugador.RESULTADOCOJERUNACARTA.MANOLLENA);
+        j1.Mano.quitarCartaenPos(4);
+        Assert.assertEquals(j1.accionCogerUnaCartaDelDeck(), Jugador.RESULTADOCOJERUNACARTA.DECKVACIO);
+        j1.Deck.agregarUnaCarta(c6);
+        Assert.assertEquals(j1.accionCogerUnaCartaDelDeck(), Jugador.RESULTADOCOJERUNACARTA.EXITO);
+    }
+
+    @Test
+    public void testPosibilidadAtacarCarta_Insatisfactorio() throws Exception{
+
+        //Inicializando juego
+        int IDCARTAZB = 0;
+        int IDCARTAMANO = 0;
+        int POSCARTAATACANTE = ZonaBatalla.POSBATALLA.DEFCARAABAJO;
         Jugador j1=new Jugador("J1");
         Jugador j2=new Jugador("J2");
         Carta carbar1=new Carta(Carta.ELEMENTO.ESPADA,6);
         Carta carbar2=new Carta(Carta.ELEMENTO.ESPADA,2);
-        Carta c=new Carta(Carta.ELEMENTO.ESPADA,1);
-
+        Carta c1=new Carta(Carta.ELEMENTO.CORAZON,1);
+        Carta c2=new Carta(Carta.ELEMENTO.CORAZON,2);
         j1.Barrera.agregarCartaEnEspacioVacio(carbar1);
-        j2.Barrera.agregarCartaEnEspacioVacio(carbar2);
+        j1.Deck.agregarUnaCarta(c1);
+        j2.Deck.agregarUnaCarta(c2);
+
 
         j1.accionIniciarTurno();
-        Assert.assertEquals(j1.accionCojerUnaCartaDelDeck(),Jugador.RESULTADOCOJERUNACARTA.DECKVACIO);
-        j1.Deck.agregarUnaCarta(c);//agrega una carta al deck
-        Assert.assertEquals(j1.accionCojerUnaCartaDelDeck(),Jugador.RESULTADOCOJERUNACARTA.EXITO);//jala una carta del deck a la mano
-        Assert.assertEquals(j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTA),true);//coloca carta de la mano a la zona de batalla
-        j1.accionTerminarTurno();
+        j1.accionCogerUnaCartaDelDeck();
+        //NO SE PUEDE ATACAR EN PRIMER TURNO
+        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+
 
         j2.accionIniciarTurno();
-        j2.accionTerminarTurno();
+
 
         j1.accionIniciarTurno();
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),true);
-        Assert.assertEquals(j1.accionAtacarBarrera(j2,IDCARTAZB),Jugador.RESULTADOATACARBARRERA.SINBARRERAS);
-        j1.accionTerminarTurno();
+        //JUGADOR ATACANTE NO TIENE CARTAS EN ESA UBICACION EN ZONA DE BATALLA
+        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);//coloca carta de la mano a la zona de batalla
+        //JUGADOR ATACADO NO TIENE CARTA EN ESA UBICACION EN ZONA DE BATALLA
+        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+
+
+        j2.accionIniciarTurno();
+        j2.accionCogerUnaCartaDelDeck();
+        j2.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);
+        //JUGADOR ATACADO NO TIENE CARTAS DE BARRERA
+        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        j2.Barrera.agregarCartaEnEspacioVacio(carbar2);
+
+
+        j1.accionIniciarTurno();
+        //CARTA ATACANTE NO ESTA EN POSICION DE ATAQUE
+        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        j1.ZBatalla.posbatalla[IDCARTAZB] = ZonaBatalla.POSBATALLA.ATAQUE;
+        j1.ZBatalla.dispataque[IDCARTAZB] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+        //CARTA ATACANTE NO ESTA DISPONIBLE PARA ATACAR
+        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+
+
     }
 
     @DataProvider(name="matrixataques")
-    public Object[][] passData(){
+    public Object[][] dataTestAccionAtacarCarta(){
         Object[][] data=new Object[6][9];
         //Cabeceras de filas
         //0: Valor carta Atacante
@@ -64,7 +115,7 @@ public class JugadorTest {
         //En este caso en especial, se pueba la condición que el atacado se queda sin cartas barrera al recibir ataque
         data[0][0] = 7;
         data[0][1] = 6;
-        data[0][2] = ZonaBatalla.POSCARTA.ATAQUE;
+        data[0][2] = ZonaBatalla.POSBATALLA.ATAQUE;
         data[0][3] = Jugador.RESULTADOATACARCARTA.ENEMIGOSINBARRERA;
         data[0][4] = Jugador.RESULTADOCARTA.UP;
         data[0][5] = Jugador.RESULTADOCARTA.DOWN;
@@ -74,7 +125,7 @@ public class JugadorTest {
 
         data[1][0] = 7;
         data[1][1] = 6;
-        data[1][2] = ZonaBatalla.POSCARTA.DEFCARAABAJO;
+        data[1][2] = ZonaBatalla.POSBATALLA.DEFCARAABAJO;
         data[1][3] = Jugador.RESULTADOATACARCARTA.GANAATACANTE;
         data[1][4] = Jugador.RESULTADOCARTA.UP;
         data[1][5] = Jugador.RESULTADOCARTA.DOWN;
@@ -84,7 +135,7 @@ public class JugadorTest {
 
         data[2][0] = 7;
         data[2][1] = 7;
-        data[2][2] = ZonaBatalla.POSCARTA.ATAQUE;
+        data[2][2] = ZonaBatalla.POSBATALLA.ATAQUE;
         data[2][3] = Jugador.RESULTADOATACARCARTA.EMPATE;
         data[2][4] = Jugador.RESULTADOCARTA.DOWN;
         data[2][5] = Jugador.RESULTADOCARTA.DOWN;
@@ -94,7 +145,7 @@ public class JugadorTest {
 
         data[3][0] = 7;
         data[3][1] = 7;
-        data[3][2] = ZonaBatalla.POSCARTA.DEFCARAARRIBA;
+        data[3][2] = ZonaBatalla.POSBATALLA.DEFCARAARRIBA;
         data[3][3] = Jugador.RESULTADOATACARCARTA.EMPATE;
         data[3][4] = Jugador.RESULTADOCARTA.UP;
         data[3][5] = Jugador.RESULTADOCARTA.UP;
@@ -104,7 +155,7 @@ public class JugadorTest {
 
         data[4][0] = 6;
         data[4][1] = 7;
-        data[4][2] = ZonaBatalla.POSCARTA.ATAQUE;
+        data[4][2] = ZonaBatalla.POSBATALLA.ATAQUE;
         data[4][3] = Jugador.RESULTADOATACARCARTA.PIERDEATACANTE;
         data[4][4] = Jugador.RESULTADOCARTA.DOWN;
         data[4][5] = Jugador.RESULTADOCARTA.UP;
@@ -114,7 +165,7 @@ public class JugadorTest {
 
         data[5][0] = 6;
         data[5][1] = 7;
-        data[5][2] = ZonaBatalla.POSCARTA.DEFCARAABAJO;
+        data[5][2] = ZonaBatalla.POSBATALLA.DEFCARAABAJO;
         data[5][3] = Jugador.RESULTADOATACARCARTA.PIERDEATACANTE;
         data[5][4] = Jugador.RESULTADOCARTA.DOWN;
         data[5][5] = Jugador.RESULTADOCARTA.UP;
@@ -131,44 +182,151 @@ public class JugadorTest {
             int resultadoAtaque, int resultadoCartaAtacante, int resultadoCartaAtacada,
             int resultadoBarrera, int resultadoIdBarrera, String descripcion
     ){
+        //Inicializando juego
         int IDCARTAZB = 0;
         int IDCARTAMANO = 0;
-        int POSCARTAATACANTE = ZonaBatalla.POSCARTA.ATAQUE;
+        int POSCARTAATACANTE = ZonaBatalla.POSBATALLA.ATAQUE;
         Jugador j1=new Jugador("J1");
         Jugador j2=new Jugador("J2");
         Carta carbar1=new Carta(Carta.ELEMENTO.ESPADA,6);
         Carta carbar2=new Carta(Carta.ELEMENTO.ESPADA,2);
         Carta c1=new Carta(Carta.ELEMENTO.CORAZON,valorCartaAtacante);
         Carta c2=new Carta(Carta.ELEMENTO.CORAZON,valorCartaAtacada);
-
         j1.Barrera.agregarCartaEnEspacioVacio(carbar1);
         j1.Deck.agregarUnaCarta(c1);
         j2.Barrera.agregarCartaEnEspacioVacio(carbar2);
         j2.Deck.agregarUnaCarta(c2);
 
-        //---  Inicia el juego
-
+        //Primer turno: J1
         j1.accionIniciarTurno();
-        j1.accionCojerUnaCartaDelDeck();//jala una carta del deck a la mano
+        j1.accionCogerUnaCartaDelDeck();//jala una carta del deck a la mano
         j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);//coloca carta de la mano a la zona de batalla
-        j1.accionTerminarTurno();
 
+
+        //Primer turno: J2
         j2.accionIniciarTurno();
-        j2.accionCojerUnaCartaDelDeck();//jala una carta del deck a la mano
+        j2.accionCogerUnaCartaDelDeck();//jala una carta del deck a la mano
         j2.accionColocarCarta(IDCARTAZB,IDCARTAMANO,posicionCartaAtacada);//coloca carta de la mano a la zona de batalla
-        j2.accionTerminarTurno();
 
+
+        //Segundo Turno:J1
         j1.accionIniciarTurno();
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),true);
+        //POSIBILIDAD DE ATACAR CARTA SATISFACTORIO
+        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),true,"POSIBILIDAD DE ATACAR CARTA SATISFACTORIO");
+        //TESTS ATACAR CARTA
         ResultadoAtaque rs= j1.accionAtacarCarta(j2,IDCARTAZB,IDCARTAZB);
-        Assert.assertEquals(rs.resultado,resultadoAtaque);
+        Assert.assertEquals(rs.resultado,resultadoAtaque,descripcion);
         Assert.assertEquals(rs.cartaAtacante, resultadoCartaAtacante);
         Assert.assertEquals(rs.cartaAtacada, resultadoCartaAtacada);
         Assert.assertEquals(rs.barrera, resultadoBarrera);
         Assert.assertEquals(rs.idbarrera, resultadoIdBarrera);
-        j1.accionTerminarTurno();
 
-        //---  Fin del juego
+    }
+
+    @Test
+    public void testPosibilidadAtacarBarrera_Insatisfactorio() throws Exception{
+
+        //Inicializando juego
+        int IDCARTAZB = 0;
+        int IDCARTAMANO = 0;
+        int POSCARTAATACANTE = ZonaBatalla.POSBATALLA.DEFCARAABAJO;
+        Jugador j1=new Jugador("J1");
+        Jugador j2=new Jugador("J2");
+        Carta carbar1=new Carta(Carta.ELEMENTO.ESPADA,6);
+        Carta carbar2=new Carta(Carta.ELEMENTO.ESPADA,2);
+        Carta c1=new Carta(Carta.ELEMENTO.CORAZON,1);
+        Carta c2=new Carta(Carta.ELEMENTO.CORAZON,2);
+        j1.Barrera.agregarCartaEnEspacioVacio(carbar1);
+        j1.Deck.agregarUnaCarta(c1);
+        j2.Deck.agregarUnaCarta(c2);
+
+
+        j1.accionIniciarTurno();
+        j1.accionCogerUnaCartaDelDeck();//jala una carta del deck a la mano
+        //NO SE PUEDE ATACAR EN PRIMER TURNO
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+
+
+        j2.accionIniciarTurno();
+
+
+        j1.accionIniciarTurno();
+        //JUGADOR ATACANTE NO TIENE CARTAS EN ESA UBICACION EN ZONA DE BATALLA
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);//coloca carta de la mano a la zona de batalla
+
+
+        j2.accionIniciarTurno();
+        //JUGADOR ATACADO NO TIENE CARTAS DE BARRERA
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        j2.Barrera.agregarCartaEnEspacioVacio(carbar2);
+
+
+        j1.accionIniciarTurno();
+        //CARTA ATACANTE NO ESTA EN POSICION DE ATAQUE
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        j1.ZBatalla.posbatalla[IDCARTAZB] = ZonaBatalla.POSBATALLA.ATAQUE;
+        j1.ZBatalla.dispataque[IDCARTAZB] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+        //CARTA ATACANTE NO ESTA DISPONIBLE PARA ATACAR
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        j1.ZBatalla.dispataque[IDCARTAZB] = ZonaBatalla.DISPATAQUE.DISPONIBLE;
+
+
+        j2.accionIniciarTurno();
+        j2.accionCogerUnaCartaDelDeck();
+        j2.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);
+        //JUGADOR ATACADO NO TIENE CARTAS EN ZONA DE BATALLA
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+
+    }
+
+    @Test
+    public void testAccionAtacarBarrera(){
+        //Inicializando juego
+        int IDCARTAZB = 0;
+        int IDCARTAMANO = 0;
+        int POSCARTA = ZonaBatalla.POSBATALLA.ATAQUE;
+        Jugador j1=new Jugador("J1");
+        Jugador j2=new Jugador("J2");
+        Carta carbar1=new Carta(Carta.ELEMENTO.CORAZON,6);
+        Carta carbar2=new Carta(Carta.ELEMENTO.CORAZON,2);
+        Carta carbar3=new Carta(Carta.ELEMENTO.CORAZON,2);
+        Carta c=new Carta(Carta.ELEMENTO.ESPADA,4);
+        j1.Barrera.agregarCartaEnEspacioVacio(carbar1);
+        j2.Barrera.agregarCartaEnEspacioVacio(carbar2);
+        j2.Barrera.agregarCartaEnEspacioVacio(carbar3);
+        j1.Deck.agregarUnaCarta(c);//agrega una carta al deck j1
+
+        //Primer turno: J1
+        j1.accionIniciarTurno();
+        j1.accionCogerUnaCartaDelDeck();//jala una carta del deck a la mano
+        j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTA);//coloca carta de la mano a la zona de batalla
+
+
+        //Primer turno: J2
+        j2.accionIniciarTurno();
+
+
+        //Segundo turno: J1
+        j1.accionIniciarTurno();
+        //POSIBILIDAD DE ATACAR BARRERA SATISFACTORIA
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),true);
+        //JUGADOR 1 DESTRUYÓ UNA BARRERA
+        Assert.assertEquals(j1.accionAtacarBarrera(j2,IDCARTAZB),Jugador.RESULTADOATACARBARRERA.EXITO);
+
+
+        //Segundo turno: J2
+        j2.accionIniciarTurno();
+
+
+        //Tercer Turno:J1
+        j1.accionIniciarTurno();
+        //POSIBILIDAD DE ATACAR BARRERA SATISFACTORIA
+        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),true);
+        //JUGADOR 1 DESTRUYÓ UNA BARRERA Y JUGADOR 2 SE QUEDÓ SIN BARRERAS
+        Assert.assertEquals(j1.accionAtacarBarrera(j2,IDCARTAZB),Jugador.RESULTADOATACARBARRERA.SINBARRERAS);
+
+
     }
 
     @Test

@@ -21,7 +21,7 @@ public class ResultadoAtaque
         elementoCartaAtacante = -1;
         valorCartaAtacada= -1;
         elementoCartaAtacada = -1;
-        posicionCartaAtacada = ZonaBatalla.POSCARTA.NOHAYCARTA;
+        posicionCartaAtacada = ZonaBatalla.POSBATALLA.NOHAYCARTA;
         resultado = Jugador.RESULTADOATACARCARTA.NOSECUMPLENCOND;
         cartaAtacante = Jugador.RESULTADOCARTA.UP;
         cartaAtacada = Jugador.RESULTADOCARTA.UP;

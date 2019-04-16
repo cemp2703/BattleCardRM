@@ -19,9 +19,6 @@ public class CartaTest {
     public void testClone() throws Exception {
         Carta c=new Carta(1, Carta.ELEMENTO.COCO);
         Carta vclone=(Carta)c.clone();
-        c.setValor(2);
-        Assert.assertNotEquals(vclone,c);
-        vclone=(Carta)c.clone();
         Assert.assertEquals(vclone,c);
     }
 }

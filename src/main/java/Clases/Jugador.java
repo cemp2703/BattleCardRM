@@ -19,10 +19,45 @@ public class Jugador implements Cloneable{
 		NTurnos=0;
 	}
 
+	public String getNombre() {
+		return Nombre;
+	}
+
+	public void setNombre(String nombre) {
+		Nombre = nombre;
+	}
+
 	//region Operaciones (Reglas)
 
-	public boolean posibilidadCambiarPosicionBatalla(int idCartaZBJAct){
-		return ZBatalla.posibilidadCambiarPosicionBatalla(idCartaZBJAct);
+	public int accionCogerUnaCartaDelDeck(){
+		if(Mano.obtenerNumerodeCartas() >= Mano.getMaxNCartas())
+			return RESULTADOCOJERUNACARTA.MANOLLENA;
+
+		Carta ncarta= Deck.sacarUnaCarta();
+		if(ncarta == null )
+			return RESULTADOCOJERUNACARTA.DECKVACIO;
+		else{
+			Mano.agregarCartaEnEspacioVacio(ncarta);
+			return RESULTADOCOJERUNACARTA.EXITO;
+		}
+	}
+
+	public int accionIniciarTurno(){
+		NTurnos++;
+		ZBatalla.renovarPosibilidades();
+		return accionCogerUnaCartaDelDeck();
+	}
+
+	public boolean accionColocarCarta(int idCartaZB,int idCartaMano,int posCarta){
+		boolean respuesta = false;
+		if(this.Mano.obtenerCartaxId(idCartaMano) != null &&
+				this.ZBatalla.obtenerCartaxId(idCartaZB) == null){
+			Carta c=this.Mano.obtenerCartaxId(idCartaMano);
+			this.Mano.quitarCartaenPos(idCartaMano);
+			this.ZBatalla.agregarCartaEnPos(c,idCartaZB,posCarta);
+			respuesta=true;
+		}
+		return respuesta;
 	}
 
 	public boolean posibilidadAtacarCarta(Jugador JugadorAtacado,int idCartaAtacada,int idCartaAtacante){
@@ -34,7 +69,7 @@ public class Jugador implements Cloneable{
 			return false;
 		if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0)
 			return false;
-		if(ZBatalla.poscarta[idCartaAtacante] != ZonaBatalla.POSCARTA.ATAQUE)
+		if(ZBatalla.posbatalla[idCartaAtacante] != ZonaBatalla.POSBATALLA.ATAQUE)
 			return false;
 		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
 			return false;
@@ -47,13 +82,13 @@ public class Jugador implements Cloneable{
 			return false;
 		if (ZBatalla.obtenerCartaxId(idCartaAtacante) == null)
 			return false;
-		if(JugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0)
-			return false;
 		if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0)
 			return false;
-		if(ZBatalla.poscarta[idCartaAtacante] != ZonaBatalla.POSCARTA.ATAQUE)
+		if(ZBatalla.posbatalla[idCartaAtacante] != ZonaBatalla.POSBATALLA.ATAQUE)
 			return false;
 		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
+			return false;
+		if(JugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0)
 			return false;
 
 		return true;
@@ -86,25 +121,13 @@ public class Jugador implements Cloneable{
 		if( ZBatalla.obtenerNumerodeCartas() == 0)
 			return false;
 		for(int i=0; i<ZBatalla.getMaxNCartas();i++)
-			if(posibilidadCambiarPosicionBatalla(i))
+			if(ZBatalla.posibilidadCambiarPosicionBatalla(i))
 				return true;
 		return false;
 	}
 
 	public boolean accionCambiarPosicionBatalla(int idCartaZBJAct){
 		return ZBatalla.cambiarPosicionBatalla(idCartaZBJAct);
-	}
-
-	public boolean accionColocarCarta(int idCartaZB,int idCartaMano,int posCarta){
-		boolean respuesta = false;
-		if(this.Mano.obtenerCartaxId(idCartaMano) != null &&
-				this.ZBatalla.obtenerCartaxId(idCartaZB) == null){
-			Carta c=this.Mano.obtenerCartaxId(idCartaMano);
-			this.Mano.quitarCartaenPos(idCartaMano);
-			this.ZBatalla.agregarCartaEnPos(c,idCartaZB,posCarta);
-			respuesta=true;
-		}
-		return respuesta;
 	}
 
 	public static class RESULTADOATACARCARTA{
@@ -129,8 +152,8 @@ public class Jugador implements Cloneable{
 		if( posibilidadAtacarCarta(JugadorAtacado,idCartaAtacada,idCartaAtacante) ){
 
 			//Jugador Atacado en defensa cara abajo, se revela la carta.
-			if(JugadorAtacado.ZBatalla.poscarta[idCartaAtacada] == ZonaBatalla.POSCARTA.DEFCARAABAJO){
-				JugadorAtacado.ZBatalla.poscarta[idCartaAtacada] = ZonaBatalla.POSCARTA.DEFCARAARRIBA;
+			if(JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] == ZonaBatalla.POSBATALLA.DEFCARAABAJO){
+				JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] = ZonaBatalla.POSBATALLA.DEFCARAARRIBA;
 			}
 
 			cartaAtacante = this.ZBatalla.obtenerCartaxId(idCartaAtacante);
@@ -155,8 +178,8 @@ public class Jugador implements Cloneable{
 			}
 
 			//Jugador Atacado al Ataque
-			if(JugadorAtacado.ZBatalla.poscarta[idCartaAtacada] == ZonaBatalla.POSCARTA.ATAQUE){
-				rs.posicionCartaAtacada = ZonaBatalla.POSCARTA.ATAQUE;
+			if(JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] == ZonaBatalla.POSBATALLA.ATAQUE){
+				rs.posicionCartaAtacada = ZonaBatalla.POSBATALLA.ATAQUE;
 				if(rs.resultado == RESULTADOATACARCARTA.GANAATACANTE){
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 					rs.idbarrera = JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
@@ -175,8 +198,8 @@ public class Jugador implements Cloneable{
 					rs.cartaAtacada = RESULTADOCARTA.DOWN;
 				}
 			}
-			else if(JugadorAtacado.ZBatalla.poscarta[idCartaAtacada] == ZonaBatalla.POSCARTA.DEFCARAARRIBA ){//Jugador Atacado a la Defensa
-				rs.posicionCartaAtacada = ZonaBatalla.POSCARTA.DEFCARAARRIBA;
+			else if(JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] == ZonaBatalla.POSBATALLA.DEFCARAARRIBA ){//Jugador Atacado a la Defensa
+				rs.posicionCartaAtacada = ZonaBatalla.POSBATALLA.DEFCARAARRIBA;
 				if(rs.resultado == RESULTADOATACARCARTA.GANAATACANTE){//gana atacante
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 				}
@@ -224,44 +247,8 @@ public class Jugador implements Cloneable{
 		public static final int EXITO = 0; //Se cojio una carta
 	}
 
-	public int accionCojerUnaCartaDelDeck(){
-		if(Mano.obtenerNumerodeCartas() >= Mano.getMaxNCartas())
-			return RESULTADOCOJERUNACARTA.MANOLLENA;
-
-		Carta ncarta= Deck.sacarUnaCarta();
-		if(ncarta == null )
-			return RESULTADOCOJERUNACARTA.DECKVACIO;
-		else{
-			Mano.agregarCartaEnEspacioVacio(ncarta);
-			return RESULTADOCOJERUNACARTA.EXITO;
-		}
-
-	}
-
-	public int accionTerminarTurno(){
-
-		return 0;
-	}
-
-	public int accionIniciarTurno(){
-		NTurnos++;
-		accionRenovarPosibilidades();
-		return accionCojerUnaCartaDelDeck();
-	}
-
-	public void accionRenovarPosibilidades(){
-		this.ZBatalla.renovarPosibilidades();
-	}
-
 	//endregion
 
-	public String getNombre() {
-		return Nombre;
-	}
-
-	public void setNombre(String nombre) {
-		Nombre = nombre;
-	}
 
 	@Override
 	public boolean equals(Object o) {
