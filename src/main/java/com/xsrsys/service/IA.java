@@ -1,13 +1,13 @@
-package Juego;
-
-import Clases.Estado;
-import Clases.Mano;
-import Clases.ZonaBatalla;
-import Clases.POJO.ResultadoAtaque;
+package com.xsrsys.service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import com.xsrsys.model.Estado;
+import com.xsrsys.model.Mano;
+import com.xsrsys.model.ResultadoAtaque;
+import com.xsrsys.model.ZonaBatalla;
 
 public class IA {
 	public List<Estado> EstadosGenerados;

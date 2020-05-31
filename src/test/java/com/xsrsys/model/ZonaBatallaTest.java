@@ -1,20 +1,15 @@
-package Clases;
+package com.xsrsys.model;
 
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import com.xsrsys.model.Carta;
+import com.xsrsys.model.VectorCartas;
+import com.xsrsys.model.ZonaBatalla;
 
 public class ZonaBatallaTest {
-    @BeforeMethod
-    public void setUp() throws Exception {
-
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception {
-    }
-
+	
     @Test
     public void testGetPosBatallaxId() throws Exception {
         int IDCARTAZB = 0;
@@ -22,10 +17,10 @@ public class ZonaBatallaTest {
         int POSBATALLA = ZonaBatalla.POSBATALLA.ATAQUE;
         zb.agregarCartaEnPos(new Carta(1,Carta.ELEMENTO.ESPADA),IDCARTAZB, POSBATALLA);
         zb.getPosBatallaxId(IDCARTAZB);
-        Assert.assertEquals(zb.getPosBatallaxId(IDCARTAZB),POSBATALLA);
+        assertEquals(POSBATALLA,zb.getPosBatallaxId(IDCARTAZB));
         //IDZONABATALLA mayor del tamaño maximo: 5
         int IDCARTAZBERRONEO = 8;
-        Assert.assertNotEquals(zb.getPosBatallaxId(IDCARTAZBERRONEO),POSBATALLA);
+        assertNotEquals(POSBATALLA,zb.getPosBatallaxId(IDCARTAZBERRONEO));
     }
 
 
@@ -40,10 +35,10 @@ public class ZonaBatallaTest {
         zb.agregarCartaEnPos(c, idZB0 , POSCARTA0);
         zb.agregarCartaEnPos(c, idZB1 , POSCARTA1);
         zb.renovarPosibilidades();
-        Assert.assertEquals(zb.dispataque[idZB0],ZonaBatalla.DISPATAQUE.DISPONIBLE);
-        Assert.assertEquals(zb.dispcambio[idZB0],ZonaBatalla.DISPCAMBIO.DISPONIBLE);
-        Assert.assertEquals(zb.dispataque[idZB1],ZonaBatalla.DISPATAQUE.NODISPONIBLE);
-        Assert.assertEquals(zb.dispcambio[idZB1],ZonaBatalla.DISPCAMBIO.DISPONIBLE);
+        assertEquals(ZonaBatalla.DISPATAQUE.DISPONIBLE,zb.dispataque[idZB0]);
+        assertEquals(ZonaBatalla.DISPCAMBIO.DISPONIBLE,zb.dispcambio[idZB0]);
+        assertEquals(ZonaBatalla.DISPATAQUE.NODISPONIBLE,zb.dispataque[idZB1]);
+        assertEquals(ZonaBatalla.DISPCAMBIO.DISPONIBLE,zb.dispcambio[idZB1]);
     }
 
     @Test
@@ -54,11 +49,11 @@ public class ZonaBatallaTest {
         Carta c=new Carta(1,Carta.ELEMENTO.ESPADA);
         for(int i=0;i< ZonaBatalla.MAXZONABATALLACARDS;i++) {
             zb.agregarCartaEnPos(c, i, POSCARTA);
-            Assert.assertEquals(zb.posbatalla[i],POSCARTA);
-            Assert.assertEquals(zb.dispcambio[i],ZonaBatalla.DISPCAMBIO.NODISPONIBLE);
-            Assert.assertEquals(zb.dispataque[i],ZonaBatalla.DISPATAQUE.DISPONIBLE);
+            assertEquals(POSCARTA,zb.posbatalla[i]);
+            assertEquals(ZonaBatalla.DISPCAMBIO.NODISPONIBLE,zb.dispcambio[i]);
+            assertEquals(ZonaBatalla.DISPATAQUE.DISPONIBLE,zb.dispataque[i]);
         }
-        Assert.assertEquals(zb.isCartacolocada(),CARTACOLOCADA);
+        assertEquals(CARTACOLOCADA,zb.cartaColocada);
     }
 
     @Test
@@ -69,10 +64,10 @@ public class ZonaBatallaTest {
         int idZonaB0= 0;
         int idZonaB1= 1;
         int idZonaB2= 2;
-        Assert.assertEquals(zb.agregarCartaEnEspacioVacio(c,POSCARTA),idZonaB0);
-        Assert.assertEquals(zb.agregarCartaEnEspacioVacio(c,POSCARTA),idZonaB1);
-        Assert.assertEquals(zb.agregarCartaEnEspacioVacio(c,POSCARTA),idZonaB2);
-        Assert.assertEquals(zb.agregarCartaEnEspacioVacio(c,POSCARTA),VectorCartas.NOSEPUEDEAGREGARCARTAS);
+        assertEquals(idZonaB0,zb.agregarCartaEnEspacioVacio(c,POSCARTA));
+        assertEquals(idZonaB1,zb.agregarCartaEnEspacioVacio(c,POSCARTA));
+        assertEquals(idZonaB2,zb.agregarCartaEnEspacioVacio(c,POSCARTA));
+        assertEquals(VectorCartas.NOSEPUEDEAGREGARCARTAS,zb.agregarCartaEnEspacioVacio(c,POSCARTA));
     }
 
 
@@ -83,10 +78,11 @@ public class ZonaBatallaTest {
         for(int i=0;i< ZonaBatalla.MAXZONABATALLACARDS;i++) {
             zb.agregarCartaEnPos(c, i, ZonaBatalla.POSBATALLA.ATAQUE);
             zb.dispcambio[i]=ZonaBatalla.DISPCAMBIO.DISPONIBLE;
+            zb.nCambiosPosicionesDisponibles++;
             zb.cambiarPosicionBatalla(i);
-            Assert.assertEquals(zb.posbatalla[i], ZonaBatalla.POSBATALLA.DEFCARAARRIBA);
-            Assert.assertEquals(zb.dispcambio[i],ZonaBatalla.DISPCAMBIO.NODISPONIBLE);
-            Assert.assertEquals(zb.dispataque[i],ZonaBatalla.DISPATAQUE.NODISPONIBLE);
+            assertEquals(ZonaBatalla.POSBATALLA.DEFCARAARRIBA,zb.posbatalla[i]);
+            assertEquals(ZonaBatalla.DISPCAMBIO.NODISPONIBLE,zb.dispcambio[i]);
+            assertEquals(ZonaBatalla.DISPATAQUE.NODISPONIBLE,zb.dispataque[i]);
         }
     }
 
@@ -97,10 +93,11 @@ public class ZonaBatallaTest {
         for(int i=0;i< ZonaBatalla.MAXZONABATALLACARDS;i++) {
             zb.agregarCartaEnPos(c, i, ZonaBatalla.POSBATALLA.DEFCARAABAJO);
             zb.dispcambio[i]=ZonaBatalla.DISPCAMBIO.DISPONIBLE;
+            zb.nCambiosPosicionesDisponibles++;
             zb.cambiarPosicionBatalla(i);
-            Assert.assertEquals(zb.posbatalla[i], ZonaBatalla.POSBATALLA.ATAQUE);
-            Assert.assertEquals(zb.dispcambio[i],ZonaBatalla.DISPCAMBIO.NODISPONIBLE);
-            Assert.assertEquals(zb.dispataque[i],ZonaBatalla.DISPATAQUE.DISPONIBLE);
+            assertEquals(ZonaBatalla.POSBATALLA.ATAQUE,zb.posbatalla[i]);
+            assertEquals(ZonaBatalla.DISPCAMBIO.NODISPONIBLE,zb.dispcambio[i]);
+            assertEquals(ZonaBatalla.DISPATAQUE.DISPONIBLE,zb.dispataque[i]);
         }
     }
 
@@ -112,9 +109,9 @@ public class ZonaBatallaTest {
         for(int i=0;i< ZonaBatalla.MAXZONABATALLACARDS;i++) {
             zb.agregarCartaEnPos(c, i, POSCARTA);
             zb.quitarCartaenPos(i);
-            Assert.assertEquals(zb.posbatalla[i], ZonaBatalla.POSBATALLA.NOHAYCARTA);
-            Assert.assertEquals(zb.dispcambio[i],ZonaBatalla.DISPCAMBIO.NODISPONIBLE);
-            Assert.assertEquals(zb.dispataque[i],ZonaBatalla.DISPATAQUE.NODISPONIBLE);
+            assertEquals(ZonaBatalla.POSBATALLA.NOHAYCARTA,zb.posbatalla[i]);
+            assertEquals(ZonaBatalla.DISPCAMBIO.NODISPONIBLE,zb.dispcambio[i]);
+            assertEquals(ZonaBatalla.DISPATAQUE.NODISPONIBLE,zb.dispataque[i]);
         }
     }
 
@@ -125,12 +122,13 @@ public class ZonaBatallaTest {
         int POSCARTA = ZonaBatalla.POSBATALLA.ATAQUE;
         int IDCARTAZB = 0;
         boolean NOCARTAS = false, DISP_CAMBIO = false;
-        Assert.assertEquals(zb.posibilidadCambiarPosicionBatalla(IDCARTAZB), NOCARTAS);
+        assertEquals(NOCARTAS,zb.posibilidadCambiarPosicionBatallaEnCarta(IDCARTAZB));
         zb.agregarCartaEnPos(c,IDCARTAZB,POSCARTA);
-        Assert.assertEquals(zb.posibilidadCambiarPosicionBatalla(IDCARTAZB), DISP_CAMBIO);
+        assertEquals(DISP_CAMBIO,zb.posibilidadCambiarPosicionBatallaEnCarta(IDCARTAZB));
         zb.dispcambio[IDCARTAZB]=ZonaBatalla.DISPCAMBIO.DISPONIBLE;
+        zb.nCambiosPosicionesDisponibles++;
         DISP_CAMBIO = true;
-        Assert.assertEquals(zb.posibilidadCambiarPosicionBatalla(IDCARTAZB), DISP_CAMBIO);
+        assertEquals(DISP_CAMBIO,zb.posibilidadCambiarPosicionBatallaEnCarta(IDCARTAZB));
 
     }
 
@@ -142,11 +140,9 @@ public class ZonaBatallaTest {
         int POSCARTA0 = ZonaBatalla.POSBATALLA.ATAQUE;
         vc.agregarCartaEnPos(new Carta(Carta.ELEMENTO.ESPADA,1),idZB0,POSCARTA0);
         ZonaBatalla vclone=(ZonaBatalla)vc.clone();
-        Assert.assertEquals(vc,vclone);
+        assertEquals(vc,vclone);
         vc.agregarCartaEnPos(new Carta(Carta.ELEMENTO.ESPADA,2),idZB1,POSCARTA0);
-        Assert.assertNotEquals(vc,vclone);
+        assertNotEquals(vc,vclone);
     }
-
-
 
 }

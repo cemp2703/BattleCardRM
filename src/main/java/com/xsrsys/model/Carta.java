@@ -1,4 +1,4 @@
-package Clases;
+package com.xsrsys.model;
 
 
 public class Carta implements Cloneable{

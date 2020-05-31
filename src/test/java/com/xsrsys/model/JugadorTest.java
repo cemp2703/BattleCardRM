@@ -1,21 +1,22 @@
-package Clases;
+package com.xsrsys.model;
 
-import Clases.POJO.ResultadoAtaque;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+//import org.testng.annotations.DataProvider;
+
+import com.xsrsys.model.Carta;
+import com.xsrsys.model.Jugador;
+import com.xsrsys.model.ResultadoAtaque;
+import com.xsrsys.model.ZonaBatalla;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
+@RunWith(JUnitParamsRunner.class)
 public class JugadorTest {
-    @BeforeMethod
-    public void setUp() throws Exception {
-
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception {
-    }
 
     @Test
     public void testAccionCogerUnaCartaDelDeck() throws Exception{
@@ -37,11 +38,11 @@ public class JugadorTest {
         j1.Mano.agregarCartaEnEspacioVacio(c4);
         j1.Mano.agregarCartaEnEspacioVacio(c5);
         //RESULTADOCOJERUNACARTA.MANOLLENA
-        Assert.assertEquals(j1.accionCogerUnaCartaDelDeck(), Jugador.RESULTADOCOJERUNACARTA.MANOLLENA);
+        assertEquals(Jugador.RESULTADOCOJERUNACARTA.MANOLLENA,j1.accionCogerUnaCartaDelDeck());
         j1.Mano.quitarCartaenPos(4);
-        Assert.assertEquals(j1.accionCogerUnaCartaDelDeck(), Jugador.RESULTADOCOJERUNACARTA.DECKVACIO);
+        assertEquals(Jugador.RESULTADOCOJERUNACARTA.DECKVACIO,j1.accionCogerUnaCartaDelDeck());
         j1.Deck.agregarUnaCarta(c6);
-        Assert.assertEquals(j1.accionCogerUnaCartaDelDeck(), Jugador.RESULTADOCOJERUNACARTA.EXITO);
+        assertEquals(Jugador.RESULTADOCOJERUNACARTA.EXITO,j1.accionCogerUnaCartaDelDeck());
     }
 
     @Test
@@ -65,7 +66,7 @@ public class JugadorTest {
         j1.accionIniciarTurno();
         j1.accionCogerUnaCartaDelDeck();
         //NO SE PUEDE ATACAR EN PRIMER TURNO
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB));
 
 
         j2.accionIniciarTurno();
@@ -73,33 +74,32 @@ public class JugadorTest {
 
         j1.accionIniciarTurno();
         //JUGADOR ATACANTE NO TIENE CARTAS EN ESA UBICACION EN ZONA DE BATALLA
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB));
         j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);//coloca carta de la mano a la zona de batalla
         //JUGADOR ATACADO NO TIENE CARTA EN ESA UBICACION EN ZONA DE BATALLA
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB));
 
 
         j2.accionIniciarTurno();
         j2.accionCogerUnaCartaDelDeck();
         j2.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);
         //JUGADOR ATACADO NO TIENE CARTAS DE BARRERA
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB));
         j2.Barrera.agregarCartaEnEspacioVacio(carbar2);
 
 
         j1.accionIniciarTurno();
         //CARTA ATACANTE NO ESTA EN POSICION DE ATAQUE
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB));
         j1.ZBatalla.posbatalla[IDCARTAZB] = ZonaBatalla.POSBATALLA.ATAQUE;
         j1.ZBatalla.dispataque[IDCARTAZB] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
         //CARTA ATACANTE NO ESTA DISPONIBLE PARA ATACAR
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB));
 
 
     }
 
-    @DataProvider(name="matrixataques")
-    public Object[][] dataTestAccionAtacarCarta(){
+    private Object[][] sampleData(){
         Object[][] data=new Object[6][9];
         //Cabeceras de filas
         //0: Valor carta Atacante
@@ -176,7 +176,8 @@ public class JugadorTest {
         return data;
     }
 
-    @Test(dataProvider = "matrixataques")
+    @Test
+    @Parameters(method = "sampleData")
     public void testAccionAtacarCarta(
             int valorCartaAtacante,int valorCartaAtacada,int posicionCartaAtacada,
             int resultadoAtaque, int resultadoCartaAtacante, int resultadoCartaAtacada,
@@ -212,17 +213,18 @@ public class JugadorTest {
         //Segundo Turno:J1
         j1.accionIniciarTurno();
         //POSIBILIDAD DE ATACAR CARTA SATISFACTORIO
-        Assert.assertEquals(j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB),true,"POSIBILIDAD DE ATACAR CARTA SATISFACTORIO");
+        assertEquals("POSIBILIDAD DE ATACAR CARTA SATISFACTORIO",true,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAZB));
         //TESTS ATACAR CARTA
         ResultadoAtaque rs= j1.accionAtacarCarta(j2,IDCARTAZB,IDCARTAZB);
-        Assert.assertEquals(rs.resultado,resultadoAtaque,descripcion);
-        Assert.assertEquals(rs.cartaAtacante, resultadoCartaAtacante);
-        Assert.assertEquals(rs.cartaAtacada, resultadoCartaAtacada);
-        Assert.assertEquals(rs.barrera, resultadoBarrera);
-        Assert.assertEquals(rs.idbarrera, resultadoIdBarrera);
+        assertEquals(descripcion,resultadoAtaque,rs.resultado);
+        assertEquals(resultadoCartaAtacante,rs.cartaAtacante);
+        assertEquals(resultadoCartaAtacada,rs.cartaAtacada);
+        assertEquals(resultadoBarrera,rs.barrera);
+        assertEquals(resultadoIdBarrera,rs.idbarrera);
 
     }
 
+    
     @Test
     public void testPosibilidadAtacarBarrera_Insatisfactorio() throws Exception{
 
@@ -244,7 +246,7 @@ public class JugadorTest {
         j1.accionIniciarTurno();
         j1.accionCogerUnaCartaDelDeck();//jala una carta del deck a la mano
         //NO SE PUEDE ATACAR EN PRIMER TURNO
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
 
 
         j2.accionIniciarTurno();
@@ -252,23 +254,23 @@ public class JugadorTest {
 
         j1.accionIniciarTurno();
         //JUGADOR ATACANTE NO TIENE CARTAS EN ESA UBICACION EN ZONA DE BATALLA
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);//coloca carta de la mano a la zona de batalla
 
 
         j2.accionIniciarTurno();
         //JUGADOR ATACADO NO TIENE CARTAS DE BARRERA
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         j2.Barrera.agregarCartaEnEspacioVacio(carbar2);
 
 
         j1.accionIniciarTurno();
         //CARTA ATACANTE NO ESTA EN POSICION DE ATAQUE
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         j1.ZBatalla.posbatalla[IDCARTAZB] = ZonaBatalla.POSBATALLA.ATAQUE;
         j1.ZBatalla.dispataque[IDCARTAZB] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
         //CARTA ATACANTE NO ESTA DISPONIBLE PARA ATACAR
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         j1.ZBatalla.dispataque[IDCARTAZB] = ZonaBatalla.DISPATAQUE.DISPONIBLE;
 
 
@@ -276,7 +278,7 @@ public class JugadorTest {
         j2.accionCogerUnaCartaDelDeck();
         j2.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTAATACANTE);
         //JUGADOR ATACADO NO TIENE CARTAS EN ZONA DE BATALLA
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),false);
+        assertEquals(false,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
 
     }
 
@@ -310,9 +312,9 @@ public class JugadorTest {
         //Segundo turno: J1
         j1.accionIniciarTurno();
         //POSIBILIDAD DE ATACAR BARRERA SATISFACTORIA
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),true);
+        assertEquals(true,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         //JUGADOR 1 DESTRUYÓ UNA BARRERA
-        Assert.assertEquals(j1.accionAtacarBarrera(j2,IDCARTAZB),Jugador.RESULTADOATACARBARRERA.EXITO);
+        assertEquals(Jugador.RESULTADOATACARBARRERA.EXITO,j1.accionAtacarBarrera(j2,IDCARTAZB));
 
 
         //Segundo turno: J2
@@ -322,20 +324,18 @@ public class JugadorTest {
         //Tercer Turno:J1
         j1.accionIniciarTurno();
         //POSIBILIDAD DE ATACAR BARRERA SATISFACTORIA
-        Assert.assertEquals(j1.posibilidadAtacarBarrera(j2,IDCARTAZB),true);
+        assertEquals(true,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         //JUGADOR 1 DESTRUYÓ UNA BARRERA Y JUGADOR 2 SE QUEDÓ SIN BARRERAS
-        Assert.assertEquals(j1.accionAtacarBarrera(j2,IDCARTAZB),Jugador.RESULTADOATACARBARRERA.SINBARRERAS);
-
-
+        assertEquals(Jugador.RESULTADOATACARBARRERA.SINBARRERAS,j1.accionAtacarBarrera(j2,IDCARTAZB));
     }
 
     @Test
     public void testClone() throws Exception {
         Jugador d=new Jugador("J1");
         Jugador dclone=(Jugador)d.clone();
-        Assert.assertEquals(d,dclone);
+        assertEquals(d,dclone);
         d.setNombre("J2");
-        Assert.assertNotEquals(d,dclone);
+        assertNotEquals(d,dclone);
     }
 
 

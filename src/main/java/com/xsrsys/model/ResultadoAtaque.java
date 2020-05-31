@@ -1,7 +1,4 @@
-package Clases.POJO;
-
-import Clases.Jugador;
-import Clases.ZonaBatalla;
+package com.xsrsys.model;
 
 public class ResultadoAtaque
 {

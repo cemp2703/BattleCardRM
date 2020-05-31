@@ -3,35 +3,73 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.xsrsys</groupId>
+    <artifactId>battlecardrm</artifactId>
+    <version>1.0</version>
+	<name>bibliaacont-backend</name>
+	<description>Backend para Proyecto BibliaAcont</description>
+	<packaging>jar</packaging>
+    <parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.9.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
     </properties>
-    <groupId>com.xsr</groupId>
-    <version>1.0</version>
-    <artifactId>battlecardrm</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8</version>
-            <scope>test</scope>
-        </dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.spring4all</groupId>
+		    <artifactId>swagger-spring-boot-starter</artifactId>
+		    <version>1.7.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/pl.pragmatists/JUnitParams -->
+		<dependency>
+		    <groupId>pl.pragmatists</groupId>
+		    <artifactId>JUnitParams</artifactId>
+		    <version>1.1.1</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <!-- Build an executable JAR -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>Consola.MainConsola</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
+	        <plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+	       	<!-- Build an executable JAR -->
+	        <!-- 
+	            <plugin>
+	               
+	                <groupId>org.apache.maven.plugins</groupId>
+	                <artifactId>maven-jar-plugin</artifactId>
+	                <version>2.4</version>
+	                <configuration>
+	                    <archive>
+	                        <manifest>
+	                            <mainClass>Consola.MainConsola</mainClass>
+	                        </manifest>
+	                    </archive>
+	                </configuration>
+	            </plugin>
+	        -->
         </plugins>
     </build>
 </project>

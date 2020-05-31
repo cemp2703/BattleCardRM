@@ -1,22 +1,15 @@
-package Clases;
+package com.xsrsys.model;
 
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import com.xsrsys.model.Carta;
+import com.xsrsys.model.Mano;
+import com.xsrsys.model.VectorCartas;
 
 
 public class VectorCartasTest {
-
-
-    @BeforeMethod
-    public void setUp() throws Exception {
-
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception {
-    }
 
     @Test
     public void testVectorCartasOps() throws Exception{
@@ -25,17 +18,17 @@ public class VectorCartasTest {
         final int POS2 = 2;
         final int POSFUERADEZONA = -1;
         VectorCartas vc=new VectorCartas(Mano.MAXMANOCARDS);
-        Assert.assertEquals(vc.obtenerNumerodeCartas(),0);
+        assertEquals(0,vc.obtenerNumerodeCartas());
         Carta c0 = new Carta(1,Carta.ELEMENTO.COCO);
         Carta c2 = new Carta(3,Carta.ELEMENTO.COCO);
-        Assert.assertEquals(vc.agregarCartaEnEspacioVacio(c0),POS0);
-        Assert.assertEquals(vc.agregarCartaEnPos(c2,POS2),true);
-        Assert.assertEquals(vc.obtenerCartaxId(POS2),c2);
-        Assert.assertEquals(vc.obtenerNumerodeCartas(),2);
-        Assert.assertEquals(vc.quitarCartaenPos(POSFUERADEZONA),false);
-        Assert.assertEquals(vc.quitarCartaenPos(POS2),true);
-        Assert.assertEquals(vc.quitarUltimaCartaDisponible(),POS0);
-        Assert.assertEquals(vc.quitarUltimaCartaDisponible(),VectorCartas.NOCARTASDISPONIBLES);//No quedan cartas disponibles para quitar
+        assertEquals(POS0,vc.agregarCartaEnEspacioVacio(c0));
+        assertEquals(true,vc.agregarCartaEnPos(c2,POS2));
+        assertEquals(c2,vc.obtenerCartaxId(POS2));
+        assertEquals(2,vc.obtenerNumerodeCartas());
+        assertEquals(false,vc.quitarCartaenPos(POSFUERADEZONA));
+        assertEquals(true,vc.quitarCartaenPos(POS2));
+        assertEquals(POS0,vc.quitarUltimaCartaDisponible());
+        assertEquals(VectorCartas.NOCARTASDISPONIBLES,vc.quitarUltimaCartaDisponible());//No quedan cartas disponibles para quitar
     }
 
     @Test
@@ -43,11 +36,11 @@ public class VectorCartasTest {
         VectorCartas vc=new VectorCartas(Mano.MAXMANOCARDS);
         VectorCartas vclone=(VectorCartas)vc.clone();
         vc.agregarCartaEnEspacioVacio(new Carta(1,Carta.ELEMENTO.COCO));
-        Assert.assertNotEquals(vclone,vc);
+        assertNotEquals(vc,vclone);
         vclone=(VectorCartas)vc.clone();
-        Assert.assertEquals(vclone,vc);
+        assertEquals(vc,vclone);
         vc.setMaxNCartas(8);
-        Assert.assertNotEquals(vclone.getMaxNCartas(),vc.getMaxNCartas());
+        assertNotEquals(vc.getMaxNCartas(),vclone.getMaxNCartas());
     }
 
 }

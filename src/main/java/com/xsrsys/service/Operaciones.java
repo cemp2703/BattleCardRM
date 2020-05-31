@@ -1,9 +1,8 @@
-package Juego;
-
-import Clases.*;
-import Clases.POJO.ResultadoAtaque;
+package com.xsrsys.service;
 
 import java.util.Random;
+
+import com.xsrsys.model.*;
 
 public class Operaciones {
 
@@ -79,8 +78,6 @@ public class Operaciones {
             }
         }
     }
-
-
 
 }
 

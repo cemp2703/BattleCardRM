@@ -1,6 +1,4 @@
-package Clases;
-
-import Clases.POJO.ResultadoAtaque;
+package com.xsrsys.model;
 
 public class Jugador implements Cloneable{
 	private String Nombre;
@@ -29,6 +27,17 @@ public class Jugador implements Cloneable{
 
 	//region Operaciones (Reglas)
 
+	public int accionIniciarTurno(){
+		NTurnos++;
+		ZBatalla.renovarPosibilidades();
+		return accionCogerUnaCartaDelDeck();
+	}
+	
+	public static class RESULTADOCOJERUNACARTA{
+		public static final int MANOLLENA = -1; // No se puede cojer una carta porque la mano esta llena
+		public static final int DECKVACIO = -2; // El deck esta vacio
+		public static final int EXITO = 0; //Se cojio una carta
+	}
 	public int accionCogerUnaCartaDelDeck(){
 		if(Mano.obtenerNumerodeCartas() >= Mano.getMaxNCartas())
 			return RESULTADOCOJERUNACARTA.MANOLLENA;
@@ -41,17 +50,22 @@ public class Jugador implements Cloneable{
 			return RESULTADOCOJERUNACARTA.EXITO;
 		}
 	}
-
-	public int accionIniciarTurno(){
-		NTurnos++;
-		ZBatalla.renovarPosibilidades();
-		return accionCogerUnaCartaDelDeck();
+	
+	public boolean puedeColocarCartaEnZB(){
+		return !ZBatalla.cartaColocada;
 	}
-
+	public boolean posibilidadColocarCartaEnPosicion(int idCartaZB,int idCartaMano) {
+		if( ! puedeColocarCartaEnZB())
+			return false;
+		if(this.Mano.obtenerCartaxId(idCartaMano) == null)
+			return false;
+		if(this.ZBatalla.obtenerCartaxId(idCartaZB) != null)
+			return false;
+		return true;
+	}
 	public boolean accionColocarCarta(int idCartaZB,int idCartaMano,int posCarta){
 		boolean respuesta = false;
-		if(this.Mano.obtenerCartaxId(idCartaMano) != null &&
-				this.ZBatalla.obtenerCartaxId(idCartaZB) == null){
+		if(posibilidadColocarCartaEnPosicion(idCartaZB,idCartaMano)){
 			Carta c=this.Mano.obtenerCartaxId(idCartaMano);
 			this.Mano.quitarCartaenPos(idCartaMano);
 			this.ZBatalla.agregarCartaEnPos(c,idCartaZB,posCarta);
@@ -60,15 +74,69 @@ public class Jugador implements Cloneable{
 		return respuesta;
 	}
 
-	public boolean posibilidadAtacarCarta(Jugador JugadorAtacado,int idCartaAtacada,int idCartaAtacante){
+	public boolean puedeAtacarBarreras( Jugador pJugadorAtacado){
+		if(ZBatalla.obtenerNumerodeCartas() == 0)
+			return false;
+		if(pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0)
+			return false;
+		if(ZBatalla.nAtaquesDisponibles == 0)
+			return false;
 		if(NTurnos == 1)
+			return false;
+		return true;
+	}
+	public boolean posibilidadAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante) {
+		if(!puedeAtacarBarreras(JugadorAtacado))
+			return false;
+		if (ZBatalla.obtenerCartaxId(idCartaAtacante) == null)
+			return false;
+		if(ZBatalla.posbatalla[idCartaAtacante] != ZonaBatalla.POSBATALLA.ATAQUE)
+			return false;
+		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
+			return false;
+
+		return true;
+	}
+	public static class RESULTADOATACARBARRERA{
+		public static final int NOSECUMPLENCOND = -1; // No se cumplen las condiciones de ataque
+		public static final int EXITO = 0; //Se atacó a la barrera
+		public static final int SINBARRERAS = -2; //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
+	}
+	public int accionAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante){
+		int respuesta=RESULTADOATACARBARRERA.NOSECUMPLENCOND;
+		if( posibilidadAtacarBarrera(JugadorAtacado,idCartaAtacante) ){
+			JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
+			this.ZBatalla.nAtaquesDisponibles--;
+			if(JugadorAtacado.Barrera.obtenerNumerodeCartas() >  0){
+				respuesta=RESULTADOATACARBARRERA.EXITO;
+			}
+			else{
+				respuesta= RESULTADOATACARBARRERA.SINBARRERAS;
+			}
+            this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
+            this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
+		}
+		return respuesta;
+	}
+	
+	public boolean puedeAtacarCartas( Jugador pJugadorAtacado) {
+		if(ZBatalla.obtenerNumerodeCartas() == 0) 
+			return false;
+		if(pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() == 0) 
+			return false;
+		if(ZBatalla.nAtaquesDisponibles == 0)
+			return false;
+		if(NTurnos == 1)
+			return false;
+		return true;
+	}
+	public boolean posibilidadAtacarCarta(Jugador JugadorAtacado,int idCartaAtacada,int idCartaAtacante){
+		if(!puedeAtacarCartas(JugadorAtacado))
 			return false;
 		if (ZBatalla.obtenerCartaxId(idCartaAtacante) == null)
 			return false;
 		if (JugadorAtacado.ZBatalla.obtenerCartaxId(idCartaAtacada) == null)
 			return false;
-		if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0)
-			return false;
 		if(ZBatalla.posbatalla[idCartaAtacante] != ZonaBatalla.POSBATALLA.ATAQUE)
 			return false;
 		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
@@ -76,60 +144,10 @@ public class Jugador implements Cloneable{
 
 		return true;
 	}
-
-	public boolean posibilidadAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante) {
-		if(NTurnos == 1)
-			return false;
-		if (ZBatalla.obtenerCartaxId(idCartaAtacante) == null)
-			return false;
-		if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0)
-			return false;
-		if(ZBatalla.posbatalla[idCartaAtacante] != ZonaBatalla.POSBATALLA.ATAQUE)
-			return false;
-		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
-			return false;
-		if(JugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0)
-			return false;
-
-		return true;
+	public static class RESULTADOCARTA{
+		public static final int UP = 0; // Carta activa
+		public static final int DOWN = -1; // Carta destruida
 	}
-
-	public boolean puedeColocarCarta(){
-		return !ZBatalla.isCartacolocada();
-	}
-
-	public boolean puedeAtacarAUnaCarta( Jugador pJugadorAtacado){
-		if( ZBatalla.obtenerNumerodeCartas() > 0 && pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() > 0){
-			for(int i=0; i<ZBatalla.getMaxNCartas();i++)
-				for(int j=0; j<ZBatalla.getMaxNCartas();j++)
-					if(posibilidadAtacarCarta(pJugadorAtacado,j,i))
-						return true;
-		}
-		return false;
-	}
-
-	public boolean puedeAtacarAUnaBarrera( Jugador pJugadorAtacado){
-		if( ZBatalla.obtenerNumerodeCartas() > 0 && pJugadorAtacado.ZBatalla.obtenerNumerodeCartas() == 0){
-			for(int i=0; i<ZBatalla.getMaxNCartas();i++)
-				if(posibilidadAtacarBarrera(pJugadorAtacado,i))
-					return true;
-		}
-		return false;
-	}
-
-	public boolean puedecambiarposicion(){
-		if( ZBatalla.obtenerNumerodeCartas() == 0)
-			return false;
-		for(int i=0; i<ZBatalla.getMaxNCartas();i++)
-			if(ZBatalla.posibilidadCambiarPosicionBatalla(i))
-				return true;
-		return false;
-	}
-
-	public boolean accionCambiarPosicionBatalla(int idCartaZBJAct){
-		return ZBatalla.cambiarPosicionBatalla(idCartaZBJAct);
-	}
-
 	public static class RESULTADOATACARCARTA{
 		public static final int NOSECUMPLENCOND = -1; //-1: No se cumplen las condiciones de ataque
 		public static final int EMPATE = 0;
@@ -137,12 +155,6 @@ public class Jugador implements Cloneable{
 		public static final int PIERDEATACANTE = 2; //Pierde Atacante
 		public static final int ENEMIGOSINBARRERA = 3; //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
 	}
-
-	public static class RESULTADOCARTA{
-		public static final int UP = 0; // Carta activa
-		public static final int DOWN = -1; // Carta destruida
-	}
-
 	public ResultadoAtaque accionAtacarCarta(Jugador JugadorAtacado, int idCartaAtacada, int idCartaAtacante){//Sistema de produccion
 		ResultadoAtaque rs = new ResultadoAtaque();
 		rs.resultado = RESULTADOATACARCARTA.NOSECUMPLENCOND;
@@ -211,40 +223,23 @@ public class Jugador implements Cloneable{
 					rs.cartaAtacada = RESULTADOCARTA.UP;
 				}
 			}
+			
+			this.ZBatalla.nAtaquesDisponibles--;
 
 			this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
             this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
 		}
 		return rs;
 	}
-
-	public static class RESULTADOATACARBARRERA{
-		public static final int NOSECUMPLENCOND = -1; // No se cumplen las condiciones de ataque
-		public static final int EXITO = 0; //Se atacó a la barrera
-		public static final int SINBARRERAS = -2; //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
+	
+	public boolean puedeCambiarPosicion(){		
+		return ZBatalla.puedeCambiarPosicion();
 	}
-
-	public int accionAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante){
-		int respuesta=RESULTADOATACARBARRERA.NOSECUMPLENCOND;
-		if( posibilidadAtacarBarrera(JugadorAtacado,idCartaAtacante) ){
-			JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
-
-			if(JugadorAtacado.Barrera.obtenerNumerodeCartas() >  0){
-				respuesta=RESULTADOATACARBARRERA.EXITO;
-			}
-			else{
-				respuesta= RESULTADOATACARBARRERA.SINBARRERAS;
-			}
-            this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
-            this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
-		}
-		return respuesta;
+	public boolean posibilidadCambiarPosicionBatallaEnCarta(int idCartaZBJAct) {
+		return ZBatalla.posibilidadCambiarPosicionBatallaEnCarta(idCartaZBJAct);
 	}
-
-	public static class RESULTADOCOJERUNACARTA{
-		public static final int MANOLLENA = -1; // No se puede cojer una carta porque la mano esta llena
-		public static final int DECKVACIO = -2; // El deck esta vacio
-		public static final int EXITO = 0; //Se cojio una carta
+	public boolean accionCambiarPosicionBatalla(int idCartaZBJAct){
+		return ZBatalla.cambiarPosicionBatalla(idCartaZBJAct);
 	}
 
 	//endregion
@@ -264,7 +259,6 @@ public class Jugador implements Cloneable{
 		if (Barrera != null ? !Barrera.equals(jugador.Barrera) : jugador.Barrera != null) return false;
 		return ZBatalla != null ? ZBatalla.equals(jugador.ZBatalla) : jugador.ZBatalla == null;
 	}
-
 	public Object clone() throws CloneNotSupportedException{
 		Jugador clon= (Jugador) super.clone();
 		clon.Deck=Deck;
