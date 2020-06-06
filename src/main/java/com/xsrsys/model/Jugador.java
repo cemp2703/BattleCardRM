@@ -1,5 +1,7 @@
 package com.xsrsys.model;
 
+import com.xsrsys.model.ZonaBatalla.PosBatalla;
+
 public class Jugador implements Cloneable{
 	private String Nombre;
 	private int NTurnos;
@@ -27,27 +29,34 @@ public class Jugador implements Cloneable{
 
 	//region Operaciones (Reglas)
 
-	public int accionIniciarTurno(){
+	public ResultadoCojerUnaCarta accionIniciarTurno(){
 		NTurnos++;
 		ZBatalla.renovarPosibilidades();
 		return accionCogerUnaCartaDelDeck();
 	}
-	
+	/*
 	public static class RESULTADOCOJERUNACARTA{
 		public static final int MANOLLENA = -1; // No se puede cojer una carta porque la mano esta llena
 		public static final int DECKVACIO = -2; // El deck esta vacio
 		public static final int EXITO = 0; //Se cojio una carta
 	}
-	public int accionCogerUnaCartaDelDeck(){
+	*/
+	public enum ResultadoCojerUnaCarta{
+		MANOLLENA, // No se puede cojer una carta porque la mano esta llena
+		DECKVACIO, // El deck esta vacio
+		EXITO 
+	}
+	
+	public ResultadoCojerUnaCarta accionCogerUnaCartaDelDeck(){
 		if(Mano.obtenerNumerodeCartas() >= Mano.getMaxNCartas())
-			return RESULTADOCOJERUNACARTA.MANOLLENA;
+			return ResultadoCojerUnaCarta.MANOLLENA;
 
 		Carta ncarta= Deck.sacarUnaCarta();
 		if(ncarta == null )
-			return RESULTADOCOJERUNACARTA.DECKVACIO;
+			return ResultadoCojerUnaCarta.DECKVACIO;
 		else{
 			Mano.agregarCartaEnEspacioVacio(ncarta);
-			return RESULTADOCOJERUNACARTA.EXITO;
+			return ResultadoCojerUnaCarta.EXITO;
 		}
 	}
 	
@@ -63,7 +72,7 @@ public class Jugador implements Cloneable{
 			return false;
 		return true;
 	}
-	public boolean accionColocarCarta(int idCartaZB,int idCartaMano,int posCarta){
+	public boolean accionColocarCarta(int idCartaZB,int idCartaMano,PosBatalla posCarta){
 		boolean respuesta = false;
 		if(posibilidadColocarCartaEnPosicion(idCartaZB,idCartaMano)){
 			Carta c=this.Mano.obtenerCartaxId(idCartaMano);
@@ -90,31 +99,27 @@ public class Jugador implements Cloneable{
 			return false;
 		if (ZBatalla.obtenerCartaxId(idCartaAtacante) == null)
 			return false;
-		if(ZBatalla.posbatalla[idCartaAtacante] != ZonaBatalla.POSBATALLA.ATAQUE)
+		if(ZBatalla.posBatalla[idCartaAtacante] != ZonaBatalla.PosBatalla.ATAQUE)
 			return false;
-		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
+		if(ZBatalla.dispAtaque[idCartaAtacante] != ZonaBatalla.DispAtaque.DISPONIBLE)
 			return false;
 
 		return true;
 	}
-	public static class RESULTADOATACARBARRERA{
-		public static final int NOSECUMPLENCOND = -1; // No se cumplen las condiciones de ataque
-		public static final int EXITO = 0; //Se atacó a la barrera
-		public static final int SINBARRERAS = -2; //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
-	}
-	public int accionAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante){
-		int respuesta=RESULTADOATACARBARRERA.NOSECUMPLENCOND;
+
+	public ResultadoAtacarCarta accionAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante){
+		ResultadoAtacarCarta respuesta=ResultadoAtacarCarta.NOSECUMPLENCOND;
 		if( posibilidadAtacarBarrera(JugadorAtacado,idCartaAtacante) ){
 			JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
 			this.ZBatalla.nAtaquesDisponibles--;
 			if(JugadorAtacado.Barrera.obtenerNumerodeCartas() >  0){
-				respuesta=RESULTADOATACARBARRERA.EXITO;
+				respuesta=ResultadoAtacarCarta.BARRERADESTRUIDA;
 			}
 			else{
-				respuesta= RESULTADOATACARBARRERA.SINBARRERAS;
+				respuesta= ResultadoAtacarCarta.ENEMIGOSINBARRERA;
 			}
-            this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
-            this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
+            this.ZBatalla.dispAtaque[idCartaAtacante] = ZonaBatalla.DispAtaque.NODISPONIBLE;
+            this.ZBatalla.dispCambio[idCartaAtacante] = ZonaBatalla.DispCambio.NODISPONIBLE;
 		}
 		return respuesta;
 	}
@@ -137,17 +142,23 @@ public class Jugador implements Cloneable{
 			return false;
 		if (JugadorAtacado.ZBatalla.obtenerCartaxId(idCartaAtacada) == null)
 			return false;
-		if(ZBatalla.posbatalla[idCartaAtacante] != ZonaBatalla.POSBATALLA.ATAQUE)
+		if(ZBatalla.posBatalla[idCartaAtacante] != ZonaBatalla.PosBatalla.ATAQUE)
 			return false;
-		if(ZBatalla.dispataque[idCartaAtacante] != ZonaBatalla.DISPATAQUE.DISPONIBLE)
+		if(ZBatalla.dispAtaque[idCartaAtacante] != ZonaBatalla.DispAtaque.DISPONIBLE)
 			return false;
 
 		return true;
 	}
+	/*
 	public static class RESULTADOCARTA{
 		public static final int UP = 0; // Carta activa
-		public static final int DOWN = -1; // Carta destruida
+		public static final int DOWN = -1; 
+	}*/
+	public enum ResultadoCarta{
+		UP, // Carta activa
+		DOWN // Carta destruida
 	}
+	/*
 	public static class RESULTADOATACARCARTA{
 		public static final int NOSECUMPLENCOND = -1; //-1: No se cumplen las condiciones de ataque
 		public static final int EMPATE = 0;
@@ -155,17 +166,26 @@ public class Jugador implements Cloneable{
 		public static final int PIERDEATACANTE = 2; //Pierde Atacante
 		public static final int ENEMIGOSINBARRERA = 3; //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
 	}
+	*/
+	public enum ResultadoAtacarCarta{
+		NOSECUMPLENCOND, //-1: No se cumplen las condiciones de ataque
+		EMPATE, 
+		GANAATACANTE,  //Gana Atacante contra carta en Zona de Batalla
+		PIERDEATACANTE, //Pierde Atacante
+		BARRERADESTRUIDA, //Destruye una barrera
+		ENEMIGOSINBARRERA //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
+	}
 	public ResultadoAtaque accionAtacarCarta(Jugador JugadorAtacado, int idCartaAtacada, int idCartaAtacante){//Sistema de produccion
 		ResultadoAtaque rs = new ResultadoAtaque();
-		rs.resultado = RESULTADOATACARCARTA.NOSECUMPLENCOND;
+		rs.resultado = ResultadoAtacarCarta.NOSECUMPLENCOND;
 		Carta cartaAtacante = null;
 		Carta cartaAtacada = null;
 
 		if( posibilidadAtacarCarta(JugadorAtacado,idCartaAtacada,idCartaAtacante) ){
 
 			//Jugador Atacado en defensa cara abajo, se revela la carta.
-			if(JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] == ZonaBatalla.POSBATALLA.DEFCARAABAJO){
-				JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] = ZonaBatalla.POSBATALLA.DEFCARAARRIBA;
+			if(JugadorAtacado.ZBatalla.posBatalla[idCartaAtacada] == ZonaBatalla.PosBatalla.DEFCARAABAJO){
+				JugadorAtacado.ZBatalla.posBatalla[idCartaAtacada] = ZonaBatalla.PosBatalla.DEFCARAARRIBA;
 			}
 
 			cartaAtacante = this.ZBatalla.obtenerCartaxId(idCartaAtacante);
@@ -176,58 +196,58 @@ public class Jugador implements Cloneable{
 			rs.elementoCartaAtacada = cartaAtacada.getElemento();
 
 			if(rs.valorCartaAtacante > rs.valorCartaAtacada ){
-				rs.resultado = RESULTADOATACARCARTA.GANAATACANTE;//gana
-				rs.cartaAtacante = RESULTADOCARTA.UP;
-				rs.cartaAtacada = RESULTADOCARTA.DOWN;
+				rs.resultado = ResultadoAtacarCarta.GANAATACANTE;//gana
+				rs.cartaAtacante = ResultadoCarta.UP;
+				rs.cartaAtacada = ResultadoCarta.DOWN;
 			}
 			else if(rs.valorCartaAtacante  < rs.valorCartaAtacada){
-				rs.resultado = RESULTADOATACARCARTA.PIERDEATACANTE;//pierde
-				rs.cartaAtacante = RESULTADOCARTA.DOWN;
-				rs.cartaAtacada = RESULTADOCARTA.UP;
+				rs.resultado = ResultadoAtacarCarta.PIERDEATACANTE;//pierde
+				rs.cartaAtacante = ResultadoCarta.DOWN;
+				rs.cartaAtacada = ResultadoCarta.UP;
 			}
 			else{
-				rs.resultado = RESULTADOATACARCARTA.EMPATE;//empata
+				rs.resultado = ResultadoAtacarCarta.EMPATE;//empata
 			}
 
 			//Jugador Atacado al Ataque
-			if(JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] == ZonaBatalla.POSBATALLA.ATAQUE){
-				rs.posicionCartaAtacada = ZonaBatalla.POSBATALLA.ATAQUE;
-				if(rs.resultado == RESULTADOATACARCARTA.GANAATACANTE){
+			if(JugadorAtacado.ZBatalla.posBatalla[idCartaAtacada] == ZonaBatalla.PosBatalla.ATAQUE){
+				rs.posicionCartaAtacada = ZonaBatalla.PosBatalla.ATAQUE;
+				if(rs.resultado == ResultadoAtacarCarta.GANAATACANTE){
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 					rs.idbarrera = JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
-					rs.barrera = RESULTADOCARTA.DOWN;
+					rs.barrera = ResultadoCarta.DOWN;
 					if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0){
-						rs.resultado = RESULTADOATACARCARTA.ENEMIGOSINBARRERA;
+						rs.resultado = ResultadoAtacarCarta.ENEMIGOSINBARRERA;
 					}
 				}
-				else if(rs.resultado == RESULTADOATACARCARTA.PIERDEATACANTE){//pierde atacante
+				else if(rs.resultado == ResultadoAtacarCarta.PIERDEATACANTE){//pierde atacante
 					this.ZBatalla.quitarCartaenPos(idCartaAtacante);
 				}
 				else{//Empate
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 					this.ZBatalla.quitarCartaenPos(idCartaAtacante);
-					rs.cartaAtacante = RESULTADOCARTA.DOWN;
-					rs.cartaAtacada = RESULTADOCARTA.DOWN;
+					rs.cartaAtacante = ResultadoCarta.DOWN;
+					rs.cartaAtacada = ResultadoCarta.DOWN;
 				}
 			}
-			else if(JugadorAtacado.ZBatalla.posbatalla[idCartaAtacada] == ZonaBatalla.POSBATALLA.DEFCARAARRIBA ){//Jugador Atacado a la Defensa
-				rs.posicionCartaAtacada = ZonaBatalla.POSBATALLA.DEFCARAARRIBA;
-				if(rs.resultado == RESULTADOATACARCARTA.GANAATACANTE){//gana atacante
+			else if(JugadorAtacado.ZBatalla.posBatalla[idCartaAtacada] == ZonaBatalla.PosBatalla.DEFCARAARRIBA ){//Jugador Atacado a la Defensa
+				rs.posicionCartaAtacada = ZonaBatalla.PosBatalla.DEFCARAARRIBA;
+				if(rs.resultado == ResultadoAtacarCarta.GANAATACANTE){//gana atacante
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 				}
-				else if(rs.resultado == RESULTADOATACARCARTA.PIERDEATACANTE){//pierde atacante
+				else if(rs.resultado == ResultadoAtacarCarta.PIERDEATACANTE){//pierde atacante
 					this.ZBatalla.quitarCartaenPos(idCartaAtacante);
 				}
 				else{//Empate
-					rs.cartaAtacante = RESULTADOCARTA.UP;
-					rs.cartaAtacada = RESULTADOCARTA.UP;
+					rs.cartaAtacante = ResultadoCarta.UP;
+					rs.cartaAtacada = ResultadoCarta.UP;
 				}
 			}
 			
 			this.ZBatalla.nAtaquesDisponibles--;
 
-			this.ZBatalla.dispataque[idCartaAtacante] = ZonaBatalla.DISPATAQUE.NODISPONIBLE;
-            this.ZBatalla.dispcambio[idCartaAtacante] = ZonaBatalla.DISPCAMBIO.NODISPONIBLE;
+			this.ZBatalla.dispAtaque[idCartaAtacante] = ZonaBatalla.DispAtaque.NODISPONIBLE;
+            this.ZBatalla.dispCambio[idCartaAtacante] = ZonaBatalla.DispCambio.NODISPONIBLE;
 		}
 		return rs;
 	}

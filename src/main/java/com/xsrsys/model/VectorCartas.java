@@ -15,8 +15,7 @@ public class VectorCartas implements Cloneable{
 		if (this == o) return true;
 		if (!(o instanceof VectorCartas)) return false;
 		VectorCartas that = (VectorCartas) o;
-		return MaxNCartas == that.MaxNCartas &&
-				Arrays.equals(carta, that.carta);
+		return MaxNCartas == that.MaxNCartas && Arrays.equals(carta, that.carta);
 	}
 
 	public VectorCartas(int ncartas){
@@ -52,15 +51,16 @@ public class VectorCartas implements Cloneable{
 		return n;
 	}
 	
-	public int agregarCartaEnEspacioVacio(Carta c){
-		if(obtenerNumerodeCartas()==MaxNCartas)
-			return NOSEPUEDEAGREGARCARTAS;
-
+	public boolean agregarCartaEnEspacioVacio(Carta c){		
+		boolean resp = false;
+		
 		for(int i=0;i< MaxNCartas;i++){
-			if(agregarCartaEnPos(c,i))
-				return i;
+			if(agregarCartaEnPos(c,i)) {
+				resp=true;
+				break;
+			}	
 		}
-		return NOSEPUEDEAGREGARCARTAS;
+		return resp;
 	}
 
 	public boolean agregarCartaEnPos(Carta c,int id){
@@ -72,7 +72,6 @@ public class VectorCartas implements Cloneable{
 		}
 		else
 			return false;
-
 	}
 	
 	public Carta obtenerCartaxId(int id){

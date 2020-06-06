@@ -3,6 +3,8 @@ package com.xsrsys.service;
 import java.util.Random;
 
 import com.xsrsys.model.*;
+import com.xsrsys.model.Carta;
+import com.xsrsys.model.ZonaBatalla.PosBatalla;
 
 public class Operaciones {
 
@@ -19,13 +21,11 @@ public class Operaciones {
         public static final int AVANZADO = 2; // Avanzado (MaxMin)
     }
 
-    public int CartaPosSel;//posicion  de ataque, defenza, etc  almacenado temporalmente para la carta a colocar en la zona de batalla
+    public PosBatalla CartaPosSel;//posicion  de ataque, defenza, etc  almacenado temporalmente para la carta a colocar en la zona de batalla
     public int IdCartaZonaBSel;//id de posicion en Zona de batalla
     public int IdCartaZonaBSelEnemigo;//id de posicion en Zona de batalla Enemiga
     public int IdCartaManoSel;//id de segunda posicion almacenada temporalmente
-
-    private final int MAXVALORCARTA = 13;
-    private final int MAXNUMEROELEMENTOCARTAS = 4;
+    
     private boolean cartaselegidas[][];
     public ResultadoAtaque resATK;
 
@@ -35,8 +35,8 @@ public class Operaciones {
         IdCartaZonaBSel=-1;
         IdCartaManoSel=-1;
         IdCartaZonaBSelEnemigo= -1;
-        CartaPosSel= ZonaBatalla.POSBATALLA.NOHAYCARTA;
-        cartaselegidas=new boolean[MAXNUMEROELEMENTOCARTAS][MAXVALORCARTA];
+        CartaPosSel= ZonaBatalla.PosBatalla.NOHAYCARTA;
+        cartaselegidas=new boolean[Carta.getNumeroElementosCartas()][Carta.MAXVALORCARTA];
         resATK = null;
     }
 
@@ -54,11 +54,14 @@ public class Operaciones {
 
         cartasrepartidas=0;
 
+        int numeroElementosCartas = Carta.getNumeroElementosCartas();
+        
         while(cartasrepartidas < Deck.MAXDECK ){
             rm=new Random();
-            n=rm.nextInt(MAXNUMEROELEMENTOCARTAS);
+            
+            n=rm.nextInt(numeroElementosCartas);
             rm=new Random();
-            m=rm.nextInt(MAXVALORCARTA);
+            m=rm.nextInt(Carta.MAXVALORCARTA);
 
             if(!cartaselegidas[n][m]){
                 cartaselegidas[n][m]=true;
@@ -66,13 +69,13 @@ public class Operaciones {
                 cartasrepartidas++;
 
                 if(jug.Barrera.obtenerNumerodeCartas()<Barrera.MAXBARRERACARDS){
-                    jug.Barrera.agregarCartaEnEspacioVacio(new Carta(n,m+1));
+                    jug.Barrera.agregarCartaEnEspacioVacio(new Carta(m+1,Carta.Elemento.values()[n]));
                 }
                 else if(jug.Mano.obtenerNumerodeCartas()<Mano.MAXMANOCARDS){
-                    jug.Mano.agregarCartaEnEspacioVacio(new Carta(n,m+1));
+                    jug.Mano.agregarCartaEnEspacioVacio(new Carta(m+1,Carta.Elemento.values()[n]));
                 }
                 else if(jug.Deck.Deck.size()< maximoendeck ){
-                    jug.Deck.agregarUnaCarta(new Carta(n,m+1));
+                    jug.Deck.agregarUnaCarta(new Carta(m+1,Carta.Elemento.values()[n]));
                 }
 
             }

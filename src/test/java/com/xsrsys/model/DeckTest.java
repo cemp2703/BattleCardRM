@@ -13,7 +13,7 @@ public class DeckTest {
     public void testDeckOps() throws Exception {
         Deck d=new Deck();
         Carta CNULL= null;
-        Carta c=new Carta(Carta.ELEMENTO.ESPADA,3);
+        Carta c=new Carta(3,Carta.Elemento.ESPADA);
         assertEquals(null,d.sacarUnaCarta());//no hay cartas que sacar
         assertEquals(false,d.agregarUnaCarta(CNULL));//El objeto carta es nulo
         assertEquals(true,d.agregarUnaCarta(c));
@@ -30,7 +30,7 @@ public class DeckTest {
     public void testClone() throws Exception {
         Deck d=new Deck();
         Deck dclone=(Deck)d.clone();
-        Carta c=new Carta(Carta.ELEMENTO.ESPADA,6);
+        Carta c=new Carta(6,Carta.Elemento.ESPADA);
         d.agregarUnaCarta(c);
         assertNotEquals(d,dclone);
         dclone=(Deck)d.clone();

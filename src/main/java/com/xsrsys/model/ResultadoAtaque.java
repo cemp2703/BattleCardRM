@@ -1,28 +1,33 @@
 package com.xsrsys.model;
 
+import com.xsrsys.model.Carta.Elemento;
+import com.xsrsys.model.Jugador.ResultadoAtacarCarta;
+import com.xsrsys.model.Jugador.ResultadoCarta;
+import com.xsrsys.model.ZonaBatalla.PosBatalla;
+
 public class ResultadoAtaque
 {
     public int valorCartaAtacante;
-    public int elementoCartaAtacante;
+    public Elemento elementoCartaAtacante;
     public int valorCartaAtacada;
-    public int elementoCartaAtacada;
-    public int posicionCartaAtacada;
-    public int resultado;
-    public int cartaAtacante;
-    public int cartaAtacada;
-    public int barrera;
+    public Elemento elementoCartaAtacada;
+    public PosBatalla posicionCartaAtacada;
+    public ResultadoAtacarCarta resultado;
+    public ResultadoCarta cartaAtacante;
+    public ResultadoCarta cartaAtacada;
+    public ResultadoCarta barrera;
     public int idbarrera;
 
     public ResultadoAtaque(){
         valorCartaAtacante= -1;
-        elementoCartaAtacante = -1;
+        elementoCartaAtacante = Elemento.COCO;
         valorCartaAtacada= -1;
-        elementoCartaAtacada = -1;
-        posicionCartaAtacada = ZonaBatalla.POSBATALLA.NOHAYCARTA;
-        resultado = Jugador.RESULTADOATACARCARTA.NOSECUMPLENCOND;
-        cartaAtacante = Jugador.RESULTADOCARTA.UP;
-        cartaAtacada = Jugador.RESULTADOCARTA.UP;
-        barrera = Jugador.RESULTADOCARTA.UP;
+        elementoCartaAtacada = Elemento.COCO;
+        posicionCartaAtacada = ZonaBatalla.PosBatalla.NOHAYCARTA;
+        resultado = Jugador.ResultadoAtacarCarta.NOSECUMPLENCOND;
+        cartaAtacante = Jugador.ResultadoCarta.UP;
+        cartaAtacada = Jugador.ResultadoCarta.UP;
+        barrera = Jugador.ResultadoCarta.UP;
         idbarrera= -1;
     }
 }

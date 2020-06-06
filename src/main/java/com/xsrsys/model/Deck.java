@@ -3,7 +3,7 @@ package com.xsrsys.model;
 import java.util.Stack;
 
 public class Deck implements Cloneable {
-	public static final int MAXDECK = 52;
+	public static final int MAXDECK = Carta.MAXVALORCARTA*Carta.getNumeroElementosCartas();
 	
 	public Stack<Carta> Deck;
 

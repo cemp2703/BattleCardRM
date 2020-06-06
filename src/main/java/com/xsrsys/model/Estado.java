@@ -1,5 +1,6 @@
 package com.xsrsys.model;
 
+import com.xsrsys.model.Jugador.ResultadoCojerUnaCarta;
 
 public class Estado implements Cloneable {
 	public Jugador JugadorActual;
@@ -45,7 +46,7 @@ public class Estado implements Cloneable {
 		return clon;
 	}
 
-	public int cambioDeTurno(){
+	public ResultadoCojerUnaCarta cambioDeTurno(){
 		Jugador JugadorTmp = JugadorActual;
 		JugadorActual = JugadorAnterior;
 		JugadorAnterior = JugadorTmp;
@@ -57,9 +58,9 @@ public class Estado implements Cloneable {
 			TurnoActual = TURNO.JUGADOR1;
 
 		}
-		int res= JugadorActual.accionIniciarTurno();
+		ResultadoCojerUnaCarta res= JugadorActual.accionIniciarTurno();
 
-		if( res == Jugador.RESULTADOCOJERUNACARTA.DECKVACIO) {
+		if( res == Jugador.ResultadoCojerUnaCarta.DECKVACIO) {
 			terminoSinCartas();
 		}
 		return res;

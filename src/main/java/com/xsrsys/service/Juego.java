@@ -1,10 +1,14 @@
 package com.xsrsys.service;
 
 import com.xsrsys.model.Barrera;
+import com.xsrsys.model.Carta.Elemento;
 import com.xsrsys.model.Estado;
 import com.xsrsys.model.Jugador;
+import com.xsrsys.model.Jugador.ResultadoAtacarCarta;
+import com.xsrsys.model.Jugador.ResultadoCojerUnaCarta;
 import com.xsrsys.model.Mano;
 import com.xsrsys.model.ZonaBatalla;
+import com.xsrsys.model.ZonaBatalla.PosBatalla;
 
 public class Juego {
 
@@ -136,23 +140,23 @@ public class Juego {
                 break;
             case ATAQUE_CARTA_REALIZADO://Ataque Carta Realizado
             	resp+="Ataque Realizado!!\n";
-                if(Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.GANAATACANTE)
+                if(Ops.resATK.resultado == Jugador.ResultadoAtacarCarta.GANAATACANTE)
                 	resp+="Victoria!!\n";
-                else if(Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.PIERDEATACANTE)
+                else if(Ops.resATK.resultado == Jugador.ResultadoAtacarCarta.PIERDEATACANTE)
                 	resp+="Derrota!!\n";
-                else if(Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.EMPATE)
+                else if(Ops.resATK.resultado == Jugador.ResultadoAtacarCarta.EMPATE)
                 	resp+="Empate!!\n";
                 resp+="     Tu Carta     |        Enemigo         \n";
                 resp+= Ops.resATK.valorCartaAtacante+" ("+obtenerStringElementoUnicode(Ops.resATK.elementoCartaAtacante)+") " +
                         "(Al Ataque)"+
                         "  |   " +
                         Ops.resATK.valorCartaAtacada+" ("+obtenerStringElementoUnicode(Ops.resATK.elementoCartaAtacada)+") "+
-                        (Ops.resATK.posicionCartaAtacada == ZonaBatalla.POSBATALLA.ATAQUE? "(Al Ataque)" : "(A la Defensa) ") +"\n";
-                if(Ops.resATK.barrera == Jugador.RESULTADOCARTA.DOWN)
+                        (Ops.resATK.posicionCartaAtacada == ZonaBatalla.PosBatalla.ATAQUE? "(Al Ataque)" : "(A la Defensa) ") +"\n";
+                if(Ops.resATK.barrera == Jugador.ResultadoCarta.DOWN)
                     resp+="Barrera enemiga destruida\n";
-                if(Ops.resATK.cartaAtacante == Jugador.RESULTADOCARTA.DOWN)
+                if(Ops.resATK.cartaAtacante == Jugador.ResultadoCarta.DOWN)
                     resp+="Tu Carta en Zona de Batalla ha sido destruida\n";
-                if(Ops.resATK.cartaAtacada == Jugador.RESULTADOCARTA.DOWN)
+                if(Ops.resATK.cartaAtacada == Jugador.ResultadoCarta.DOWN)
                     resp+="Carta enemiga en Zona de Batalla destruida\n";
                 resp+="Ingrese (C) para continuar\n";
                 break;
@@ -210,7 +214,7 @@ public class Juego {
             if(E.Jugador1.ZBatalla.obtenerCartaxId(i) != null)
                 resp+=E.Jugador1.ZBatalla.obtenerCartaxId(i).getValor()+ " " +
                         obtenerStringElementoUnicode(E.Jugador1.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
-                        obtenerStringPosCarta(E.Jugador1.ZBatalla.posbatalla[i]) + " | ";
+                        obtenerStringPosCarta(E.Jugador1.ZBatalla.posBatalla[i]) + " | ";
             else
                 resp+="VACIO | ";
         }
@@ -239,7 +243,7 @@ public class Juego {
             if(E.Jugador2.ZBatalla.obtenerCartaxId(i) != null)
                 resp+=E.Jugador2.ZBatalla.obtenerCartaxId(i).getValor() + " " +
                         obtenerStringElementoUnicode(E.Jugador2.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
-                        obtenerStringPosCarta(E.Jugador2.ZBatalla.posbatalla[i]) + " | ";
+                        obtenerStringPosCarta(E.Jugador2.ZBatalla.posBatalla[i]) + " | ";
             else
                 resp+="VACIO | ";
         }
@@ -250,23 +254,23 @@ public class Juego {
         return resp;
     }
     
-    String obtenerStringElementoUnicode(int n){
+    String obtenerStringElementoUnicode(Elemento e){
         String elemento = "";
-        switch(n){
-            case 0: elemento =  "\u2665"; break;
-            case 1: elemento = "\u2666"; break;
-            case 2: elemento = "\u2663"; break;
-            case 3: elemento = "\u2660"; break;
+        switch(e){
+            case CORAZON: elemento =  "\u2665"; break;
+            case COCO: elemento = "\u2666"; break;
+            case TREBOL: elemento = "\u2663"; break;
+            case ESPADA: elemento = "\u2660"; break;
         }
         return elemento;
     }
     
-    String obtenerStringPosCarta(int poscarta){
-        switch(poscarta){
-            case 0: return "VACIO";
-            case 1: return "ATQ";
-            case 2: return "DBA"; //defensa boca abajo
-            case 3: return "DBV"; //defensa boca arriba
+    String obtenerStringPosCarta(PosBatalla posBatalla){
+        switch(posBatalla){
+            case NOHAYCARTA: return "VACIO";
+            case ATAQUE: return "ATQ";
+            case DEFCARAABAJO: return "DBA"; //defensa boca abajo
+            case DEFCARAARRIBA: return "DBV"; //defensa boca arriba
             default: return "";
         }
     }
@@ -314,13 +318,13 @@ public class Juego {
     }
     
     public void colocarSeleccionarPosicionBatallaAtaque() {
-        E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.POSBATALLA.ATAQUE);
+        E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.PosBatalla.ATAQUE);
         dialogo = Dialogo.CARTA_COLOCADA;
         momento = MomentoJuego.COLOCAR_CARTACOLOCADA;
     }
     
     public void colocarSeleccionarPosicionBatallaDefensa() {
-        E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.POSBATALLA.DEFCARAABAJO);
+        E.JugadorActual.accionColocarCarta(Ops.IdCartaZonaBSel, Ops.IdCartaManoSel, ZonaBatalla.PosBatalla.DEFCARAABAJO);
         dialogo = Dialogo.CARTA_COLOCADA;
         momento = MomentoJuego.COLOCAR_CARTACOLOCADA;
     }
@@ -343,11 +347,11 @@ public class Juego {
     public void atacarCartaSeleccionarZonaBatallaEnemiga(int IdCartaZonaBSelEnemigo) {
         Ops.IdCartaZonaBSelEnemigo = IdCartaZonaBSelEnemigo;
         Ops.resATK = E.JugadorActual.accionAtacarCarta(E.JugadorAnterior, Ops.IdCartaZonaBSelEnemigo, Ops.IdCartaZonaBSel);
-        if (Ops.resATK.resultado == Jugador.RESULTADOATACARCARTA.ENEMIGOSINBARRERA) {
+        if (Ops.resATK.resultado == Jugador.ResultadoAtacarCarta.ENEMIGOSINBARRERA) {
             E.terminoSinBarreras();
             dialogo = Dialogo.JUGADORSINCARTASBARRERA;
             momento = MomentoJuego.JUGADORSINCARTASBARRERA;
-        } else if (Ops.resATK.resultado != Jugador.RESULTADOATACARCARTA.NOSECUMPLENCOND) {
+        } else if (Ops.resATK.resultado != Jugador.ResultadoAtacarCarta.NOSECUMPLENCOND) {
             dialogo = Dialogo.ATAQUE_CARTA_REALIZADO;
             momento = MomentoJuego.ATACARCARTA_ATAQUEREALIZADO;
         }
@@ -362,11 +366,11 @@ public class Juego {
     
     public void atacarBarreraSeleccionarZonaBatalla(int IdCartaZonaBSel) {
         Ops.IdCartaZonaBSel = IdCartaZonaBSel;
-        int res = E.JugadorActual.accionAtacarBarrera(E.JugadorAnterior, Ops.IdCartaZonaBSel);
-        if (res == Jugador.RESULTADOATACARBARRERA.EXITO) {
+        ResultadoAtacarCarta res = E.JugadorActual.accionAtacarBarrera(E.JugadorAnterior, Ops.IdCartaZonaBSel);
+        if (res == Jugador.ResultadoAtacarCarta.BARRERADESTRUIDA) {
             dialogo = Dialogo.ATAQUE_BARRERA_REALIZADO;
             momento = MomentoJuego.ATACARBARRERA_ATAQUEREALIZADO;
-        } else if (res == Jugador.RESULTADOATACARBARRERA.SINBARRERAS) {
+        } else if (res == Jugador.ResultadoAtacarCarta.ENEMIGOSINBARRERA) {
             E.terminoSinBarreras();
             dialogo = Dialogo.JUGADORSINCARTASBARRERA;
             momento = MomentoJuego.JUGADORSINCARTASBARRERA;
@@ -389,12 +393,12 @@ public class Juego {
     }
     
     public void cambiarTurno() {
-        int res = E.cambioDeTurno();
-        if (res == Jugador.RESULTADOCOJERUNACARTA.EXITO || res == Jugador.RESULTADOCOJERUNACARTA.MANOLLENA) {
+    	ResultadoCojerUnaCarta res = E.cambioDeTurno();
+        if (res == Jugador.ResultadoCojerUnaCarta.EXITO || res == Jugador.ResultadoCojerUnaCarta.MANOLLENA) {
             dialogo = Dialogo.OPCIONESENTURNO;
             momento = MomentoJuego.OPCIONESENTURNO;
         }
-        else if (res == Jugador.RESULTADOCOJERUNACARTA.DECKVACIO) {
+        else if (res == Jugador.ResultadoCojerUnaCarta.DECKVACIO) {
             dialogo = Dialogo.JUGADORSINCARTASBARRERA;
             momento = MomentoJuego.JUGADORSINCARTASBARRERA;
         }

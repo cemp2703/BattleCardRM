@@ -4,16 +4,18 @@ package com.xsrsys.model;
 public class Carta implements Cloneable{
 
 	private int valor;
-
-	private int elemento;
-	public static class ELEMENTO {
-		public final static int CORAZON = 0; // Unicode 2665
-		public final static int COCO = 1; // Unicode 2666
-		public final static int TREBOL = 2; // Unicode 2663
-		public final static int ESPADA = 3;  // Unicode 2660
-	}
+	private Elemento elemento;
 	
-	public Carta(int pelemento,int pvalor){
+    public static final int MAXVALORCARTA = 13;
+	
+	public enum Elemento {
+		CORAZON,// Unicode 2665
+		COCO, // Unicode 2666
+		TREBOL, // Unicode 2663
+		ESPADA // Unicode 2660
+    }
+	
+	public Carta(int pvalor,Elemento pelemento){
 		valor=pvalor;
 		elemento=pelemento;
 	}
@@ -26,22 +28,25 @@ public class Carta implements Cloneable{
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Carta)) return false;
-
+		if (!(o instanceof Carta)) 
+			return false;
 		Carta carta = (Carta) o;
-
-		if (valor != carta.valor) return false;
-		return elemento == carta.elemento;
+		if (valor != carta.valor || elemento!=carta.elemento)  
+			return false;
+		return true;
 	}
 
 	public int getValor() {
 		return valor;
 	}
 
-	public int getElemento() {
+	public Elemento getElemento() {
 		return elemento;
 	}
 
+	public static int getNumeroElementosCartas() {
+		return Carta.Elemento.values().length;
+	} 
 
 
 }

@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.xsrsys.model.Estado;
+import com.xsrsys.model.Jugador.ResultadoAtacarCarta;
 import com.xsrsys.model.Mano;
 import com.xsrsys.model.ResultadoAtaque;
 import com.xsrsys.model.ZonaBatalla;
+import com.xsrsys.model.ZonaBatalla.PosBatalla;
 
 public class IA {
 	public List<Estado> EstadosGenerados;
@@ -37,9 +39,9 @@ public class IA {
 						ENuevo=null;
 						ENuevo=(Estado)EI.clone();
 						if(j==0)
-							ENuevo.Jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.Jugador2.Mano.obtenerCartaxId(i),j+1);
+							ENuevo.Jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.Jugador2.Mano.obtenerCartaxId(i),PosBatalla.ATAQUE);
 						else
-							ENuevo.Jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.Jugador2.Mano.obtenerCartaxId(i),j+2);
+							ENuevo.Jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.Jugador2.Mano.obtenerCartaxId(i),PosBatalla.DEFCARAABAJO);
 						EstadosColocados.add(ENuevo);
 					}
 					else{
@@ -67,15 +69,15 @@ public class IA {
 						vcumple[l]=false;
 					}
 					if(j==2 || (j==1 && k==0) || (j==1 && k==1) || (j==0 && k==0) ){
-						if(ENuevo.Jugador2.ZBatalla.posbatalla[0]>=2)
+						if(ENuevo.Jugador2.ZBatalla.posBatalla[0]==PosBatalla.DEFCARAABAJO || ENuevo.Jugador2.ZBatalla.posBatalla[0]==PosBatalla.DEFCARAARRIBA)
 							vcumple[0]=ENuevo.Jugador2.accionCambiarPosicionBatalla(0);
 					}
 					if(j==2 || (j==1 && k==0) ||  (j==1 && k==2) || (j==0 && k==1)){
-						if(ENuevo.Jugador2.ZBatalla.posbatalla[1]>=2)
+						if(ENuevo.Jugador2.ZBatalla.posBatalla[1]==PosBatalla.DEFCARAABAJO || ENuevo.Jugador2.ZBatalla.posBatalla[1]==PosBatalla.DEFCARAARRIBA)
 						vcumple[1]=ENuevo.Jugador2.accionCambiarPosicionBatalla(1);
 					}
 					if(j==2 || (j==1 && k==2) || (j==1 && k==1) || (j==0 && k==2)){
-						if(ENuevo.Jugador2.ZBatalla.posbatalla[2]>=2)
+						if(ENuevo.Jugador2.ZBatalla.posBatalla[2]==PosBatalla.DEFCARAABAJO || ENuevo.Jugador2.ZBatalla.posBatalla[2]==PosBatalla.DEFCARAARRIBA)
 						vcumple[2]=ENuevo.Jugador2.accionCambiarPosicionBatalla(2);
 					}
 					cnt=0;
@@ -118,7 +120,7 @@ public class IA {
 						for(int j=0;j<=n;j++){//Origenes
 							//Ataques
 							if(vcumple[j] = ENuevo.Jugador2.posibilidadAtacarCarta(ENuevo.Jugador1, v[j],j)){
-								resp=ENuevo.Jugador2.accionAtacarCarta(ENuevo.Jugador1,v[j],j);
+								resp= ENuevo.Jugador2.accionAtacarCarta(ENuevo.Jugador1,v[j],j);
 							}
 							else if(vcumple[j] = ENuevo.Jugador2.posibilidadAtacarBarrera(ENuevo.Jugador1, j)){
 								resp.resultado=ENuevo.Jugador2.accionAtacarBarrera( ENuevo.Jugador1, j);
@@ -126,7 +128,7 @@ public class IA {
 							else{
 								//No se genera estado
 							}
-							if(resp.resultado==3){
+							if(resp.resultado== ResultadoAtacarCarta.ENEMIGOSINBARRERA){
 								ENuevo.setTermino(2);
 								break;
 							}
@@ -152,7 +154,7 @@ public class IA {
 							if(EstadosCambiadosATK.get(i).Jugador2.posibilidadAtacarCarta(EstadosCambiadosATK.get(i).Jugador1, k,j)){
 								ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
 								resp=ENuevo.Jugador2.accionAtacarCarta(ENuevo.Jugador1,k,j);
-								if(resp.resultado==3)
+								if(resp.resultado==ResultadoAtacarCarta.ENEMIGOSINBARRERA)
 									ENuevo.setTermino(2);
 								EstadosAtacando.add(ENuevo);
 							}
@@ -160,7 +162,7 @@ public class IA {
 								if(!atacobarrera){
 									ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
 									resp.resultado = ENuevo.Jugador2.accionAtacarBarrera( ENuevo.Jugador1, j);
-									if(resp.resultado == 3)
+									if(resp.resultado == ResultadoAtacarCarta.ENEMIGOSINBARRERA)
 										ENuevo.setTermino(2);
 									EstadosAtacando.add(ENuevo);
 									atacobarrera=true;
@@ -198,15 +200,15 @@ public class IA {
 					}
 					
 					if(j==2 || (j==1 && k==0) || (j==1 && k==2) || (j==0 && k==0) ){
-						if(ENuevo.Jugador2.ZBatalla.posbatalla[0]==1)
+						if(ENuevo.Jugador2.ZBatalla.posBatalla[0]==PosBatalla.ATAQUE)
 						vcumple[0]=ENuevo.Jugador2.accionCambiarPosicionBatalla(0);
 					}
 					if(j==2 || (j==1 && k==0) ||  (j==1 && k==1) || (j==0 && k==1)){
-						if(ENuevo.Jugador2.ZBatalla.posbatalla[1]==1)
+						if(ENuevo.Jugador2.ZBatalla.posBatalla[1]==PosBatalla.ATAQUE)
 						vcumple[1]=ENuevo.Jugador2.accionCambiarPosicionBatalla(1);
 					}
 					if(j==2 || (j==1 && k==1) || (j==1 && k==2) || (j==0 && k==2)){
-						if(ENuevo.Jugador2.ZBatalla.posbatalla[2]==1)
+						if(ENuevo.Jugador2.ZBatalla.posBatalla[2]==PosBatalla.ATAQUE)
 						vcumple[2]=ENuevo.Jugador2.accionCambiarPosicionBatalla(2);
 					}
 					
@@ -324,7 +326,7 @@ public class IA {
 		}
 		//variables que se usan para llegar al arreglo
 		int valCarMaq, valCarHum;
-		int estCarMaq, estCarHum;
+		PosBatalla estCarMaq, estCarHum;
 
 		//VALOR DE MAQ
 		for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
@@ -382,12 +384,12 @@ public class IA {
 	 * @param eCH Estado Carta de JUGADOR (HUMANO)
 	 * @return Retorna un valor en factor al valor recibido como parametro
 	 */
-	private double evalValorDeCartaParcMAQ(int vCM, int vCH, int eCM, int eCH ){
+	private double evalValorDeCartaParcMAQ(int vCM, int vCH, PosBatalla eCM, PosBatalla eCH ){
 		//Si carta humana esta boca abajo en def
-		if(eCH == ZonaBatalla.POSBATALLA.DEFCARAABAJO)
+		if(eCH == ZonaBatalla.PosBatalla.DEFCARAABAJO)
 			return vCM;
 		//Si carta bot esta en defensa en def
-		if(eCM == ZonaBatalla.POSBATALLA.DEFCARAARRIBA || eCM == ZonaBatalla.POSBATALLA.DEFCARAABAJO){
+		if(eCM == ZonaBatalla.PosBatalla.DEFCARAARRIBA || eCM == ZonaBatalla.PosBatalla.DEFCARAABAJO){
 			if(vCM > vCH)
 				return vCM * FACTORBOT.DEFVICTORIA;
 			if(vCM == vCH)
@@ -396,7 +398,7 @@ public class IA {
 				return vCM * FACTORBOT.DEFDERROTA;
 		}
 		//Si carta bot esta en atk
-		if(eCM == ZonaBatalla.POSBATALLA.ATAQUE){
+		if(eCM == ZonaBatalla.PosBatalla.ATAQUE){
 			if(vCM > vCH)
 				return vCM * FACTORBOT.ATKVICTORIA;
 			if(vCM == vCH)
@@ -426,12 +428,12 @@ public class IA {
 	 * @param eCH Estado Carta de JUGADOR (HUMANO)
 	 * @return Retorna un valor en factor al valor recibido como parametro
 	 */
-	private double evalValorDeCartaParcHUM(int vCM, int vCH, int eCM, int eCH ){
+	private double evalValorDeCartaParcHUM(int vCM, int vCH, PosBatalla eCM, PosBatalla eCH ){
 		//Si carta enemiga esta boca abajo en def
-		if(eCH == ZonaBatalla.POSBATALLA.DEFCARAABAJO)
+		if(eCH == ZonaBatalla.PosBatalla.DEFCARAABAJO)
 			return FACTORJUG.CARTAHUMANABOCAABAJO;
 		//Si carta maq en def
-		if(eCM == ZonaBatalla.POSBATALLA.DEFCARAARRIBA || eCM == ZonaBatalla.POSBATALLA.DEFCARAABAJO){
+		if(eCM == ZonaBatalla.PosBatalla.DEFCARAARRIBA || eCM == ZonaBatalla.PosBatalla.DEFCARAABAJO){
 			if(vCH > vCM)
 				return vCH * FACTORJUG.DEFVICTORIA;
 			if(vCH == vCM)
@@ -440,7 +442,7 @@ public class IA {
 				return vCH * FACTORJUG.DEFDERROTA;
 		}
 		//Si carta maq en atk
-		if(eCM == ZonaBatalla.POSBATALLA.ATAQUE){
+		if(eCM == ZonaBatalla.PosBatalla.ATAQUE){
 			if(vCH > vCM)
 				return vCH * FACTORJUG.ATKVICTORIA;
 			if(vCH == vCM)
