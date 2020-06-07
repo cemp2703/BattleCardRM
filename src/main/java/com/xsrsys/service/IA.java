@@ -5,18 +5,34 @@ import java.util.List;
 import java.util.Random;
 
 import com.xsrsys.model.Estado;
-import com.xsrsys.model.Jugador.ResultadoAtacarCarta;
+import com.xsrsys.model.Jugador.VeredictoAtaque;
 import com.xsrsys.model.Mano;
 import com.xsrsys.model.ResultadoAtaque;
 import com.xsrsys.model.ZonaBatalla;
 import com.xsrsys.model.ZonaBatalla.PosBatalla;
 
+
 public class IA {
 	public List<Estado> EstadosGenerados;
 	Estado EstadoInicial;
 	
+	public Termino termino; //Reglas que finalizan el juego
+
+	public enum Termino{
+		ENJUEGO, //El juego aun no llega a una condicion de victoria/derrota
+		SINCARTAS, //Jugador actual se quedo sin cartas
+		SINBARRERAS //Jugador Anterior perdió todas sus barreras
+	}
+	
 	public IA(){
 		EstadosGenerados=new ArrayList<Estado>();
+	}
+	
+	public Termino getTermino() {
+		return termino;
+	}
+	public void setTermino(Termino termino) {
+		this.termino = termino;
 	}
 	
 	public void cargarEstado(Estado E){
@@ -32,16 +48,16 @@ public class IA {
 		EstadosColocados.add(EI);
 		
 		//Colocar carta (Se crean los 11 estados iniciales para luego entrar en la generacion por ataque)
-		if(EI.Jugador2.ZBatalla.obtenerNumerodeCartas()< ZonaBatalla.MAXZONABATALLACARDS){
+		if(EI.jugador2.ZBatalla.obtenerNumerodeCartas()< ZonaBatalla.MAXZONABATALLACARDS){
 			for (int i = 0; i < Mano.MAXMANOCARDS; i++) {
 				for(int j=0;j< 2;j++){//colocar en posicion de ataque o defenza
-					if(EI.Jugador2.Mano.obtenerCartaxId(i)!=null){//Exista carta en posicion mano
+					if(EI.jugador2.Mano.obtenerCartaxId(i)!=null){//Exista carta en posicion mano
 						ENuevo=null;
 						ENuevo=(Estado)EI.clone();
 						if(j==0)
-							ENuevo.Jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.Jugador2.Mano.obtenerCartaxId(i),PosBatalla.ATAQUE);
+							ENuevo.jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.jugador2.Mano.obtenerCartaxId(i),PosBatalla.ATAQUE);
 						else
-							ENuevo.Jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.Jugador2.Mano.obtenerCartaxId(i),PosBatalla.DEFCARAABAJO);
+							ENuevo.jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.jugador2.Mano.obtenerCartaxId(i),PosBatalla.DEFCARAABAJO);
 						EstadosColocados.add(ENuevo);
 					}
 					else{
@@ -62,23 +78,23 @@ public class IA {
 		while(i<EstadosColocados.size()){
 			ENuevo=(Estado)EstadosColocados.get(i).clone();
 			EstadosCambiadosATK.add(ENuevo);
-			for(int j=0;j<EstadosColocados.get(i).Jugador2.ZBatalla.obtenerNumerodeCartas();j++){
+			for(int j=0;j<EstadosColocados.get(i).jugador2.ZBatalla.obtenerNumerodeCartas();j++){
 				for(int k=0;k<3;k++){//3 significa las posibilidades de convinaciones con j numero de cartas
 					ENuevo=(Estado)EstadosColocados.get(i).clone();
 					for(int l=0;l<3;l++){
 						vcumple[l]=false;
 					}
 					if(j==2 || (j==1 && k==0) || (j==1 && k==1) || (j==0 && k==0) ){
-						if(ENuevo.Jugador2.ZBatalla.posBatalla[0]==PosBatalla.DEFCARAABAJO || ENuevo.Jugador2.ZBatalla.posBatalla[0]==PosBatalla.DEFCARAARRIBA)
-							vcumple[0]=ENuevo.Jugador2.accionCambiarPosicionBatalla(0);
+						if(ENuevo.jugador2.ZBatalla.posBatalla[0]==PosBatalla.DEFCARAABAJO || ENuevo.jugador2.ZBatalla.posBatalla[0]==PosBatalla.DEFCARAARRIBA)
+							vcumple[0]=ENuevo.jugador2.accionCambiarPosicionBatalla(0);
 					}
 					if(j==2 || (j==1 && k==0) ||  (j==1 && k==2) || (j==0 && k==1)){
-						if(ENuevo.Jugador2.ZBatalla.posBatalla[1]==PosBatalla.DEFCARAABAJO || ENuevo.Jugador2.ZBatalla.posBatalla[1]==PosBatalla.DEFCARAARRIBA)
-						vcumple[1]=ENuevo.Jugador2.accionCambiarPosicionBatalla(1);
+						if(ENuevo.jugador2.ZBatalla.posBatalla[1]==PosBatalla.DEFCARAABAJO || ENuevo.jugador2.ZBatalla.posBatalla[1]==PosBatalla.DEFCARAARRIBA)
+						vcumple[1]=ENuevo.jugador2.accionCambiarPosicionBatalla(1);
 					}
 					if(j==2 || (j==1 && k==2) || (j==1 && k==1) || (j==0 && k==2)){
-						if(ENuevo.Jugador2.ZBatalla.posBatalla[2]==PosBatalla.DEFCARAABAJO || ENuevo.Jugador2.ZBatalla.posBatalla[2]==PosBatalla.DEFCARAARRIBA)
-						vcumple[2]=ENuevo.Jugador2.accionCambiarPosicionBatalla(2);
+						if(ENuevo.jugador2.ZBatalla.posBatalla[2]==PosBatalla.DEFCARAABAJO || ENuevo.jugador2.ZBatalla.posBatalla[2]==PosBatalla.DEFCARAARRIBA)
+						vcumple[2]=ENuevo.jugador2.accionCambiarPosicionBatalla(2);
 					}
 					cnt=0;
 					for(int l=0;l<3;l++){
@@ -107,7 +123,7 @@ public class IA {
 		while(i<EstadosCambiadosATK.size()){
 			ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
 			EstadosAtacando.add(ENuevo);
-			for(int n=0;n<EstadosCambiadosATK.get(i).Jugador2.ZBatalla.obtenerNumerodeCartas();n++){
+			for(int n=0;n<EstadosCambiadosATK.get(i).jugador2.ZBatalla.obtenerNumerodeCartas();n++){
 				switch(n){
 				case 2:
 				case 1:
@@ -119,17 +135,17 @@ public class IA {
 						}
 						for(int j=0;j<=n;j++){//Origenes
 							//Ataques
-							if(vcumple[j] = ENuevo.Jugador2.posibilidadAtacarCarta(ENuevo.Jugador1, v[j],j)){
-								resp= ENuevo.Jugador2.accionAtacarCarta(ENuevo.Jugador1,v[j],j);
+							if(vcumple[j] = ENuevo.jugador2.posibilidadAtacarCarta(ENuevo.jugador1, v[j],j)){
+								resp= ENuevo.jugador2.accionAtacarCarta(ENuevo.jugador1,v[j],j);
 							}
-							else if(vcumple[j] = ENuevo.Jugador2.posibilidadAtacarBarrera(ENuevo.Jugador1, j)){
-								resp.resultado=ENuevo.Jugador2.accionAtacarBarrera( ENuevo.Jugador1, j);
+							else if(vcumple[j] = ENuevo.jugador2.posibilidadAtacarBarrera(ENuevo.jugador1, j)){
+								resp.veredicto=ENuevo.jugador2.accionAtacarBarrera( ENuevo.jugador1, j);
 							}
 							else{
 								//No se genera estado
 							}
-							if(resp.resultado== ResultadoAtacarCarta.ENEMIGOSINBARRERA){
-								ENuevo.setTermino(2);
+							if(resp.veredicto== VeredictoAtaque.ENEMIGOSINBARRERA){
+								setTermino(Termino.SINBARRERAS);
 								break;
 							}
 						}
@@ -141,7 +157,7 @@ public class IA {
 								cnt++;
 							}
 						}
-						if(cnt==n+1 || ENuevo.getTermino()>0){
+						if(cnt==n+1 || getTermino()!=Termino.ENJUEGO){
 							EstadosAtacando.add(ENuevo);
 						}
 						
@@ -151,19 +167,19 @@ public class IA {
 					for(int j=0;j<3;j++){
 						atacobarrera=false;	
 						for(int k=0;k<3;k++){
-							if(EstadosCambiadosATK.get(i).Jugador2.posibilidadAtacarCarta(EstadosCambiadosATK.get(i).Jugador1, k,j)){
+							if(EstadosCambiadosATK.get(i).jugador2.posibilidadAtacarCarta(EstadosCambiadosATK.get(i).jugador1, k,j)){
 								ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
-								resp=ENuevo.Jugador2.accionAtacarCarta(ENuevo.Jugador1,k,j);
-								if(resp.resultado==ResultadoAtacarCarta.ENEMIGOSINBARRERA)
-									ENuevo.setTermino(2);
+								resp=ENuevo.jugador2.accionAtacarCarta(ENuevo.jugador1,k,j);
+								if(resp.veredicto==VeredictoAtaque.ENEMIGOSINBARRERA)
+									setTermino(Termino.SINBARRERAS);
 								EstadosAtacando.add(ENuevo);
 							}
-							else if(EstadosCambiadosATK.get(i).Jugador2.posibilidadAtacarBarrera(EstadosCambiadosATK.get(i).Jugador1, j)){
+							else if(EstadosCambiadosATK.get(i).jugador2.posibilidadAtacarBarrera(EstadosCambiadosATK.get(i).jugador1, j)){
 								if(!atacobarrera){
 									ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
-									resp.resultado = ENuevo.Jugador2.accionAtacarBarrera( ENuevo.Jugador1, j);
-									if(resp.resultado == ResultadoAtacarCarta.ENEMIGOSINBARRERA)
-										ENuevo.setTermino(2);
+									resp.veredicto = ENuevo.jugador2.accionAtacarBarrera( ENuevo.jugador1, j);
+									if(resp.veredicto == VeredictoAtaque.ENEMIGOSINBARRERA)
+										setTermino(Termino.SINBARRERAS);
 									EstadosAtacando.add(ENuevo);
 									atacobarrera=true;
 								}
@@ -190,7 +206,7 @@ public class IA {
 			ENuevo=(Estado)EstadosAtacando.get(i).clone();
 			funcionEvaluadora(ENuevo);
 			EstadosFinales.add(ENuevo);
-			for(int j=0;j<EstadosAtacando.get(i).Jugador2.ZBatalla.obtenerNumerodeCartas();j++){
+			for(int j=0;j<EstadosAtacando.get(i).jugador2.ZBatalla.obtenerNumerodeCartas();j++){
 				
 				for(int k=0;k<3;k++){
 					ENuevo=(Estado)EstadosAtacando.get(i).clone();
@@ -200,16 +216,16 @@ public class IA {
 					}
 					
 					if(j==2 || (j==1 && k==0) || (j==1 && k==2) || (j==0 && k==0) ){
-						if(ENuevo.Jugador2.ZBatalla.posBatalla[0]==PosBatalla.ATAQUE)
-						vcumple[0]=ENuevo.Jugador2.accionCambiarPosicionBatalla(0);
+						if(ENuevo.jugador2.ZBatalla.posBatalla[0]==PosBatalla.ATAQUE)
+						vcumple[0]=ENuevo.jugador2.accionCambiarPosicionBatalla(0);
 					}
 					if(j==2 || (j==1 && k==0) ||  (j==1 && k==1) || (j==0 && k==1)){
-						if(ENuevo.Jugador2.ZBatalla.posBatalla[1]==PosBatalla.ATAQUE)
-						vcumple[1]=ENuevo.Jugador2.accionCambiarPosicionBatalla(1);
+						if(ENuevo.jugador2.ZBatalla.posBatalla[1]==PosBatalla.ATAQUE)
+						vcumple[1]=ENuevo.jugador2.accionCambiarPosicionBatalla(1);
 					}
 					if(j==2 || (j==1 && k==1) || (j==1 && k==2) || (j==0 && k==2)){
-						if(ENuevo.Jugador2.ZBatalla.posBatalla[2]==PosBatalla.ATAQUE)
-						vcumple[2]=ENuevo.Jugador2.accionCambiarPosicionBatalla(2);
+						if(ENuevo.jugador2.ZBatalla.posBatalla[2]==PosBatalla.ATAQUE)
+						vcumple[2]=ENuevo.jugador2.accionCambiarPosicionBatalla(2);
 					}
 					
 					cnt=0;
@@ -309,10 +325,10 @@ public class IA {
 	public void funcionEvaluadora(Estado E)
 	{	////MAQUINA ES JUGADOR 2
 		double hum=0,maq=0;
-		int nMaq = E.Jugador2.ZBatalla.obtenerNumerodeCartas();
-		int nHum = E.Jugador1.ZBatalla.obtenerNumerodeCartas();
+		int nMaq = E.jugador2.ZBatalla.obtenerNumerodeCartas();
+		int nHum = E.jugador1.ZBatalla.obtenerNumerodeCartas();
 
-		int barreraHum = E.Jugador1.Barrera.obtenerNumerodeCartas();
+		int barreraHum = E.jugador1.Barrera.obtenerNumerodeCartas();
 
 		//arreglo de una los valores que tiene una carta al enfrentarse a c/u de las oponentes
 		double CartasMaq[];
@@ -330,15 +346,15 @@ public class IA {
 
 		//VALOR DE MAQ
 		for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
-			if(E.Jugador2.ZBatalla.obtenerCartaxId(i)!=null){
-				valCarMaq=E.Jugador2.ZBatalla.obtenerCartaxId(i).getValor();
-				estCarMaq=E.Jugador2.ZBatalla.getPosBatallaxId(i);
+			if(E.jugador2.ZBatalla.obtenerCartaxId(i)!=null){
+				valCarMaq=E.jugador2.ZBatalla.obtenerCartaxId(i).getValor();
+				estCarMaq=E.jugador2.ZBatalla.getPosBatallaxId(i);
 				if(nHum==0)
 					CartasMaq[i] = valCarMaq * 2;
 				for(int j = 0; j < ZonaBatalla.MAXZONABATALLACARDS; j++){
-					if(E.Jugador1.ZBatalla.obtenerCartaxId(j)!=null){
-						valCarHum=E.Jugador1.ZBatalla.obtenerCartaxId(j).getValor();
-						estCarHum=E.Jugador1.ZBatalla.getPosBatallaxId(j);
+					if(E.jugador1.ZBatalla.obtenerCartaxId(j)!=null){
+						valCarHum=E.jugador1.ZBatalla.obtenerCartaxId(j).getValor();
+						estCarHum=E.jugador1.ZBatalla.getPosBatallaxId(j);
 						CartasMaq[i] = evalValorDeCartaParcMAQ(valCarMaq, valCarHum, estCarMaq, estCarHum);
 					}
 				}
@@ -348,15 +364,15 @@ public class IA {
 
 		//VALOR DE HUM
 		for (int i = 0; i < ZonaBatalla.MAXZONABATALLACARDS; i++) {
-			if(E.Jugador1.ZBatalla.obtenerCartaxId(i)!=null){
-				valCarHum=E.Jugador1.ZBatalla.obtenerCartaxId(i).getValor();
-				estCarHum=E.Jugador1.ZBatalla.getPosBatallaxId(i);
+			if(E.jugador1.ZBatalla.obtenerCartaxId(i)!=null){
+				valCarHum=E.jugador1.ZBatalla.obtenerCartaxId(i).getValor();
+				estCarHum=E.jugador1.ZBatalla.getPosBatallaxId(i);
 				if(nMaq==0)
 					CartasHum[i] = valCarHum * 2;
 				for(int j = 0; j < ZonaBatalla.MAXZONABATALLACARDS; j++){
-					if(E.Jugador2.ZBatalla.obtenerCartaxId(j)!=null){
-						valCarMaq=E.Jugador2.ZBatalla.obtenerCartaxId(j).getValor();
-						estCarMaq=E.Jugador2.ZBatalla.getPosBatallaxId(j);
+					if(E.jugador2.ZBatalla.obtenerCartaxId(j)!=null){
+						valCarMaq=E.jugador2.ZBatalla.obtenerCartaxId(j).getValor();
+						estCarMaq=E.jugador2.ZBatalla.getPosBatallaxId(j);
 						CartasHum[i] = evalValorDeCartaParcHUM(valCarMaq, valCarHum, estCarMaq, estCarHum);
 					}
 				}

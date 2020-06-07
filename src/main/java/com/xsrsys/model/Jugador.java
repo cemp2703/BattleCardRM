@@ -29,10 +29,9 @@ public class Jugador implements Cloneable{
 
 	//region Operaciones (Reglas)
 
-	public ResultadoCojerUnaCarta accionIniciarTurno(){
+	public void accionIniciarTurno(){
 		NTurnos++;
 		ZBatalla.renovarPosibilidades();
-		return accionCogerUnaCartaDelDeck();
 	}
 	/*
 	public static class RESULTADOCOJERUNACARTA{
@@ -107,16 +106,16 @@ public class Jugador implements Cloneable{
 		return true;
 	}
 
-	public ResultadoAtacarCarta accionAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante){
-		ResultadoAtacarCarta respuesta=ResultadoAtacarCarta.NOSECUMPLENCOND;
+	public VeredictoAtaque accionAtacarBarrera(Jugador JugadorAtacado,int idCartaAtacante){
+		VeredictoAtaque respuesta=VeredictoAtaque.NOSECUMPLENCOND;
 		if( posibilidadAtacarBarrera(JugadorAtacado,idCartaAtacante) ){
 			JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
 			this.ZBatalla.nAtaquesDisponibles--;
 			if(JugadorAtacado.Barrera.obtenerNumerodeCartas() >  0){
-				respuesta=ResultadoAtacarCarta.BARRERADESTRUIDA;
+				respuesta=VeredictoAtaque.BARRERADESTRUIDA;
 			}
 			else{
-				respuesta= ResultadoAtacarCarta.ENEMIGOSINBARRERA;
+				respuesta= VeredictoAtaque.ENEMIGOSINBARRERA;
 			}
             this.ZBatalla.dispAtaque[idCartaAtacante] = ZonaBatalla.DispAtaque.NODISPONIBLE;
             this.ZBatalla.dispCambio[idCartaAtacante] = ZonaBatalla.DispCambio.NODISPONIBLE;
@@ -154,9 +153,9 @@ public class Jugador implements Cloneable{
 		public static final int UP = 0; // Carta activa
 		public static final int DOWN = -1; 
 	}*/
-	public enum ResultadoCarta{
-		UP, // Carta activa
-		DOWN // Carta destruida
+	public enum EstadoCarta{
+		ACTIVA, // Carta activa
+		DESTRUIDA // Carta destruida
 	}
 	/*
 	public static class RESULTADOATACARCARTA{
@@ -167,7 +166,7 @@ public class Jugador implements Cloneable{
 		public static final int ENEMIGOSINBARRERA = 3; //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
 	}
 	*/
-	public enum ResultadoAtacarCarta{
+	public enum VeredictoAtaque{
 		NOSECUMPLENCOND, //-1: No se cumplen las condiciones de ataque
 		EMPATE, 
 		GANAATACANTE,  //Gana Atacante contra carta en Zona de Batalla
@@ -176,8 +175,9 @@ public class Jugador implements Cloneable{
 		ENEMIGOSINBARRERA //Termina el juego porque enemigo se quedo sin cartas de barrera (Termino 2)
 	}
 	public ResultadoAtaque accionAtacarCarta(Jugador JugadorAtacado, int idCartaAtacada, int idCartaAtacante){//Sistema de produccion
-		ResultadoAtaque rs = new ResultadoAtaque();
-		rs.resultado = ResultadoAtacarCarta.NOSECUMPLENCOND;
+		ResultadoAtaque rsAtaque = new ResultadoAtaque();
+		rsAtaque.veredicto = VeredictoAtaque.NOSECUMPLENCOND;
+		rsAtaque.estadoBarrera = EstadoCarta.ACTIVA;
 		Carta cartaAtacante = null;
 		Carta cartaAtacada = null;
 
@@ -190,57 +190,55 @@ public class Jugador implements Cloneable{
 
 			cartaAtacante = this.ZBatalla.obtenerCartaxId(idCartaAtacante);
 			cartaAtacada = JugadorAtacado.ZBatalla.obtenerCartaxId(idCartaAtacada);
-			rs.valorCartaAtacante = cartaAtacante.getValor();
-			rs.elementoCartaAtacante = cartaAtacante.getElemento();
-			rs.valorCartaAtacada = cartaAtacada.getValor();
-			rs.elementoCartaAtacada = cartaAtacada.getElemento();
+			rsAtaque.cartaAtacante = cartaAtacante;
+			rsAtaque.cartaAtacada = cartaAtacada;
 
-			if(rs.valorCartaAtacante > rs.valorCartaAtacada ){
-				rs.resultado = ResultadoAtacarCarta.GANAATACANTE;//gana
-				rs.cartaAtacante = ResultadoCarta.UP;
-				rs.cartaAtacada = ResultadoCarta.DOWN;
+			if(rsAtaque.cartaAtacante.getValor() > rsAtaque.cartaAtacada.getValor() ){
+				rsAtaque.veredicto = VeredictoAtaque.GANAATACANTE;//gana
+				rsAtaque.estadoCartaAtacante = EstadoCarta.ACTIVA;
+				rsAtaque.estadoCartaAtacada = EstadoCarta.DESTRUIDA;
 			}
-			else if(rs.valorCartaAtacante  < rs.valorCartaAtacada){
-				rs.resultado = ResultadoAtacarCarta.PIERDEATACANTE;//pierde
-				rs.cartaAtacante = ResultadoCarta.DOWN;
-				rs.cartaAtacada = ResultadoCarta.UP;
+			else if(rsAtaque.cartaAtacante.getValor()  < rsAtaque.cartaAtacada.getValor()){
+				rsAtaque.veredicto = VeredictoAtaque.PIERDEATACANTE;//pierde
+				rsAtaque.estadoCartaAtacante = EstadoCarta.DESTRUIDA;
+				rsAtaque.estadoCartaAtacada = EstadoCarta.ACTIVA;
 			}
 			else{
-				rs.resultado = ResultadoAtacarCarta.EMPATE;//empata
+				rsAtaque.veredicto = VeredictoAtaque.EMPATE;//empata
 			}
 
 			//Jugador Atacado al Ataque
 			if(JugadorAtacado.ZBatalla.posBatalla[idCartaAtacada] == ZonaBatalla.PosBatalla.ATAQUE){
-				rs.posicionCartaAtacada = ZonaBatalla.PosBatalla.ATAQUE;
-				if(rs.resultado == ResultadoAtacarCarta.GANAATACANTE){
+				rsAtaque.posicionCartaAtacada = ZonaBatalla.PosBatalla.ATAQUE;
+				if(rsAtaque.veredicto == VeredictoAtaque.GANAATACANTE){
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
-					rs.idbarrera = JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
-					rs.barrera = ResultadoCarta.DOWN;
+					JugadorAtacado.Barrera.quitarUltimaCartaDisponible();
+					rsAtaque.estadoBarrera = EstadoCarta.DESTRUIDA;
 					if(JugadorAtacado.Barrera.obtenerNumerodeCartas() == 0){
-						rs.resultado = ResultadoAtacarCarta.ENEMIGOSINBARRERA;
+						rsAtaque.veredicto = VeredictoAtaque.ENEMIGOSINBARRERA;
 					}
 				}
-				else if(rs.resultado == ResultadoAtacarCarta.PIERDEATACANTE){//pierde atacante
+				else if(rsAtaque.veredicto == VeredictoAtaque.PIERDEATACANTE){//pierde atacante
 					this.ZBatalla.quitarCartaenPos(idCartaAtacante);
 				}
 				else{//Empate
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 					this.ZBatalla.quitarCartaenPos(idCartaAtacante);
-					rs.cartaAtacante = ResultadoCarta.DOWN;
-					rs.cartaAtacada = ResultadoCarta.DOWN;
+					rsAtaque.estadoCartaAtacante = EstadoCarta.DESTRUIDA;
+					rsAtaque.estadoCartaAtacada = EstadoCarta.DESTRUIDA;
 				}
 			}
 			else if(JugadorAtacado.ZBatalla.posBatalla[idCartaAtacada] == ZonaBatalla.PosBatalla.DEFCARAARRIBA ){//Jugador Atacado a la Defensa
-				rs.posicionCartaAtacada = ZonaBatalla.PosBatalla.DEFCARAARRIBA;
-				if(rs.resultado == ResultadoAtacarCarta.GANAATACANTE){//gana atacante
+				rsAtaque.posicionCartaAtacada = ZonaBatalla.PosBatalla.DEFCARAARRIBA;
+				if(rsAtaque.veredicto == VeredictoAtaque.GANAATACANTE){//gana atacante
 					JugadorAtacado.ZBatalla.quitarCartaenPos(idCartaAtacada);
 				}
-				else if(rs.resultado == ResultadoAtacarCarta.PIERDEATACANTE){//pierde atacante
+				else if(rsAtaque.veredicto == VeredictoAtaque.PIERDEATACANTE){//pierde atacante
 					this.ZBatalla.quitarCartaenPos(idCartaAtacante);
 				}
 				else{//Empate
-					rs.cartaAtacante = ResultadoCarta.UP;
-					rs.cartaAtacada = ResultadoCarta.UP;
+					rsAtaque.estadoCartaAtacante = EstadoCarta.ACTIVA;
+					rsAtaque.estadoCartaAtacada = EstadoCarta.ACTIVA;
 				}
 			}
 			
@@ -249,7 +247,7 @@ public class Jugador implements Cloneable{
 			this.ZBatalla.dispAtaque[idCartaAtacante] = ZonaBatalla.DispAtaque.NODISPONIBLE;
             this.ZBatalla.dispCambio[idCartaAtacante] = ZonaBatalla.DispCambio.NODISPONIBLE;
 		}
-		return rs;
+		return rsAtaque;
 	}
 	
 	public boolean puedeCambiarPosicion(){		

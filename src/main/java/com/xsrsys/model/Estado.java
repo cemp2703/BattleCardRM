@@ -1,100 +1,64 @@
 package com.xsrsys.model;
 
-import com.xsrsys.model.Jugador.ResultadoCojerUnaCarta;
-
 public class Estado implements Cloneable {
-	public Jugador JugadorActual;
-	public Jugador JugadorAnterior;
-	public Jugador Jugador1;
-	public Jugador Jugador2;
-	public Jugador JugadorVictorioso;
-	public Jugador JugadorDerrotado;
-
-	private int TurnoActual;
-	public static class TURNO {
-		public final static int JUGADOR1 = 1; //Jugador 1
-		public final static int JUGADOR2BOT = 2;  //Jugador 2 o BOT
-	}
+	public Jugador jugadorActual;
+	public Jugador jugadorAnterior;
+	public Jugador jugador1;
+	public Jugador jugador2;
 	private double valorEstado;
-
-	public Integer Termino; //Reglas que finalizan el juego
-	public static class TERMINO {
-		public final static int NOTERMINO = 0; //El juego aun no llega a una condicion de victoria/derrota
-		public final static int SINCARTAS = 1;  //Jugador actual se quedo sin cartas
-		public final static int SINBARRERAS = 2;  //Jugador Anterior perdió todas sus barreras
-	}
-
+	
 	public Estado(Jugador pJugador1,Jugador pJugador2){
-		Jugador1=pJugador1;
-		Jugador2=pJugador2;
-		TurnoActual = TURNO.JUGADOR1;
+		jugador1=pJugador1;
+		jugador2=pJugador2;
 		valorEstado = 0;
-		JugadorActual=Jugador1;
-		JugadorAnterior=Jugador2;
-		JugadorVictorioso = null;
-		JugadorDerrotado = null;
+		jugadorActual=jugador1;
+		jugadorAnterior=jugador2;
 	}
-
 	public Object clone() throws CloneNotSupportedException{
 		Estado clon=(Estado) super.clone();
-		clon.JugadorActual=JugadorActual;
-		clon.JugadorAnterior=JugadorAnterior;
-		clon.JugadorVictorioso=JugadorVictorioso;
-		clon.JugadorDerrotado=JugadorDerrotado;
-		clon.JugadorVictorioso =JugadorVictorioso;
-		clon.JugadorDerrotado=JugadorDerrotado;
+		clon.jugadorActual=jugadorActual;
+		clon.jugadorAnterior=jugadorAnterior;
+		clon.jugador1=jugador1;
+		clon.jugador2=jugador2;
 		return clon;
 	}
-
-	public ResultadoCojerUnaCarta cambioDeTurno(){
-		Jugador JugadorTmp = JugadorActual;
-		JugadorActual = JugadorAnterior;
-		JugadorAnterior = JugadorTmp;
-		if(TurnoActual == TURNO.JUGADOR1){
-			TurnoActual = TURNO.JUGADOR2BOT;
-
-		}
-		else{
-			TurnoActual = TURNO.JUGADOR1;
-
-		}
-		ResultadoCojerUnaCarta res= JugadorActual.accionIniciarTurno();
-
-		if( res == Jugador.ResultadoCojerUnaCarta.DECKVACIO) {
-			terminoSinCartas();
-		}
-		return res;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Estado other = (Estado) obj;
+		if (jugador1 == null) {
+			if (other.jugador1 != null)
+				return false;
+		} else if (!jugador1.equals(other.jugador1))
+			return false;
+		if (jugador2 == null) {
+			if (other.jugador2 != null)
+				return false;
+		} else if (!jugador2.equals(other.jugador2))
+			return false;
+		if (jugadorActual == null) {
+			if (other.jugadorActual != null)
+				return false;
+		} else if (!jugadorActual.equals(other.jugadorActual))
+			return false;
+		if (jugadorAnterior == null) {
+			if (other.jugadorAnterior != null)
+				return false;
+		} else if (!jugadorAnterior.equals(other.jugadorAnterior))
+			return false;
+		if (Double.doubleToLongBits(valorEstado) != Double.doubleToLongBits(other.valorEstado))
+			return false;
+		return true;
 	}
-
-	public void terminoSinBarreras(){
-		Termino = Estado.TERMINO.SINBARRERAS;
-		JugadorVictorioso = JugadorActual;
-		JugadorDerrotado = JugadorAnterior;
-	}
-
-	public void terminoSinCartas(){
-		JugadorVictorioso=JugadorAnterior;
-		JugadorDerrotado=JugadorActual;
-		Termino = TERMINO.SINCARTAS;
-	}
-
 	public double getValorEstado() {
 		return valorEstado;
 	}
 	public void setValorEstado(double pvalorEstado) {
 		valorEstado = pvalorEstado;
-	}
-	public int getTurno() {
-		return TurnoActual;
-	}
-	public void setTurno(int turno) {
-		TurnoActual = turno;
-	}
-
-	public Integer getTermino() {
-		return Termino;
-	}
-	public void setTermino(Integer termino) {
-		Termino = termino;
 	}
 }

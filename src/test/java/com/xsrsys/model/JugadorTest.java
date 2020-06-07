@@ -9,9 +9,8 @@ import static org.junit.Assert.assertNotEquals;
 
 import com.xsrsys.model.Carta;
 import com.xsrsys.model.Jugador;
-import com.xsrsys.model.Jugador.ResultadoAtacarCarta;
-import com.xsrsys.model.Jugador.ResultadoCarta;
-import com.xsrsys.model.ResultadoAtaque;
+import com.xsrsys.model.Jugador.EstadoCarta;
+import com.xsrsys.model.Jugador.VeredictoAtaque;
 import com.xsrsys.model.ZonaBatalla;
 import com.xsrsys.model.ZonaBatalla.PosBatalla;
 
@@ -99,78 +98,71 @@ public class JugadorTest {
     }
 
     private Object[][] sampleData(){
-        Object[][] data=new Object[6][9];
+        Object[][] data=new Object[6][8];
         //Cabeceras de filas
         //0: Valor carta Atacante
         //1: Valor carta Atacada
-        //2: Posición carta Atacada
-        //3: Resultado de Ataque
-        //4: Resultado de Carta Atacante
-        //5: Resultado de Carta Atacada
-        //6: Resultado de Barrera
-        //7: Resultado id de Barrera destruida
+        //2: Posición de Batalla carta Atacada
+        //3: Veredicto de Ataque
+        //4: Estado de Carta Atacante
+        //5: Estado de Carta Atacada
+        //6: Estado de Barrera
         //8: Descripcion de caso de prueba
 
         //En este caso en especial, se pueba la condición que el atacado se queda sin cartas barrera al recibir ataque
         data[0][0] = 7;
         data[0][1] = 6;
         data[0][2] = ZonaBatalla.PosBatalla.ATAQUE;
-        data[0][3] = Jugador.ResultadoAtacarCarta.ENEMIGOSINBARRERA;
-        data[0][4] = Jugador.ResultadoCarta.UP;
-        data[0][5] = Jugador.ResultadoCarta.DOWN;
-        data[0][6] = Jugador.ResultadoCarta.DOWN;
-        data[0][7] = 0;
-        data[0][8] = "Victoria de Atacante destruye carta atacada y barrera (7 Ataque > 6 Ataque) ";
+        data[0][3] = Jugador.VeredictoAtaque.ENEMIGOSINBARRERA;
+        data[0][4] = Jugador.EstadoCarta.ACTIVA;
+        data[0][5] = Jugador.EstadoCarta.DESTRUIDA;
+        data[0][6] = Jugador.EstadoCarta.DESTRUIDA;
+        data[0][7] = "Victoria de Atacante destruye carta atacada y barrera (7 Ataque > 6 Ataque) ";
 
         data[1][0] = 7;
         data[1][1] = 6;
         data[1][2] = ZonaBatalla.PosBatalla.DEFCARAABAJO;
-        data[1][3] = Jugador.ResultadoAtacarCarta.GANAATACANTE;
-        data[1][4] = Jugador.ResultadoCarta.UP;
-        data[1][5] = Jugador.ResultadoCarta.DOWN;
-        data[1][6] = Jugador.ResultadoCarta.UP;
-        data[1][7] = -1;
-        data[1][8] = "Victoria de Atacante destruye carta atacada (7 Ataque > 6 Defensa)";
+        data[1][3] = Jugador.VeredictoAtaque.GANAATACANTE;
+        data[1][4] = Jugador.EstadoCarta.ACTIVA;
+        data[1][5] = Jugador.EstadoCarta.DESTRUIDA;
+        data[1][6] = Jugador.EstadoCarta.ACTIVA;
+        data[1][7] = "Victoria de Atacante destruye carta atacada (7 Ataque > 6 Defensa)";
 
         data[2][0] = 7;
         data[2][1] = 7;
         data[2][2] = ZonaBatalla.PosBatalla.ATAQUE;
-        data[2][3] = Jugador.ResultadoAtacarCarta.EMPATE;
-        data[2][4] = Jugador.ResultadoCarta.DOWN;
-        data[2][5] = Jugador.ResultadoCarta.DOWN;
-        data[2][6] = Jugador.ResultadoCarta.UP;
-        data[2][7] = -1;
-        data[2][8] = "Empate destruye carta ambas cartas en zona de batalla (7 Ataque = 7 Ataque)";
+        data[2][3] = Jugador.VeredictoAtaque.EMPATE;
+        data[2][4] = Jugador.EstadoCarta.DESTRUIDA;
+        data[2][5] = Jugador.EstadoCarta.DESTRUIDA;
+        data[2][6] = Jugador.EstadoCarta.ACTIVA;
+        data[2][7] = "Empate destruye carta ambas cartas en zona de batalla (7 Ataque = 7 Ataque)";
 
         data[3][0] = 7;
         data[3][1] = 7;
         data[3][2] = ZonaBatalla.PosBatalla.DEFCARAARRIBA;
-        data[3][3] = Jugador.ResultadoAtacarCarta.EMPATE;
-        data[3][4] = Jugador.ResultadoCarta.UP;
-        data[3][5] = Jugador.ResultadoCarta.UP;
-        data[3][6] = Jugador.ResultadoCarta.UP;
-        data[3][7] = -1;
-        data[3][8] = "Empate ambas cartas permanecen en campo (7 Ataque = 7 Defensa)";
+        data[3][3] = Jugador.VeredictoAtaque.EMPATE;
+        data[3][4] = Jugador.EstadoCarta.ACTIVA;
+        data[3][5] = Jugador.EstadoCarta.ACTIVA;
+        data[3][6] = Jugador.EstadoCarta.ACTIVA;
+        data[3][7] = "Empate ambas cartas permanecen en campo (7 Ataque = 7 Defensa)";
 
         data[4][0] = 6;
         data[4][1] = 7;
         data[4][2] = ZonaBatalla.PosBatalla.ATAQUE;
-        data[4][3] = Jugador.ResultadoAtacarCarta.PIERDEATACANTE;
-        data[4][4] = Jugador.ResultadoCarta.DOWN;
-        data[4][5] = Jugador.ResultadoCarta.UP;
-        data[4][6] = Jugador.ResultadoCarta.UP;
-        data[4][7] = -1;
-        data[4][8] = "Derrota de atacante destruye carta atacante (6 Ataque < 7 Ataque)";
+        data[4][3] = Jugador.VeredictoAtaque.PIERDEATACANTE;
+        data[4][4] = Jugador.EstadoCarta.DESTRUIDA;
+        data[4][5] = Jugador.EstadoCarta.ACTIVA;
+        data[4][6] = Jugador.EstadoCarta.ACTIVA;
+        data[4][7] = "Derrota de atacante destruye carta atacante (6 Ataque < 7 Ataque)";
 
         data[5][0] = 6;
         data[5][1] = 7;
         data[5][2] = ZonaBatalla.PosBatalla.DEFCARAABAJO;
-        data[5][3] = Jugador.ResultadoAtacarCarta.PIERDEATACANTE;
-        data[5][4] = Jugador.ResultadoCarta.DOWN;
-        data[5][5] = Jugador.ResultadoCarta.UP;
-        data[5][6] = Jugador.ResultadoCarta.UP;
-        data[5][7] = -1;
-        data[5][8] = "Derrota de atacante destruye carta atacante (6 Ataque < 7 Defensa)";
+        data[5][3] = Jugador.VeredictoAtaque.PIERDEATACANTE;
+        data[5][4] = Jugador.EstadoCarta.DESTRUIDA;
+        data[5][5] = Jugador.EstadoCarta.ACTIVA;
+        data[5][6] = Jugador.EstadoCarta.ACTIVA;
+        data[5][7] = "Derrota de atacante destruye carta atacante (6 Ataque < 7 Defensa)";
 
         return data;
     }
@@ -179,8 +171,8 @@ public class JugadorTest {
     @Parameters(method = "sampleData")
     public void testAccionAtacarCarta(
             int valorCartaAtacante,int valorCartaAtacada,PosBatalla posicionCartaAtacada,
-            ResultadoAtacarCarta resultadoAtaque, ResultadoCarta resultadoCartaAtacante, ResultadoCarta resultadoCartaAtacada,
-            ResultadoCarta resultadoBarrera, int resultadoIdBarrera, String descripcion
+            VeredictoAtaque veredictoAtaque, EstadoCarta estadoCartaAtacante, EstadoCarta estadoCartaAtacada,
+            EstadoCarta estadoBarrera, String descripcion
     ){
         //Inicializando juego
         int IDCARTAZB = 0;
@@ -218,12 +210,10 @@ public class JugadorTest {
         assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAZB,IDCARTAINEXISTENTE));
         assertEquals(false,j1.posibilidadAtacarCarta(j2,IDCARTAINEXISTENTE,IDCARTAZB));
         ResultadoAtaque rs= j1.accionAtacarCarta(j2,IDCARTAZB,IDCARTAZB);
-        assertEquals(descripcion,resultadoAtaque,rs.resultado);
-        assertEquals(resultadoCartaAtacante,rs.cartaAtacante);
-        assertEquals(resultadoCartaAtacada,rs.cartaAtacada);
-        assertEquals(resultadoBarrera,rs.barrera);
-        assertEquals(resultadoIdBarrera,rs.idbarrera);
-
+        assertEquals(descripcion,veredictoAtaque,rs.veredicto);
+        assertEquals(estadoCartaAtacante,rs.estadoCartaAtacante);
+        assertEquals(estadoCartaAtacada,rs.estadoCartaAtacada);
+        assertEquals(estadoBarrera,rs.estadoBarrera);
     }
 
     @Test
@@ -304,6 +294,7 @@ public class JugadorTest {
 
         //Primer turno: J1
         j1.accionIniciarTurno(); //jala una carta del deck a la mano
+        j1.accionCogerUnaCartaDelDeck();
         int IDINEXISTENTE = 2;
         assertEquals(false,j1.posibilidadColocarCartaEnPosicion(IDCARTAZB, IDINEXISTENTE));
         assertEquals(true,j1.posibilidadColocarCartaEnPosicion(IDCARTAZB, IDCARTAMANO));
@@ -312,32 +303,33 @@ public class JugadorTest {
         assertEquals(false,j1.puedeAtacarBarreras(j2));
         assertEquals(false,j1.posibilidadColocarCartaEnPosicion(IDCARTAZB, IDCARTAMANO));
         assertEquals(false,j1.accionColocarCarta(IDCARTAZB,IDCARTAMANO,POSCARTA));//coloca carta de la mano a la zona de batalla
-        assertEquals(Jugador.ResultadoAtacarCarta.NOSECUMPLENCOND,j1.accionAtacarBarrera(j2,IDCARTAZB));
+        assertEquals(Jugador.VeredictoAtaque.NOSECUMPLENCOND,j1.accionAtacarBarrera(j2,IDCARTAZB));
         //Primer turno: J2
         j2.accionIniciarTurno();
-
+        j2.accionCogerUnaCartaDelDeck();
 
         //Segundo turno: J1
         j1.accionIniciarTurno();
+        j1.accionCogerUnaCartaDelDeck();
         //POSIBILIDAD DE ATACAR BARRERA SATISFACTORIA
         int IDCARTAINEXISTENTE=1;
         assertEquals(false,j1.posibilidadColocarCartaEnPosicion(IDCARTAZB, IDCARTAMANO));
         assertEquals(false,j1.posibilidadAtacarBarrera(j2,IDCARTAINEXISTENTE));
         assertEquals(true,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         //JUGADOR 1 DESTRUYÓ UNA BARRERA
-        assertEquals(Jugador.ResultadoAtacarCarta.BARRERADESTRUIDA,j1.accionAtacarBarrera(j2,IDCARTAZB));
+        assertEquals(Jugador.VeredictoAtaque.BARRERADESTRUIDA,j1.accionAtacarBarrera(j2,IDCARTAZB));
 
 
         //Segundo turno: J2
         j2.accionIniciarTurno();
-
+        
 
         //Tercer Turno:J1
         j1.accionIniciarTurno();
         //POSIBILIDAD DE ATACAR BARRERA SATISFACTORIA
         assertEquals(true,j1.posibilidadAtacarBarrera(j2,IDCARTAZB));
         //JUGADOR 1 DESTRUYÓ UNA BARRERA Y JUGADOR 2 SE QUEDÓ SIN BARRERAS
-        assertEquals(Jugador.ResultadoAtacarCarta.ENEMIGOSINBARRERA,j1.accionAtacarBarrera(j2,IDCARTAZB));
+        assertEquals(Jugador.VeredictoAtaque.ENEMIGOSINBARRERA,j1.accionAtacarBarrera(j2,IDCARTAZB));
         
     }
 
