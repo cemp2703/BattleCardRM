@@ -1,10 +1,10 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.xsrsys.model.Carta;
+import com.xsrsys.service.Carta;
 
 public class CartaTest {
 

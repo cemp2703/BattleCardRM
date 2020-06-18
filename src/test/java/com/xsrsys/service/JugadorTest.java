@@ -1,18 +1,18 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.xsrsys.service.Carta;
+import com.xsrsys.service.Jugador;
+import com.xsrsys.service.ResultadoAtaque;
+import com.xsrsys.service.ZonaBatalla;
+import com.xsrsys.service.Jugador.EstadoCarta;
+import com.xsrsys.service.Jugador.VeredictoAtaque;
+import com.xsrsys.service.ZonaBatalla.PosBatalla;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-//import org.testng.annotations.DataProvider;
-
-import com.xsrsys.model.Carta;
-import com.xsrsys.model.Jugador;
-import com.xsrsys.model.Jugador.EstadoCarta;
-import com.xsrsys.model.Jugador.VeredictoAtaque;
-import com.xsrsys.model.ZonaBatalla;
-import com.xsrsys.model.ZonaBatalla.PosBatalla;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -97,7 +97,8 @@ public class JugadorTest {
 
     }
 
-    private Object[][] sampleData(){
+    @SuppressWarnings("unused")
+	private Object[][] sampleData(){
         Object[][] data=new Object[6][8];
         //Cabeceras de filas
         //0: Valor carta Atacante
@@ -341,7 +342,6 @@ public class JugadorTest {
         PosBatalla POSCARTA = ZonaBatalla.PosBatalla.ATAQUE;
         Jugador j1=new Jugador("J1");
         Jugador j2=new Jugador("J2");
-        Carta carbar1=new Carta(6,Carta.Elemento.CORAZON);
         Carta c=new Carta(4,Carta.Elemento.ESPADA);
         j1.Deck.agregarUnaCarta(c);//agrega una carta al deck j1
 
@@ -375,5 +375,17 @@ public class JugadorTest {
         assertEquals(t,d.getNombre());
     }
 
-
+	@Test
+	public void testRepartirCartas() throws Exception{
+		String nomJug1="J1";
+		Jugador jug1=new Jugador(nomJug1);
+		int nCartasEnDeck = Deck.MAXDECK - Mano.MAXMANOCARDS - Barrera.MAXBARRERACARDS;
+		assertEquals(0,jug1.Mano.obtenerNumerodeCartas());
+		assertEquals(0,jug1.Deck.Deck.size());
+		assertEquals(0,jug1.Barrera.obtenerNumerodeCartas());
+		jug1.repartirCartas();
+		assertEquals(Mano.MAXMANOCARDS,jug1.Mano.obtenerNumerodeCartas());
+		assertEquals(nCartasEnDeck,jug1.Deck.Deck.size());
+		assertEquals(Barrera.MAXBARRERACARDS,jug1.Barrera.obtenerNumerodeCartas());
+	}
 }

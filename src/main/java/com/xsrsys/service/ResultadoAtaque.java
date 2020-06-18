@@ -1,9 +1,8 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
-import com.xsrsys.model.Carta.Elemento;
-import com.xsrsys.model.Jugador.EstadoCarta;
-import com.xsrsys.model.Jugador.VeredictoAtaque;
-import com.xsrsys.model.ZonaBatalla.PosBatalla;
+import com.xsrsys.service.Jugador.EstadoCarta;
+import com.xsrsys.service.Jugador.VeredictoAtaque;
+import com.xsrsys.service.ZonaBatalla.PosBatalla;
 
 public class ResultadoAtaque
 {

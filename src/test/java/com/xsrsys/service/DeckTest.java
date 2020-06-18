@@ -1,11 +1,12 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
 import org.junit.Test;
+
+import com.xsrsys.service.Carta;
+import com.xsrsys.service.Deck;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-
-import com.xsrsys.model.Carta;
-import com.xsrsys.model.Deck;
 
 public class DeckTest {
 
