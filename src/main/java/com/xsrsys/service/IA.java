@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.xsrsys.model.Estado;
-import com.xsrsys.model.Jugador.VeredictoAtaque;
-import com.xsrsys.model.Mano;
-import com.xsrsys.model.ResultadoAtaque;
-import com.xsrsys.model.ZonaBatalla;
-import com.xsrsys.model.ZonaBatalla.PosBatalla;
+import com.xsrsys.service.Jugador.VeredictoAtaque;
+import com.xsrsys.service.ZonaBatalla.PosBatalla;
 
 
 public class IA {
-	public List<Estado> EstadosGenerados;
-	Estado EstadoInicial;
+	public List<Tablero> EstadosGenerados;
+	Tablero EstadoInicial;
+	
+    public Dificultad dificultad;
+    
+    public enum Dificultad{
+    	FACIL, // Facil(Aleatorio)
+    	NORMAL, // Normal (Primero el mejor)
+    	AVANZADO // Avanzado (MaxMin)
+    }
 	
 	public Termino termino; //Reglas que finalizan el juego
 
@@ -25,7 +29,7 @@ public class IA {
 	}
 	
 	public IA(){
-		EstadosGenerados=new ArrayList<Estado>();
+		EstadosGenerados=new ArrayList<Tablero>();
 	}
 	
 	public Termino getTermino() {
@@ -35,16 +39,16 @@ public class IA {
 		this.termino = termino;
 	}
 	
-	public void cargarEstado(Estado E){
+	public void cargarEstado(Tablero E){
 		EstadoInicial=E;
 	}
 	
-	public List<Estado> sistemaDeProduccion(Estado EInicial) throws CloneNotSupportedException{//Crea los estados a partir de nuestro estado inicial
+	public List<Tablero> sistemaDeProduccion(Tablero EInicial) throws CloneNotSupportedException{//Crea los estados a partir de nuestro estado inicial
 
-		Estado EI=(Estado)EInicial.clone();
+		Tablero EI=(Tablero)EInicial.clone();
 		EstadosGenerados.clear();
-		List<Estado> EstadosColocados=new ArrayList<Estado>();
-		Estado ENuevo;
+		List<Tablero> EstadosColocados=new ArrayList<Tablero>();
+		Tablero ENuevo;
 		EstadosColocados.add(EI);
 		
 		//Colocar carta (Se crean los 11 estados iniciales para luego entrar en la generacion por ataque)
@@ -53,7 +57,7 @@ public class IA {
 				for(int j=0;j< 2;j++){//colocar en posicion de ataque o defenza
 					if(EI.jugador2.Mano.obtenerCartaxId(i)!=null){//Exista carta en posicion mano
 						ENuevo=null;
-						ENuevo=(Estado)EI.clone();
+						ENuevo=(Tablero)EI.clone();
 						if(j==0)
 							ENuevo.jugador2.ZBatalla.agregarCartaEnEspacioVacio(ENuevo.jugador2.Mano.obtenerCartaxId(i),PosBatalla.ATAQUE);
 						else
@@ -70,17 +74,17 @@ public class IA {
 
 		//CARTAS PUEDEN PASAR DE DEFENSA A ATAQUE(SI PUEDEN) O NO LO HACEN
 		
-		List<Estado> EstadosCambiadosATK=new ArrayList<Estado>();
+		List<Tablero> EstadosCambiadosATK=new ArrayList<Tablero>();
 
 		boolean vcumple[]=new boolean[3];
 		int cnt;
 		int i=0;
 		while(i<EstadosColocados.size()){
-			ENuevo=(Estado)EstadosColocados.get(i).clone();
+			ENuevo=(Tablero)EstadosColocados.get(i).clone();
 			EstadosCambiadosATK.add(ENuevo);
 			for(int j=0;j<EstadosColocados.get(i).jugador2.ZBatalla.obtenerNumerodeCartas();j++){
 				for(int k=0;k<3;k++){//3 significa las posibilidades de convinaciones con j numero de cartas
-					ENuevo=(Estado)EstadosColocados.get(i).clone();
+					ENuevo=(Tablero)EstadosColocados.get(i).clone();
 					for(int l=0;l<3;l++){
 						vcumple[l]=false;
 					}
@@ -114,14 +118,14 @@ public class IA {
 		
 		//CARTAS ATACAN(LAS QUE PUEDEN) O NO LO HACEN
 		
-		List<Estado> EstadosAtacando=new ArrayList<Estado>();
+		List<Tablero> EstadosAtacando=new ArrayList<Tablero>();
 		
 		i=0;	
 		ResultadoAtaque resp = new ResultadoAtaque();
 		int v[]=new int[3];
 		boolean atacobarrera;
 		while(i<EstadosCambiadosATK.size()){
-			ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
+			ENuevo=(Tablero)EstadosCambiadosATK.get(i).clone();
 			EstadosAtacando.add(ENuevo);
 			for(int n=0;n<EstadosCambiadosATK.get(i).jugador2.ZBatalla.obtenerNumerodeCartas();n++){
 				switch(n){
@@ -129,7 +133,7 @@ public class IA {
 				case 1:
 					for(int p=0;p<6;p++){
 						permutacion(p, v);//Se obtiene los escenarios de ataque 
-						ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
+						ENuevo=(Tablero)EstadosCambiadosATK.get(i).clone();
 						for(int m=0;m<=n;m++){
 							vcumple[m]=false;
 						}
@@ -168,7 +172,7 @@ public class IA {
 						atacobarrera=false;	
 						for(int k=0;k<3;k++){
 							if(EstadosCambiadosATK.get(i).jugador2.posibilidadAtacarCarta(EstadosCambiadosATK.get(i).jugador1, k,j)){
-								ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
+								ENuevo=(Tablero)EstadosCambiadosATK.get(i).clone();
 								resp=ENuevo.jugador2.accionAtacarCarta(ENuevo.jugador1,k,j);
 								if(resp.veredicto==VeredictoAtaque.ENEMIGOSINBARRERA)
 									setTermino(Termino.SINBARRERAS);
@@ -176,7 +180,7 @@ public class IA {
 							}
 							else if(EstadosCambiadosATK.get(i).jugador2.posibilidadAtacarBarrera(EstadosCambiadosATK.get(i).jugador1, j)){
 								if(!atacobarrera){
-									ENuevo=(Estado)EstadosCambiadosATK.get(i).clone();
+									ENuevo=(Tablero)EstadosCambiadosATK.get(i).clone();
 									resp.veredicto = ENuevo.jugador2.accionAtacarBarrera( ENuevo.jugador1, j);
 									if(resp.veredicto == VeredictoAtaque.ENEMIGOSINBARRERA)
 										setTermino(Termino.SINBARRERAS);
@@ -199,17 +203,17 @@ public class IA {
 		
 		//CARTAS CAMBIAN A DEFENSA(LAS QUE PUEDEN) O NO LO HACEN
 		
-		List<Estado> EstadosFinales=new ArrayList<Estado>();
+		List<Tablero> EstadosFinales=new ArrayList<Tablero>();
 		
 		i=0;
 		while(i<EstadosAtacando.size()){
-			ENuevo=(Estado)EstadosAtacando.get(i).clone();
+			ENuevo=(Tablero)EstadosAtacando.get(i).clone();
 			funcionEvaluadora(ENuevo);
 			EstadosFinales.add(ENuevo);
 			for(int j=0;j<EstadosAtacando.get(i).jugador2.ZBatalla.obtenerNumerodeCartas();j++){
 				
 				for(int k=0;k<3;k++){
-					ENuevo=(Estado)EstadosAtacando.get(i).clone();
+					ENuevo=(Tablero)EstadosAtacando.get(i).clone();
 					
 					for(int l=0;l<3;l++){
 						vcumple[l]=false;
@@ -249,7 +253,7 @@ public class IA {
 		return EstadosFinales;
 	}
 
-	public Estado estrategiaRandom(List<Estado> LE){
+	public Tablero estrategiaRandom(List<Tablero> LE){
 		if(LE.size()==0)
 			return null;
 		Random rm=new Random();
@@ -263,7 +267,7 @@ public class IA {
 		public final static int MAYOR = 1;
 	}
 
-	public Estado estrategiaPrimeroElMejor(List<Estado> LE,int mejor){//Mejor 1: Mayor , -1: Menor
+	public Tablero estrategiaPrimeroElMejor(List<Tablero> LE,int mejor){//Mejor 1: Mayor , -1: Menor
 		if(LE.size()==0)
 			return null;
 		int idmejor=0,i=0;//mejorve: Mejor valor de Clases.Estado
@@ -284,12 +288,12 @@ public class IA {
 		return LE.get(idmejor);
 	}
 
-	public Estado estrategiaMinMax(List<Estado> LE) throws CloneNotSupportedException{
+	public Tablero estrategiaMinMax(List<Tablero> LE) throws CloneNotSupportedException{
 		if(LE.size()==0)
 			return null;
 		
 		for(int i = 0; i<LE.size(); i++){
-			List<Estado> inside = new ArrayList<Estado>();
+			List<Tablero> inside = new ArrayList<Tablero>();
 			inside=sistemaDeProduccion( LE.get(i));
 			LE.get(i).setValorEstado(estrategiaPrimeroElMejor(inside, 1).getValorEstado());
 		}
@@ -322,7 +326,7 @@ public class IA {
 
 	}
 
-	public void funcionEvaluadora(Estado E)
+	public void funcionEvaluadora(Tablero E)
 	{	////MAQUINA ES JUGADOR 2
 		double hum=0,maq=0;
 		int nMaq = E.jugador2.ZBatalla.obtenerNumerodeCartas();

@@ -1,12 +1,13 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
 import org.junit.Test;
+
+import com.xsrsys.service.Carta;
+import com.xsrsys.service.Mano;
+import com.xsrsys.service.VectorCartas;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-
-import com.xsrsys.model.Carta;
-import com.xsrsys.model.Mano;
-import com.xsrsys.model.VectorCartas;
 
 
 public class VectorCartasTest {
@@ -54,7 +55,6 @@ public class VectorCartasTest {
     @Test
     public void testVectorCartasOps() throws Exception{
         final int POS0 = 0;
-        final int POS1 = 1;
         final int POS2 = 2;
         final int POSFUERADEZONA = -1;
         VectorCartas vc=new VectorCartas(Mano.MAXMANOCARDS);

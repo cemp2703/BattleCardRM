@@ -1,5 +1,4 @@
-package com.xsrsys.model;
-
+package com.xsrsys.service;
 
 public class Carta implements Cloneable{
 
@@ -48,5 +47,14 @@ public class Carta implements Cloneable{
 		return Carta.Elemento.values().length;
 	} 
 
-
+	static String obtenerStringElementoUnicode(Elemento e){
+        String elemento = "";
+        switch(e){
+            case CORAZON: elemento =  "\u2665"; break;
+            case COCO: elemento = "\u2666"; break;
+            case TREBOL: elemento = "\u2663"; break;
+            case ESPADA: elemento = "\u2660"; break;
+        }
+        return elemento;
+    }
 }

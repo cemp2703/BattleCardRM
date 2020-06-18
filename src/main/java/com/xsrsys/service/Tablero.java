@@ -1,13 +1,13 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
-public class Estado implements Cloneable {
+public class Tablero implements Cloneable {
 	public Jugador jugadorActual;
 	public Jugador jugadorAnterior;
 	public Jugador jugador1;
 	public Jugador jugador2;
 	private double valorEstado;
 	
-	public Estado(Jugador pJugador1,Jugador pJugador2){
+	public Tablero(Jugador pJugador1,Jugador pJugador2){
 		jugador1=pJugador1;
 		jugador2=pJugador2;
 		valorEstado = 0;
@@ -15,7 +15,7 @@ public class Estado implements Cloneable {
 		jugadorAnterior=jugador2;
 	}
 	public Object clone() throws CloneNotSupportedException{
-		Estado clon=(Estado) super.clone();
+		Tablero clon=(Tablero) super.clone();
 		clon.jugadorActual=jugadorActual;
 		clon.jugadorAnterior=jugadorAnterior;
 		clon.jugador1=jugador1;
@@ -30,7 +30,7 @@ public class Estado implements Cloneable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Estado other = (Estado) obj;
+		Tablero other = (Tablero) obj;
 		if (jugador1 == null) {
 			if (other.jugador1 != null)
 				return false;
@@ -61,4 +61,78 @@ public class Estado implements Cloneable {
 	public void setValorEstado(double pvalorEstado) {
 		valorEstado = pvalorEstado;
 	}
+	
+	public String obtenerStringEstado() {
+    	String resp = "";
+    	resp+="TURNO: "+jugadorActual.getNombre()+"\n";
+    	resp+="*****************************************************************************\n";
+        resp+="Jugador 1\n";
+        resp+="Mano\n";
+        for(int i = 0; i < Mano.MAXMANOCARDS; i++){
+            if(jugador1.Mano.obtenerCartaxId(i) != null)
+                resp+=jugador1.Mano.obtenerCartaxId(i).getValor() + " " +
+                		Carta.obtenerStringElementoUnicode(jugador1.Mano.obtenerCartaxId(i).getElemento()) + " | ";
+            else
+                resp+="VACIO | ";
+        }
+        resp+="\n";
+        resp+="Barrera\n";
+        for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
+            if(jugador1.Barrera.obtenerCartaxId(i) != null)
+                resp+="BARRERA| ";
+            else
+                resp+="VACIO  | ";
+        }
+        resp+="\n";
+        resp+="ZonaBatalla\n";
+        for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
+            if(jugador1.ZBatalla.obtenerCartaxId(i) != null)
+                resp+=jugador1.ZBatalla.obtenerCartaxId(i).getValor()+ " " +
+                        Carta.obtenerStringElementoUnicode(jugador1.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
+                        ZonaBatalla.obtenerStringPosCarta(jugador1.ZBatalla.posBatalla[i]) + " | ";
+            else
+                resp+="VACIO | ";
+        }
+        resp+="\n";
+
+        resp+="Jugador 2\n";
+        resp+="Mano\n";
+        for(int i=0;i < Mano.MAXMANOCARDS;i++){
+            if(jugador2.Mano.obtenerCartaxId(i) != null)
+                resp+=jugador2.Mano.obtenerCartaxId(i).getValor() + " " +
+                        Carta.obtenerStringElementoUnicode(jugador2.Mano.obtenerCartaxId(i).getElemento()) + " | ";
+            else
+                resp+="VACIO | ";
+        }
+        resp+="\n";
+        resp+="Barrera\n";
+        for(int i=0;i < Barrera.MAXBARRERACARDS;i++){
+            if(jugador2.Barrera.obtenerCartaxId(i) != null)
+                resp+="BARRERA| ";
+            else
+                resp+="VACIO | ";
+        }
+        resp+="\n";
+        resp+="ZonaBatalla\n";
+        for(int i=0;i < ZonaBatalla.MAXZONABATALLACARDS;i++){
+            if(jugador2.ZBatalla.obtenerCartaxId(i) != null)
+                resp+=jugador2.ZBatalla.obtenerCartaxId(i).getValor() + " " +
+                        Carta.obtenerStringElementoUnicode(jugador2.ZBatalla.obtenerCartaxId(i).getElemento()) + " " +
+                        ZonaBatalla.obtenerStringPosCarta(jugador2.ZBatalla.posBatalla[i]) + " | ";
+            else
+                resp+="VACIO | ";
+        }
+
+        resp+="\n";
+        resp+="*****************************************************************************\n";
+        resp+="\n";
+        return resp;
+    }
+    
+	public void cambioDeJugadorActual(){
+		Jugador jugadorTmp =jugadorActual;
+		jugadorActual = jugadorAnterior;
+		jugadorAnterior = jugadorTmp;
+	}
+	
 }

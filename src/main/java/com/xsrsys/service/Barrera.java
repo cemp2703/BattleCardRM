@@ -1,4 +1,4 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
 public class Barrera extends VectorCartas implements Cloneable{
 	public static final int MAXBARRERACARDS = 5;

@@ -1,4 +1,4 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
 import java.util.Arrays;
 
@@ -179,7 +179,15 @@ public class ZonaBatalla extends VectorCartas implements Cloneable{
 		return respuesta;
 	}
 
-
+    static String obtenerStringPosCarta(PosBatalla posBatalla){
+        switch(posBatalla){
+            case NOHAYCARTA: return "VACIO";
+            case ATAQUE: return "ATQ";
+            case DEFCARAABAJO: return "DBA"; //defensa boca abajo
+            case DEFCARAARRIBA: return "DBV"; //defensa boca arriba
+            default: return "";
+        }
+    }
 }
 
 

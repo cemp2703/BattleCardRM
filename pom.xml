@@ -6,33 +6,20 @@
     <groupId>com.xsrsys</groupId>
     <artifactId>battlecardrm</artifactId>
     <version>1.0</version>
-	<name>bibliaacont-backend</name>
-	<description>Backend para Proyecto BibliaAcont</description>
+	<name>battlecard</name>
+	<description>Batalla de Cartas</description>
 	<packaging>jar</packaging>
-    <parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.9.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
-        <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+	    <!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
-		    <groupId>com.spring4all</groupId>
-		    <artifactId>swagger-spring-boot-starter</artifactId>
-		    <version>1.7.0.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.13</version>
+		    <scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/pl.pragmatists/JUnitParams -->
 		<dependency>
@@ -41,27 +28,17 @@
 		    <version>1.1.1</version>
 		    <scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.slick2d/slick2d-core -->
-		<dependency>
-		    <groupId>org.slick2d</groupId>
-		    <artifactId>slick2d-core</artifactId>
-		    <version>1.0.2</version>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.13.3</version>
 		</dependency>	
     </dependencies>
     <build>
         <plugins>
-	        <plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 	       	<!-- Build an executable JAR -->
-	        <!-- 
+	        
 	            <plugin>
 	               
 	                <groupId>org.apache.maven.plugins</groupId>
@@ -75,7 +52,7 @@
 	                    </archive>
 	                </configuration>
 	            </plugin>
-	        -->
+	       
         </plugins>
     </build>
 </project>

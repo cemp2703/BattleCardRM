@@ -1,14 +1,15 @@
-package com.xsrsys.model;
+package com.xsrsys.service;
 
 import org.junit.Test;
+
+import com.xsrsys.service.Carta;
+import com.xsrsys.service.VectorCartas;
+import com.xsrsys.service.ZonaBatalla;
+import com.xsrsys.service.ZonaBatalla.DispCambio;
+import com.xsrsys.service.ZonaBatalla.PosBatalla;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-
-import com.xsrsys.model.Carta;
-import com.xsrsys.model.VectorCartas;
-import com.xsrsys.model.ZonaBatalla;
-import com.xsrsys.model.ZonaBatalla.DispCambio;
-import com.xsrsys.model.ZonaBatalla.PosBatalla;
 
 public class ZonaBatallaTest {
 	
