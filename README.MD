@@ -9,4 +9,5 @@
 chcp 65001
 
 ## Correr proyecto
+mvn package
 java -Dfile.encoding=UTF-8 -jar target/battlecardrm-1.0.jar
