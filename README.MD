@@ -7,6 +7,10 @@
 
 ![Pantalla: Durante el Juego](img/Screenshot_2.png?raw=true "Durante el Juego")
 
+# Correr proyecto en Repl.it!!!
+
+[![Run on Repl.it](https://repl.it/badge/github/cemp2703/BattleCardRM)](https://repl.it/@cemp2703/BattleCardRM)
+
 ## Corriendo localmente
 
 ### Flag en consola Windows: CMD (Full compatible UTF-8)
